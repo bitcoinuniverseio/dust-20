@@ -1,0 +1,38 @@
+# DUST-20 | Bitcoin Universe Protocol Reference
+
+> Human docs: index.html
+> Field reference: reference.html
+> Network: Bitcoin
+> Classification: Dyed dust UTXO fungibility experiment
+
+## Summary
+
+A Bitcoin-native fungibility experiment where units are represented by dyed satoshis in UTXOs, so a transfer can be a normal Bitcoin split rather than a new transfer inscription.
+
+## State model
+
+Deploy and mint messages establish a color rule. Indexers aggregate matching UTXOs, normally at 546 sats per unit.
+
+## Lifecycle
+
+1. Deploy rule
+2. Mint colored UTXO
+3. Split outputs
+4. Aggregate balance
+
+## Operations
+
+- Deploy: Sets supply, sats per unit, total sat backing, and an optional per-mint sat cap.
+- Mint: Creates a colored UTXO whose value must match the declared sats.
+- Transfer: Splits or combines colored UTXOs. Fees should come from a separate non-colored input.
+
+## Safety
+
+1. The mint output value must equal the sats declared in the message. A mismatch breaks the colored-UTXO rule.
+2. Keep miner-fee inputs separate from colored UTXOs so a fee cannot consume asset-bearing sats.
+3. Use a wallet and indexer that understand DUST-20 selection, splitting, and change behavior.
+
+## Sources
+
+- Legacy DUST-20 documentation: https://dust-20.gitbook.io/dust20
+- Universe Inscribe: https://inscribe.bitcoinuniverse.io
