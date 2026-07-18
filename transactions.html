@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DUST-20 transaction construction guidance for colored UTXO transfers, splits, merges, fees, and change.">
+  <meta name="theme-color" content="#10212e">
+  <meta property="og:title" content="DUST-20 transactions">
+  <meta property="og:description" content="Colored UTXO splits, merges, fee separation, change construction, and unresolved transaction rules.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://bitcoinuniverse.github.io/dust-20-docs/transactions.html">
+  <link rel="canonical" href="https://bitcoinuniverse.github.io/dust-20-docs/transactions.html">
+  <link rel="stylesheet" href="assets/site.css">
+  <title>DUST-20 transactions | Bitcoin Universe</title>
+</head>
+<body>
+  <a class="skip-link" href="#content">Skip to content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="DUST-20 documentation home"><span class="brand-mark">D20</span><span>DUST-20</span></a>
+      <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-navigation">Menu</button>
+      <nav class="site-nav" id="site-navigation" data-site-nav aria-label="Documentation">
+        <a href="index.html">Overview</a>
+        <a href="reference.html">Protocol</a>
+        <a href="guide.html">Build</a>
+        <a href="transactions.html" aria-current="page">Transactions</a>
+        <a href="indexer.html">Indexer</a>
+        <a href="safety.html">Safety</a>
+      </nav>
+      <div class="header-links"><a href="https://github.com/bitcoinuniverse/dust-20-docs" target="_blank" rel="noreferrer">Source</a></div>
+    </div>
+  </header>
+
+  <main id="content">
+    <section class="shell page-hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Transactions</p>
+        <h1>Where the colored sats <span class="accent">actually go.</span></h1>
+        <p class="lead">DUST-20's distinct idea is that token allocation is carried by Bitcoin outputs. That makes transaction construction the critical state transition. The legacy guide shows a split, but it does not publish a full transfer standard.</p>
+        <nav class="page-nav" aria-label="On this page"><a href="#invariant">Invariant</a><a href="#split">Split</a><a href="#merge">Merge</a><a href="#fees">Fees</a><a href="#unknowns">Unknowns</a></nav>
+      </div>
+    </section>
+
+    <section class="section tint" id="invariant">
+      <div class="shell">
+        <div class="section-heading"><div><p class="section-kicker">Conservation first</p><h2>Colored backing is not spare change.</h2></div><p>The safest compatibility rule is simple: a normal transfer conserves allocation backing. Use a separate cardinal input to fund miners and show colored change whenever the selected colored amount exceeds the amount sent.</p></div>
+        <div class="formula"><code>sum(colored inputs) = sum(recipient colored outputs) + sum(colored change)</code><small>For a normal transfer profile, the right side contains no miner fee deduction. A burn model is not defined by the legacy guide.</small></div>
+      </div>
+    </section>
+
+    <section class="section" id="split">
+      <div class="shell">
+        <div class="section-heading"><div><p class="section-kicker">Worked split</p><h2>91 units become 10 units plus an explicit 81-unit remainder.</h2></div><p>This is the documented 546-sat unit example. It shows why colored change is transaction-critical: omitting it changes where the backing ends up.</p></div>
+        <div class="split-figure">
+          <div class="utxo"><span class="label">Selected colored input</span><strong>49,686 sats</strong><small>91 units * 546 sats</small></div>
+          <div class="split-arrow" aria-hidden="true">&rarr;</div>
+          <div class="output-stack">
+            <div class="utxo"><span class="label">Recipient allocation</span><strong>5,460 sats</strong><small>10 units * 546 sats</small></div>
+            <div class="utxo"><span class="label">Colored change</span><strong>44,226 sats</strong><small>81 units * 546 sats</small></div>
+          </div>
+        </div>
+        <div class="grid three" style="margin-top:1.15rem">
+          <article class="card"><span class="card-index">SELECT</span><h3>Pick colored inputs deliberately</h3><p>Do not mix allocation UTXOs into ordinary fee selection. Capture their ticker, unit size, amount, outpoint, and source before building.</p></article>
+          <article class="card"><span class="card-index">CALCULATE</span><h3>Derive every colored output</h3><p>Compute receiver allocation and colored change from exact integer units. Every claimed colored output should be divisible by its resolved `unit_sats`.</p></article>
+          <article class="card"><span class="card-index">REVIEW</span><h3>Name outputs by role</h3><p>Show recipient allocation, colored change, seller payment, cardinal change, fee funding, and tip as different rows. A raw address list is not enough.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section dark" id="merge">
+      <div class="shell">
+        <div class="section-heading"><div><p class="section-kicker">Merge and whole-output moves</p><h2>Do less when the protocol says less.</h2></div><p>Merge and whole-UTXO movement are natural UTXO operations, but the legacy guide does not define a universal interpretation for every input combination. A conservative client verifies compatible identity before it sums anything.</p></div>
+        <div class="grid two">
+          <article class="card dark"><span class="card-index">MERGE CANDIDATE</span><h3>Same resolved deployment only</h3><p>A conservative merge accepts colored inputs only when they resolve to the same accepted ticker and unit ratio. Its resulting colored output equals the exact sum of their backing sats.</p></article>
+          <article class="card dark"><span class="card-index">WHOLE-UTXO MOVE</span><h3>No colored change when no remainder exists</h3><p>If a user sends every selected colored sat to the recipient, no colored change is needed. The review must still show that the amount equals the entire selected allocation set.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="fees">
+      <div class="shell">
+        <div class="section-heading"><div><p class="section-kicker">Fee separation</p><h2>Pay the miner from cardinal sats.</h2></div><p>Network fees are ordinary Bitcoin value movement. Under the colored-UTXO model they must not be silently taken from an output that an indexer or recipient expects to represent a token allocation.</p></div>
+        <div class="grid two">
+          <article class="card"><span class="card-index">SAFE SHAPE</span><h3>Separate cardinal funding input</h3><p>Add enough non-colored sats to pay the fee, then send ordinary change to its intended address. The colored input and colored outputs keep their allocation arithmetic intact.</p></article>
+          <article class="card"><span class="card-index">UNSAFE SHAPE</span><h3>Fee shaved from colored backing</h3><p>A 49,686-sat colored input that produces only 49,000 sats of claimed colored outputs has a 686-sat unexplained gap. Do not call it a valid allocation transfer simply because the Bitcoin transaction confirms.</p></article>
+        </div>
+        <div class="notice critical" style="margin-top:1.15rem"><div class="notice-mark">!</div><div><h3>A missing colored change output is a transfer-critical failure</h3><p>It is not a formatting issue. It can make the remaining backing untracked, redirected, or interpreted differently by another wallet or indexer. Reject the PSBT before signing.</p></div></div>
+      </div>
+    </section>
+
+    <section class="section tint" id="unknowns">
+      <div class="shell">
+        <div class="section-heading"><div><p class="section-kicker">Unresolved transaction rules</p><h2>Do not write consensus by accident.</h2></div><p>The legacy material does not define enough transfer semantics for independent clients to infer every outcome. These questions need a published indexer and wallet policy.</p></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Question</th><th>Why it matters</th><th>Safe current posture</th></tr></thead>
+            <tbody>
+              <tr><td>Is there a canonical transfer inscription?</td><td>The legacy guide documents deploy and mint JSON, not a full transfer schema.</td><td>Label application transfer payloads implementation-specific.</td></tr>
+              <tr><td>How are multiple colored inputs mapped to outputs?</td><td>Without a deterministic mapping, a merge or split can have competing readings.</td><td>Reject ambiguous or mixed-token selections.</td></tr>
+              <tr><td>Does output order matter?</td><td>Ordinal and inscription assignment can be sensitive to output ordering.</td><td>Document and test the exact builder behavior.</td></tr>
+              <tr><td>What is an intentional burn or unlock?</td><td>There is no legacy burn definition.</td><td>Show recovery actions as potentially allocation-destroying, not canonical burns.</td></tr>
+              <tr><td>What happens after RBF or a reorg?</td><td>A confirmed-looking state can be replaced or rolled back.</td><td>Track confirmation and invalidate derived state on chain changes.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"><div class="footer-inner"><div><h2>DUST-20 documentation</h2><p>Experimental transaction guidance. Last updated 2026-07-18.</p></div><div><h2>Read next</h2><ul><li><a href="reference.html">Protocol reference</a></li><li><a href="guide.html">Build and verify</a></li><li><a href="indexer.html">Indexer model</a></li></ul></div><div><h2>Sources</h2><ul><li><a href="https://dust-20.gitbook.io/dust20">Legacy guide</a></li><li><a href="https://github.com/bitcoinuniverse/dust-20-docs">Docs repository</a></li><li><a href="llms.txt">llms.txt</a></li></ul></div></div><div class="footer-bottom">Do not infer a canonical transfer protocol from an unspecified payload.</div></footer>
+  <script src="assets/site.js"></script>
+</body>
+</html>

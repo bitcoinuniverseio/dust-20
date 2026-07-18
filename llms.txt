@@ -1,50 +1,111 @@
-# DUST-20
+# DUST-20 documentation
 
-> Token units physically represented by satoshis in colored UTXOs.
+> Public docs: https://bitcoinuniverse.github.io/dust-20-docs/
+> Source: https://github.com/bitcoinuniverse/dust-20-docs
+> Status: Experimental compatibility field guide, updated 2026-07-18.
 
-## Chain and carrier
+## What DUST-20 is
 
-- Chain: Bitcoin
-- Carrier: Inscription plus dyed UTXO
+DUST-20 is a Bitcoin fungibility experiment that represents token units as satoshi-denominated colored UTXO allocations. A mint binds a token amount to an exact satoshi output value. A transfer moves, splits, or merges the colored UTXO value while keeping its backing arithmetic visible.
 
-## Overview
+This document does not claim Bitcoin consensus or a universal DUST-20 standard. It separates legacy-guide facts, current Universe implementation behavior, and unresolved questions.
 
-DUST-20 pairs token metadata with a satoshi-denominated UTXO model. A mint output carries the exact number of sats required by the token amount, and a transfer divides that colored value across recipient and change outputs.
+## Canonical public pages
 
-## State model
+- Overview: https://bitcoinuniverse.github.io/dust-20-docs/
+- Protocol reference: https://bitcoinuniverse.github.io/dust-20-docs/reference.html
+- Build and verify guide: https://bitcoinuniverse.github.io/dust-20-docs/guide.html
+- Transactions: https://bitcoinuniverse.github.io/dust-20-docs/transactions.html
+- Indexer model: https://bitcoinuniverse.github.io/dust-20-docs/indexer.html
+- Safety and operations: https://bitcoinuniverse.github.io/dust-20-docs/safety.html
+- This file: https://bitcoinuniverse.github.io/dust-20-docs/llms.txt
 
-The arithmetic is the protocol. Token units are not an account entry detached from Bitcoin outputs: their satoshi backing must be conserved through every spend.
+## Source hierarchy
 
-## Lifecycle
+1. Legacy DUST-20 guide: https://dust-20.gitbook.io/dust20
+2. Public documentation source: https://github.com/bitcoinuniverse/dust-20-docs
+3. Universe Inscribe application: https://inscribe.bitcoinuniverse.io
 
-1. Deploy the token supply and sats-per-unit rule.
-2. Mint an output whose value equals amount times unit_sats.
-3. Spend colored inputs into recipient and colored change outputs.
-4. Pay miner fees from a separate cardinal UTXO.
+The legacy guide documents deploy and mint payloads and a colored-UTXO transfer example. It does not publish a complete canonical transfer schema, indexer API, duplicate-ticker policy, output-order policy, RBF policy, reorg policy, or burn rule.
 
-## Rules
+## Legacy compatibility profile
 
-- unit_sats defaults to 546 sats when omitted by the documented profile.
-- max_sats equals supply multiplied by unit_sats.
-- Mint output value must equal amt multiplied by unit_sats.
-- Transfer colored outputs must sum to the colored input amount.
-- Fees must come from a separate cardinal input, not the token backing.
-- Wallets need explicit colored UTXO tracking and change construction.
+### Deploy
 
-## Field reference
+Required fields in the legacy profile:
 
-- p (string, required: yes): Literal dust-20.
-- op (string, required: yes): deploy or mint message in the documented profile.
-- tick (string, required: yes): Token identifier.
-- supply (integer string, required: deploy): Total units.
-- unit_sats (integer string, required: no): Satoshis per unit, 546 by documented default.
-- lim_sats (integer string, required: no): Mint limit expressed in satoshi backing.
-- amt (integer string, required: mint): Units to mint, converted to output sats.
+```json
+{
+  "p": "dust-20",
+  "op": "deploy",
+  "tick": "DUST",
+  "supply": "1000",
+  "unit_sats": "546",
+  "max_sats": "546000",
+  "lim_sats": "49686"
+}
+```
 
-## Primary sources
+- `p` is `dust-20`.
+- `op` is `deploy`.
+- `tick` is a nonempty token identifier. The legacy guide says it is not limited to four bytes, but does not settle case or duplicate handling.
+- `supply` is maximum whole token units.
+- `unit_sats` is explicit satoshi backing per unit. 546 is a documented common example, not a safe implicit default for an independent parser.
+- `max_sats` must equal `supply * unit_sats` exactly.
+- `lim_sats` is optional and caps satoshi backing in one mint where the relevant policy applies.
 
-- Bitcoin Universe DUST-20 reference: https://github.com/bitcoinuniverse/inscribe/blob/main/frontend/docs/dust-20/index.html
+### Mint
 
-## Operational caution
+```json
+{
+  "p": "dust-20",
+  "op": "mint",
+  "tick": "DUST",
+  "amt": "91",
+  "sats": "49686"
+}
+```
 
-A missing colored change output does not look like a formatting error. It changes where the token backing goes, so treat it as a transfer-critical condition.
+- `sats` must equal `amt * unit_sats` exactly.
+- The actual inscription output value must also equal `sats`.
+- When `lim_sats` applies, require `sats <= lim_sats`.
+- Prior minted units plus `amt` must remain within the deployment supply.
+
+## Transaction arithmetic
+
+For a normal transfer profile:
+
+```text
+sum(colored input sats) = sum(recipient colored output sats) + sum(colored change sats)
+```
+
+Network fee funding must come from a separate cardinal input. A partial transfer must create an explicit colored change output for the remainder.
+
+Legacy example:
+
+```text
+input:            91 units * 546 = 49,686 sats
+recipient:        10 units * 546 =  5,460 sats
+colored change:   81 units * 546 = 44,226 sats
+```
+
+## Important compatibility split
+
+The current Universe Inscribe builder has been observed to emit deploy JSON with `supply`, `unit_sats`, and `lim_sats` without `max_sats`, and it emits a transfer preview with `amt`. Those are implementation-specific behaviors. Do not describe them as universal protocol consensus until compatibility is explicitly published and independently implemented.
+
+## Safety requirements
+
+- Do not request, log, send, or store a seed phrase or wallet private key.
+- Show all PSBT inputs and outputs with roles before the wallet prompt.
+- Treat missing colored change, a satoshi mismatch, a stale listing, or source disagreement as a blocking error.
+- Label indexer data with source, retrieval time, and confirmation or pending state.
+- Do not retry an ambiguous broadcast blindly.
+- A recovery or unlock action is not a canonical burn unless a published protocol rule says so.
+
+## Unresolved topics
+
+- Duplicate deployment and ticker normalization.
+- Canonical transfer payload, multiple colored input rules, and output ordering.
+- Indexer API schemas, pagination, and response versioning.
+- Confirmation thresholds, mempool behavior, RBF, reorg rollback, and accidental spends.
+- Explicit burn and unlock interpretation.

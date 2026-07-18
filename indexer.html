@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DUST-20 indexer guidance for source confidence, allocation state, event ordering, reorgs, replacement transactions, and APIs.">
+  <meta name="theme-color" content="#10212e">
+  <meta property="og:title" content="DUST-20 indexer model">
+  <meta property="og:description" content="Source confidence, allocation state, event ordering, reorgs, replacement transactions, and API boundaries.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://bitcoinuniverse.github.io/dust-20-docs/indexer.html">
+  <link rel="canonical" href="https://bitcoinuniverse.github.io/dust-20-docs/indexer.html">
+  <link rel="stylesheet" href="assets/site.css">
+  <title>DUST-20 indexer model | Bitcoin Universe</title>
+</head>
+<body>
+  <a class="skip-link" href="#content">Skip to content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="DUST-20 documentation home"><span class="brand-mark">D20</span><span>DUST-20</span></a>
+      <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-navigation">Menu</button>
+      <nav class="site-nav" id="site-navigation" data-site-nav aria-label="Documentation">
+        <a href="index.html">Overview</a>
+        <a href="reference.html">Protocol</a>
+        <a href="guide.html">Build</a>
+        <a href="transactions.html">Transactions</a>
+        <a href="indexer.html" aria-current="page">Indexer</a>
+        <a href="safety.html">Safety</a>
+      </nav>
+      <div class="header-links"><a href="https://github.com/bitcoinuniverse/dust-20-docs" target="_blank" rel="noreferrer">Source</a></div>
+    </div>
+  </header>
+
+  <main id="content">
+    <section class="shell page-hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Indexer model</p>
+        <h1>Balances are a <span class="accent">derived view.</span></h1>
+        <p class="lead">An indexer is essential infrastructure for DUST-20, but it is not Bitcoin consensus. It observes transaction data, applies an interpretation, and returns a view that must retain provenance, freshness, and the ability to be rolled back.</p>
+        <nav class="page-nav" aria-label="On this page"><a href="#boundaries">Boundaries</a><a href="#record">Allocation record</a><a href="#lifecycle">Lifecycle</a><a href="#reorgs">Reorgs and RBF</a><a href="#api">API profile</a></nav>
+      </div>
+    </section>
+
+    <section class="section tint" id="boundaries">
+      <div class="shell">
+        <div class="section-heading"><div><p class="section-kicker">Source boundaries</p><h2>Name the source before displaying a number.</h2></div><p>A value can be on-chain observed, indexer-derived, marketplace-derived, or application-cached. These categories are useful for different jobs and unsafe when silently substituted for one another.</p></div>
+        <div class="grid four">
+          <article class="card"><span class="card-index">CHAIN</span><h3>Transaction and outpoint</h3><p>The durable Bitcoin objects. An indexer must preserve the transaction ID, output index, value, confirmation state, and chain position it observed.</p></article>
+          <article class="card"><span class="card-index">INDEXER</span><h3>Allocation interpretation</h3><p>The indexer's determination that a particular outpoint represents a ticker and number of units under its rules.</p></article>
+          <article class="card"><span class="card-index">MARKETPLACE</span><h3>Listing state</h3><p>A listing may be useful discovery data, but it is not proof that an output remains unspent or allocation-valid.</p></article>
+          <article class="card"><span class="card-index">CACHE</span><h3>Application response</h3><p>A cached response needs source URL, retrieval time, block height or mempool status, and a safe invalidation path.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="record">
+      <div class="shell">
+        <div class="section-heading"><div><p class="section-kicker">Allocation record</p><h2>Store enough context to explain a balance.</h2></div><p>A balance is the sum of allocation records. Each record should answer which output, which rule, which source, and what chain state produced its interpretation.</p></div>
+        <article class="card packet">
+          <div class="packet-header"><span>Illustrative indexer allocation record</span><button class="copy-button" type="button" data-copy="{&quot;outpoint&quot;:&quot;txid:0&quot;,&quot;tick&quot;:&quot;DUST&quot;,&quot;amount&quot;:&quot;91&quot;,&quot;allocation_sats&quot;:&quot;49686&quot;,&quot;unit_sats&quot;:&quot;546&quot;,&quot;status&quot;:&quot;confirmed&quot;,&quot;source&quot;:&quot;indexer&quot;,&quot;observed_height&quot;:0}">Copy JSON</button></div>
+          <pre><code>{
+  "outpoint": "txid:vout",
+  "tick": "DUST",
+  "amount": "91",
+  "allocation_sats": "49686",
+  "unit_sats": "546",
+  "status": "confirmed",
+  "source": "indexer",
+  "observed_height": 0
+}</code></pre>
+          <p>This is an implementation-facing record shape, not a standardized public API. The key requirement is traceability: a client should be able to inspect how the amount was derived.</p>
+        </article>
+        <div class="table-wrap" style="margin-top:1.15rem">
+          <table>
+            <thead><tr><th>Field</th><th>Why it is needed</th><th>Minimum safe behavior</th></tr></thead>
+            <tbody>
+              <tr><td><code>outpoint</code></td><td>Identifies the actual Bitcoin output.</td><td>Store `txid:vout`, value, address where available, and spent status.</td></tr>
+              <tr><td><code>tick</code> and ratio</td><td>Binds the output to an interpretation rule.</td><td>Preserve original ticker and resolved deployment evidence.</td></tr>
+              <tr><td><code>amount</code> and <code>allocation_sats</code></td><td>Lets the client recheck the unit calculation.</td><td>Require exact divisibility and integer values.</td></tr>
+              <tr><td><code>status</code></td><td>Distinguishes mempool, confirmed, spent, invalidated, and unknown.</td><td>Never present unknown or stale state as a confirmed balance.</td></tr>
+              <tr><td><code>source</code> and time</td><td>Explains who made the interpretation and when.</td><td>Expose upstream identity, retrieval time, and last observed height.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section dark" id="lifecycle">
+      <div class="shell">
+        <div class="section-heading"><div><p class="section-kicker">Event lifecycle</p><h2>Index a state transition, not a page load.</h2></div><p>The sequence below describes a conservative indexer approach. A production implementation should publish its precise ordering, confirmation, duplicate-deploy, and validation policies.</p></div>
+        <div class="timeline">
+          <div class="timeline-item"><span class="timeline-key">OBSERVE</span><div><h3>Ingest raw chain event</h3><p>Record transaction, output, inscription association, mempool or block position, and raw payload without prematurely declaring a balance.</p></div></div>
+          <div class="timeline-item"><span class="timeline-key">NORMALIZE</span><div><h3>Parse and validate fields</h3><p>Apply exact integer parsing and field rules. Keep parse failures visible as invalid events rather than dropping them into an unexplained empty result.</p></div></div>
+          <div class="timeline-item"><span class="timeline-key">RESOLVE</span><div><h3>Resolve deployment and history</h3><p>Apply the published ticker, duplicate-deployment, mint-limit, and supply policy. Do not guess when two candidates conflict.</p></div></div>
+          <div class="timeline-item"><span class="timeline-key">MATERIALIZE</span><div><h3>Create or update allocation records</h3><p>Mark the relevant output pending or confirmed with provenance. A spend transitions prior outputs out of spendable state.</p></div></div>
+          <div class="timeline-item"><span class="timeline-key">RECONCILE</span><div><h3>Roll forward or roll back</h3><p>Update balances after confirmation, replacement, reorg, and spent-output observation. Preserve enough history to explain the transition.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="reorgs">
+      <div class="shell">
+        <div class="section-heading"><div><p class="section-kicker">Chain instability</p><h2>RBF and reorgs are product states.</h2></div><p>The legacy guide does not define confirmation or replacement semantics. An indexer must publish them because they directly affect what a wallet may safely spend or list.</p></div>
+        <div class="grid two">
+          <article class="card"><span class="card-index">RBF OR DOUBLE-SPEND</span><h3>Invalidate the old observation</h3><p>If a mempool transaction is replaced or an outpoint is double-spent, mark affected pending allocations and listings invalid or uncertain. Do not retain the old balance as spendable.</p></article>
+          <article class="card"><span class="card-index">REORG</span><h3>Restore the prior chain view</h3><p>A reorg can remove a confirmation or replace an observed history. Track block association so affected records can move back to pending, be recomputed, or be invalidated.</p></article>
+        </div>
+        <div class="notice" style="margin-top:1.15rem"><div class="notice-mark">i</div><div><h3>Show freshness in the UI</h3><p>A balance response should identify confirmed height, pending state, source, and refresh time. An empty result after a timeout should be shown as unavailable, not as a verified zero balance.</p></div></div>
+      </div>
+    </section>
+
+    <section class="section tint" id="api">
+      <div class="shell">
+        <div class="section-heading"><div><p class="section-kicker">API expectations</p><h2>Version the response shape or expose the uncertainty.</h2></div><p>No canonical DUST-20 indexer API is defined in the legacy guide. Consumers should treat remote responses as a contract that needs schema validation and explicit source policy.</p></div>
+        <div class="grid three">
+          <article class="card"><span class="card-index">READS</span><h3>Return provenance</h3><p>Balance and ticker responses should include a source, observed time or height, pagination, and a state label. Avoid bare arrays that cannot say whether they are complete.</p></article>
+          <article class="card"><span class="card-index">FAILURES</span><h3>Use a safe error contract</h3><p>Differentiate unavailable, malformed, stale, invalid-request, not-found, and contradictory-state outcomes. A client must not interpret each as an empty balance.</p></article>
+          <article class="card"><span class="card-index">MUTATIONS</span><h3>Revalidate near signing</h3><p>Any UTXO filter, listing validation, or transaction-build request should recheck selected outpoints and return a current timestamp or height with its decision.</p></article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"><div class="footer-inner"><div><h2>DUST-20 documentation</h2><p>Experimental indexer guidance. Last updated 2026-07-18.</p></div><div><h2>Read next</h2><ul><li><a href="reference.html">Protocol reference</a></li><li><a href="transactions.html">Transactions</a></li><li><a href="safety.html">Safety and operations</a></li></ul></div><div><h2>Sources</h2><ul><li><a href="https://dust-20.gitbook.io/dust20">Legacy guide</a></li><li><a href="https://github.com/bitcoinuniverse/dust-20-docs">Docs repository</a></li><li><a href="llms.txt">llms.txt</a></li></ul></div></div><div class="footer-bottom">Indexer data is an observable service view, not Bitcoin consensus.</div></footer>
+  <script src="assets/site.js"></script>
+</body>
+</html>

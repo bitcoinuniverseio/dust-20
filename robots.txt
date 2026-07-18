@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://bitcoinuniverse.github.io/dust-20-docs/sitemap.xml
