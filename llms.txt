@@ -1,38 +1,50 @@
-# DUST-20 | Bitcoin Universe Protocol Reference
+# DUST-20
 
-> Human docs: index.html
-> Field reference: reference.html
-> Network: Bitcoin
-> Classification: Dyed dust UTXO fungibility experiment
+> Token units physically represented by satoshis in colored UTXOs.
 
-## Summary
+## Chain and carrier
 
-A Bitcoin-native fungibility experiment where units are represented by dyed satoshis in UTXOs, so a transfer can be a normal Bitcoin split rather than a new transfer inscription.
+- Chain: Bitcoin
+- Carrier: Inscription plus dyed UTXO
+
+## Overview
+
+DUST-20 pairs token metadata with a satoshi-denominated UTXO model. A mint output carries the exact number of sats required by the token amount, and a transfer divides that colored value across recipient and change outputs.
 
 ## State model
 
-Deploy and mint messages establish a color rule. Indexers aggregate matching UTXOs, normally at 546 sats per unit.
+The arithmetic is the protocol. Token units are not an account entry detached from Bitcoin outputs: their satoshi backing must be conserved through every spend.
 
 ## Lifecycle
 
-1. Deploy rule
-2. Mint colored UTXO
-3. Split outputs
-4. Aggregate balance
+1. Deploy the token supply and sats-per-unit rule.
+2. Mint an output whose value equals amount times unit_sats.
+3. Spend colored inputs into recipient and colored change outputs.
+4. Pay miner fees from a separate cardinal UTXO.
 
-## Operations
+## Rules
 
-- Deploy: Sets supply, sats per unit, total sat backing, and an optional per-mint sat cap.
-- Mint: Creates a colored UTXO whose value must match the declared sats.
-- Transfer: Splits or combines colored UTXOs. Fees should come from a separate non-colored input.
+- unit_sats defaults to 546 sats when omitted by the documented profile.
+- max_sats equals supply multiplied by unit_sats.
+- Mint output value must equal amt multiplied by unit_sats.
+- Transfer colored outputs must sum to the colored input amount.
+- Fees must come from a separate cardinal input, not the token backing.
+- Wallets need explicit colored UTXO tracking and change construction.
 
-## Safety
+## Field reference
 
-1. The mint output value must equal the sats declared in the message. A mismatch breaks the colored-UTXO rule.
-2. Keep miner-fee inputs separate from colored UTXOs so a fee cannot consume asset-bearing sats.
-3. Use a wallet and indexer that understand DUST-20 selection, splitting, and change behavior.
+- p (string, required: yes): Literal dust-20.
+- op (string, required: yes): deploy or mint message in the documented profile.
+- tick (string, required: yes): Token identifier.
+- supply (integer string, required: deploy): Total units.
+- unit_sats (integer string, required: no): Satoshis per unit, 546 by documented default.
+- lim_sats (integer string, required: no): Mint limit expressed in satoshi backing.
+- amt (integer string, required: mint): Units to mint, converted to output sats.
 
-## Sources
+## Primary sources
 
-- Legacy DUST-20 documentation: https://dust-20.gitbook.io/dust20
-- Universe Inscribe: https://inscribe.bitcoinuniverse.io
+- Bitcoin Universe DUST-20 reference: https://github.com/bitcoinuniverse/inscribe/blob/main/frontend/docs/dust-20/index.html
+
+## Operational caution
+
+A missing colored change output does not look like a formatting error. It changes where the token backing goes, so treat it as a transfer-critical condition.
