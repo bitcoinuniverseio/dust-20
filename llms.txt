@@ -1,6 +1,6 @@
 # DUST-20 documentation
 
-> Public docs: https://bitcoinuniverse.github.io/dust-20-docs/
+> Public docs: https://bitcoinuniverse.github.io/dust-20/
 > Source: https://github.com/bitcoinuniverse/dust-20
 > Status: Experimental compatibility field guide, updated 2026-07-18.
 
@@ -12,13 +12,13 @@ This document does not claim Bitcoin consensus or a universal DUST-20 standard. 
 
 ## Canonical public pages
 
-- Overview: https://bitcoinuniverse.github.io/dust-20-docs/
-- Protocol reference: https://bitcoinuniverse.github.io/dust-20-docs/reference.html
-- Build and verify guide: https://bitcoinuniverse.github.io/dust-20-docs/guide.html
-- Transactions: https://bitcoinuniverse.github.io/dust-20-docs/transactions.html
-- Indexer model: https://bitcoinuniverse.github.io/dust-20-docs/indexer.html
-- Safety and operations: https://bitcoinuniverse.github.io/dust-20-docs/safety.html
-- This file: https://bitcoinuniverse.github.io/dust-20-docs/llms.txt
+- Overview: https://bitcoinuniverse.github.io/dust-20/
+- Protocol reference: https://bitcoinuniverse.github.io/dust-20/reference.html
+- Build and verify guide: https://bitcoinuniverse.github.io/dust-20/guide.html
+- Transactions: https://bitcoinuniverse.github.io/dust-20/transactions.html
+- Indexer model: https://bitcoinuniverse.github.io/dust-20/indexer.html
+- Safety and operations: https://bitcoinuniverse.github.io/dust-20/safety.html
+- This file: https://bitcoinuniverse.github.io/dust-20/llms.txt
 
 ## Source hierarchy
 

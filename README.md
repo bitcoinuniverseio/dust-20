@@ -1,18 +1,18 @@
 # DUST-20 documentation
 
-The public documentation site is live at [bitcoinuniverse.github.io/dust-20-docs](https://bitcoinuniverse.github.io/dust-20-docs/).
+The public documentation site is live at [bitcoinuniverse.github.io/dust-20](https://bitcoinuniverse.github.io/dust-20/).
 
 ## Pages
 
 | Page | Purpose |
 | --- | --- |
-| [Overview](https://bitcoinuniverse.github.io/dust-20-docs/) | Scope, source hierarchy, lifecycle, and documentation map. |
-| [Protocol reference](https://bitcoinuniverse.github.io/dust-20-docs/reference.html) | Deploy and mint fields, arithmetic, validation, compatibility split, and conformance vectors. |
-| [Build and verify](https://bitcoinuniverse.github.io/dust-20-docs/guide.html) | Preflight, deploy, mint, transfer construction, and safe error behavior. |
-| [Transactions](https://bitcoinuniverse.github.io/dust-20-docs/transactions.html) | Colored UTXO splits, merges, fee separation, colored change, and unresolved rules. |
-| [Indexer](https://bitcoinuniverse.github.io/dust-20-docs/indexer.html) | Provenance, allocation records, event ordering, RBF, reorgs, and API expectations. |
-| [Safety](https://bitcoinuniverse.github.io/dust-20-docs/safety.html) | Wallet boundaries, PSBT review, threats, incidents, and release gates. |
-| [llms.txt](https://bitcoinuniverse.github.io/dust-20-docs/llms.txt) | Compact source-aware reference for retrieval systems and agents. |
+| [Overview](https://bitcoinuniverse.github.io/dust-20/) | Scope, source hierarchy, lifecycle, and documentation map. |
+| [Protocol reference](https://bitcoinuniverse.github.io/dust-20/reference.html) | Deploy and mint fields, arithmetic, validation, compatibility split, and conformance vectors. |
+| [Build and verify](https://bitcoinuniverse.github.io/dust-20/guide.html) | Preflight, deploy, mint, transfer construction, and safe error behavior. |
+| [Transactions](https://bitcoinuniverse.github.io/dust-20/transactions.html) | Colored UTXO splits, merges, fee separation, colored change, and unresolved rules. |
+| [Indexer](https://bitcoinuniverse.github.io/dust-20/indexer.html) | Provenance, allocation records, event ordering, RBF, reorgs, and API expectations. |
+| [Safety](https://bitcoinuniverse.github.io/dust-20/safety.html) | Wallet boundaries, PSBT review, threats, incidents, and release gates. |
+| [llms.txt](https://bitcoinuniverse.github.io/dust-20/llms.txt) | Compact source-aware reference for retrieval systems and agents. |
 
 ## Scope and status
 
@@ -42,6 +42,6 @@ The site is static HTML. Open `index.html` in a browser or serve this directory 
 ## Repository links
 
 - Public source: <https://github.com/bitcoinuniverse/dust-20>
-- Published site: <https://bitcoinuniverse.github.io/dust-20-docs/>
+- Published site: <https://bitcoinuniverse.github.io/dust-20/>
 - Legacy reference: <https://dust-20.gitbook.io/dust20>
 - Universe Inscribe: <https://inscribe.bitcoinuniverse.io>
