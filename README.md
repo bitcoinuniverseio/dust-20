@@ -41,7 +41,7 @@ The site is static HTML. Open `index.html` in a browser or serve this directory 
 
 ## Repository links
 
-- Public source: <https://github.com/bitcoinuniverse/dust-20-docs>
+- Public source: <https://github.com/bitcoinuniverse/dust-20>
 - Published site: <https://bitcoinuniverse.github.io/dust-20-docs/>
 - Legacy reference: <https://dust-20.gitbook.io/dust20>
 - Universe Inscribe: <https://inscribe.bitcoinuniverse.io>

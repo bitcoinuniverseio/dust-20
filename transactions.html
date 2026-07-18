@@ -3,94 +3,94 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="DUST-20 transaction construction guidance for colored UTXO transfers, splits, merges, fees, and change.">
-  <meta name="theme-color" content="#10212e">
-  <meta property="og:title" content="DUST-20 transactions">
-  <meta property="og:description" content="Colored UTXO splits, merges, fee separation, change construction, and unresolved transaction rules.">
+  <meta name="description" content="A plain-language guide to sending DUST-20 carefully, including change and Bitcoin fees.">
+  <meta name="theme-color" content="#3b2d19">
+  <meta property="og:title" content="Send DUST-20 safely">
+  <meta property="og:description" content="See how a DUST-20 send keeps the receiver, your change, and the Bitcoin fee separate.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://bitcoinuniverse.github.io/dust-20-docs/transactions.html">
   <link rel="canonical" href="https://bitcoinuniverse.github.io/dust-20-docs/transactions.html">
   <link rel="stylesheet" href="assets/site.css">
-  <title>DUST-20 transactions | Bitcoin Universe</title>
+  <title>Send DUST-20 safely | Bitcoin Universe</title>
 </head>
 <body>
   <a class="skip-link" href="#content">Skip to content</a>
   <header class="site-header">
     <div class="header-inner">
-      <a class="brand" href="index.html" aria-label="DUST-20 documentation home"><span class="brand-mark">D20</span><span>DUST-20</span></a>
+      <a class="brand" href="index.html" aria-label="DUST-20 documentation home"><span class="brand-mark">DUST</span><span>DUST-20</span></a>
       <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-navigation">Menu</button>
       <nav class="site-nav" id="site-navigation" data-site-nav aria-label="Documentation">
-        <a href="index.html">Overview</a>
-        <a href="reference.html">Protocol</a>
-        <a href="guide.html">Build</a>
-        <a href="transactions.html" aria-current="page">Transactions</a>
-        <a href="indexer.html">Indexer</a>
-        <a href="safety.html">Safety</a>
+        <a href="index.html">Start here</a>
+        <a href="guide.html">How it works</a>
+        <a href="transactions.html" aria-current="page">Send safely</a>
+        <a href="safety.html">Stay safe</a>
+        <a href="reference.html">Technical reference</a>
+        <a href="indexer.html">For builders</a>
       </nav>
-      <div class="header-links"><a href="https://github.com/bitcoinuniverse/dust-20-docs" target="_blank" rel="noreferrer">Source</a></div>
+      <div class="header-links"><a href="https://github.com/bitcoinuniverse/dust-20" target="_blank" rel="noreferrer">Source</a></div>
     </div>
   </header>
 
   <main id="content">
     <section class="shell page-hero">
       <div class="hero-copy">
-        <p class="eyebrow">Transactions</p>
-        <h1>Where the colored sats <span class="accent">actually go.</span></h1>
-        <p class="lead">DUST-20's distinct idea is that token allocation is carried by Bitcoin outputs. That makes transaction construction the critical state transition. The legacy guide shows a split, but it does not publish a full transfer standard.</p>
-        <nav class="page-nav" aria-label="On this page"><a href="#invariant">Invariant</a><a href="#split">Split</a><a href="#merge">Merge</a><a href="#fees">Fees</a><a href="#unknowns">Unknowns</a></nav>
+        <p class="eyebrow">Send DUST-20 safely</p>
+        <h1>When you send DUST-20, <span class="accent">the rest needs a home.</span></h1>
+        <p class="lead">If you send part of a larger DUST-20 amount, the amount you keep needs its own DUST-20 change output. The Bitcoin fee must be paid with separate regular bitcoin.</p>
+        <nav class="page-nav" aria-label="On this page"><a href="#invariant">The simple rule</a><a href="#split">Example</a><a href="#merge">Special cases</a><a href="#fees">Bitcoin fee</a><a href="#unknowns">Open questions</a></nav>
       </div>
     </section>
 
     <section class="section tint" id="invariant">
       <div class="shell">
-        <div class="section-heading"><div><p class="section-kicker">Conservation first</p><h2>Colored backing is not spare change.</h2></div><p>The safest compatibility rule is simple: a normal transfer conserves allocation backing. Use a separate cardinal input to fund miners and show colored change whenever the selected colored amount exceeds the amount sent.</p></div>
-        <div class="formula"><code>sum(colored inputs) = sum(recipient colored outputs) + sum(colored change)</code><small>For a normal transfer profile, the right side contains no miner fee deduction. A burn model is not defined by the legacy guide.</small></div>
+        <div class="section-heading"><div><p class="section-kicker">The simple rule</p><h2>Do not use DUST-20 backing to pay the Bitcoin fee.</h2></div><p>A safe send keeps three things separate: what the receiver gets, what you keep as DUST-20 change, and the regular bitcoin that pays the network fee.</p></div>
+        <div class="formula"><code>starting DUST-20 backing = receiver backing + your DUST-20 change</code><small>The Bitcoin network fee belongs outside this equation. The legacy guide does not define a burn model.</small></div>
       </div>
     </section>
 
     <section class="section" id="split">
       <div class="shell">
-        <div class="section-heading"><div><p class="section-kicker">Worked split</p><h2>91 units become 10 units plus an explicit 81-unit remainder.</h2></div><p>This is the documented 546-sat unit example. It shows why colored change is transaction-critical: omitting it changes where the backing ends up.</p></div>
+        <div class="section-heading"><div><p class="section-kicker">Example</p><h2>Send 10 units, keep 81 units as change.</h2></div><p>This documented example uses 546 sats for each unit. The point is simple: your remaining units need a visible place to go.</p></div>
         <div class="split-figure">
-          <div class="utxo"><span class="label">Selected colored input</span><strong>49,686 sats</strong><small>91 units * 546 sats</small></div>
+            <div class="utxo"><span class="label">You start with</span><strong>49,686 sats</strong><small>91 DUST-20 units at 546 sats each</small></div>
           <div class="split-arrow" aria-hidden="true">&rarr;</div>
           <div class="output-stack">
-            <div class="utxo"><span class="label">Recipient allocation</span><strong>5,460 sats</strong><small>10 units * 546 sats</small></div>
-            <div class="utxo"><span class="label">Colored change</span><strong>44,226 sats</strong><small>81 units * 546 sats</small></div>
+            <div class="utxo"><span class="label">Receiver gets</span><strong>5,460 sats</strong><small>10 DUST-20 units</small></div>
+            <div class="utxo"><span class="label">You keep as DUST-20 change</span><strong>44,226 sats</strong><small>81 DUST-20 units</small></div>
           </div>
         </div>
         <div class="grid three" style="margin-top:1.15rem">
-          <article class="card"><span class="card-index">SELECT</span><h3>Pick colored inputs deliberately</h3><p>Do not mix allocation UTXOs into ordinary fee selection. Capture their ticker, unit size, amount, outpoint, and source before building.</p></article>
-          <article class="card"><span class="card-index">CALCULATE</span><h3>Derive every colored output</h3><p>Compute receiver allocation and colored change from exact integer units. Every claimed colored output should be divisible by its resolved `unit_sats`.</p></article>
-          <article class="card"><span class="card-index">REVIEW</span><h3>Name outputs by role</h3><p>Show recipient allocation, colored change, seller payment, cardinal change, fee funding, and tip as different rows. A raw address list is not enough.</p></article>
+          <article class="card"><span class="card-index">1 / PICK</span><h3>Choose the DUST-20 you mean to send</h3><p>Keep the DUST-20 output separate from the regular bitcoin used for fees. A good app shows what it selected and why.</p></article>
+          <article class="card"><span class="card-index">2 / CALCULATE</span><h3>Work in whole units and sats</h3><p>Calculate the receiver amount and your change with exact whole numbers. Each DUST-20 output must follow its sats-per-unit rule.</p></article>
+          <article class="card"><span class="card-index">3 / REVIEW</span><h3>Give every output a clear job</h3><p>Show the receiver amount, your DUST-20 change, regular bitcoin change, and fee funding separately. A list of addresses is not enough.</p></article>
         </div>
       </div>
     </section>
 
     <section class="section dark" id="merge">
       <div class="shell">
-        <div class="section-heading"><div><p class="section-kicker">Merge and whole-output moves</p><h2>Do less when the protocol says less.</h2></div><p>Merge and whole-UTXO movement are natural UTXO operations, but the legacy guide does not define a universal interpretation for every input combination. A conservative client verifies compatible identity before it sums anything.</p></div>
+        <div class="section-heading"><div><p class="section-kicker">Special cases</p><h2>Keep it simple when the rules are not fully settled.</h2></div><p>The legacy guide does not define every possible merge or whole-output move. A cautious app only combines DUST-20 amounts when it can show that they use the same accepted rule.</p></div>
         <div class="grid two">
-          <article class="card dark"><span class="card-index">MERGE CANDIDATE</span><h3>Same resolved deployment only</h3><p>A conservative merge accepts colored inputs only when they resolve to the same accepted ticker and unit ratio. Its resulting colored output equals the exact sum of their backing sats.</p></article>
-          <article class="card dark"><span class="card-index">WHOLE-UTXO MOVE</span><h3>No colored change when no remainder exists</h3><p>If a user sends every selected colored sat to the recipient, no colored change is needed. The review must still show that the amount equals the entire selected allocation set.</p></article>
+          <article class="card dark"><span class="card-index">COMBINE</span><h3>Only combine matching DUST-20</h3><p>Combine inputs only when the app can show that they use the same ticker and sats-per-unit rule. The new backing must equal the exact total.</p></article>
+          <article class="card dark"><span class="card-index">SEND EVERYTHING</span><h3>No change when nothing remains</h3><p>If you send every selected DUST-20 sat to the receiver, you do not need DUST-20 change. The review should still say clearly that everything is being sent.</p></article>
         </div>
       </div>
     </section>
 
     <section class="section" id="fees">
       <div class="shell">
-        <div class="section-heading"><div><p class="section-kicker">Fee separation</p><h2>Pay the miner from cardinal sats.</h2></div><p>Network fees are ordinary Bitcoin value movement. Under the colored-UTXO model they must not be silently taken from an output that an indexer or recipient expects to represent a token allocation.</p></div>
+        <div class="section-heading"><div><p class="section-kicker">Bitcoin fee</p><h2>Pay the miner with regular bitcoin.</h2></div><p>The network fee is regular Bitcoin value. It must not be quietly taken from the sats that back your DUST-20.</p></div>
         <div class="grid two">
-          <article class="card"><span class="card-index">SAFE SHAPE</span><h3>Separate cardinal funding input</h3><p>Add enough non-colored sats to pay the fee, then send ordinary change to its intended address. The colored input and colored outputs keep their allocation arithmetic intact.</p></article>
-          <article class="card"><span class="card-index">UNSAFE SHAPE</span><h3>Fee shaved from colored backing</h3><p>A 49,686-sat colored input that produces only 49,000 sats of claimed colored outputs has a 686-sat unexplained gap. Do not call it a valid allocation transfer simply because the Bitcoin transaction confirms.</p></article>
+          <article class="card"><span class="card-index">SAFE</span><h3>Use separate fee funding</h3><p>Add enough regular bitcoin to pay the fee. The DUST-20 amount and DUST-20 change stay exactly balanced.</p></article>
+          <article class="card"><span class="card-index">UNSAFE</span><h3>Do not shave the fee from DUST-20</h3><p>If a 49,686-sat DUST-20 input creates only 49,000 sats of DUST-20 outputs, 686 sats have no clear role. Do not treat that as a safe DUST-20 send just because Bitcoin confirms it.</p></article>
         </div>
-        <div class="notice critical" style="margin-top:1.15rem"><div class="notice-mark">!</div><div><h3>A missing colored change output is a transfer-critical failure</h3><p>It is not a formatting issue. It can make the remaining backing untracked, redirected, or interpreted differently by another wallet or indexer. Reject the PSBT before signing.</p></div></div>
+        <div class="notice critical" style="margin-top:1.15rem"><div class="notice-mark">!</div><div><h3>Missing DUST-20 change is a stop sign</h3><p>This is not a small formatting issue. The DUST-20 you meant to keep may become hard to track or may be read differently by another wallet or balance service. Do not approve it.</p></div></div>
       </div>
     </section>
 
     <section class="section tint" id="unknowns">
       <div class="shell">
-        <div class="section-heading"><div><p class="section-kicker">Unresolved transaction rules</p><h2>Do not write consensus by accident.</h2></div><p>The legacy material does not define enough transfer semantics for independent clients to infer every outcome. These questions need a published indexer and wallet policy.</p></div>
+        <div class="section-heading"><div><p class="section-kicker">Open questions</p><h2>Some details are not settled yet.</h2></div><p>The legacy material does not define every transfer rule. Until tools publish a shared policy, do not guess when the result is ambiguous.</p></div>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Question</th><th>Why it matters</th><th>Safe current posture</th></tr></thead>
@@ -107,7 +107,7 @@
     </section>
   </main>
 
-  <footer class="footer"><div class="footer-inner"><div><h2>DUST-20 documentation</h2><p>Experimental transaction guidance. Last updated 2026-07-18.</p></div><div><h2>Read next</h2><ul><li><a href="reference.html">Protocol reference</a></li><li><a href="guide.html">Build and verify</a></li><li><a href="indexer.html">Indexer model</a></li></ul></div><div><h2>Sources</h2><ul><li><a href="https://dust-20.gitbook.io/dust20">Legacy guide</a></li><li><a href="https://github.com/bitcoinuniverse/dust-20-docs">Docs repository</a></li><li><a href="llms.txt">llms.txt</a></li></ul></div></div><div class="footer-bottom">Do not infer a canonical transfer protocol from an unspecified payload.</div></footer>
+  <footer class="footer"><div class="footer-inner"><div><h2>DUST-20 documentation</h2><p>Experimental transaction guidance. Last updated 2026-07-18.</p></div><div><h2>Read next</h2><ul><li><a href="reference.html">Protocol reference</a></li><li><a href="guide.html">Build and verify</a></li><li><a href="indexer.html">Indexer model</a></li></ul></div><div><h2>Sources</h2><ul><li><a href="https://dust-20.gitbook.io/dust20">Legacy guide</a></li><li><a href="https://github.com/bitcoinuniverse/dust-20">Docs repository</a></li><li><a href="llms.txt">llms.txt</a></li></ul></div></div><div class="footer-bottom">Do not infer a canonical transfer protocol from an unspecified payload.</div></footer>
   <script src="assets/site.js"></script>
 </body>
 </html>

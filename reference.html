@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="DUST-20 field reference, arithmetic rules, compatibility boundaries, and conformance examples.">
-  <meta name="theme-color" content="#10212e">
+  <meta name="description" content="Technical DUST-20 field reference with exact arithmetic and clear compatibility notes.">
+  <meta name="theme-color" content="#3b2d19">
   <meta property="og:title" content="DUST-20 protocol reference">
-  <meta property="og:description" content="Fields, exact satoshi arithmetic, compatibility boundaries, and conformance examples for DUST-20.">
+  <meta property="og:description" content="Technical fields, exact satoshi arithmetic, and compatibility notes for DUST-20.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://bitcoinuniverse.github.io/dust-20-docs/reference.html">
   <link rel="canonical" href="https://bitcoinuniverse.github.io/dust-20-docs/reference.html">
@@ -17,27 +17,27 @@
   <a class="skip-link" href="#content">Skip to content</a>
   <header class="site-header">
     <div class="header-inner">
-      <a class="brand" href="index.html" aria-label="DUST-20 documentation home"><span class="brand-mark">D20</span><span>DUST-20</span></a>
+      <a class="brand" href="index.html" aria-label="DUST-20 documentation home"><span class="brand-mark">DUST</span><span>DUST-20</span></a>
       <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-navigation">Menu</button>
       <nav class="site-nav" id="site-navigation" data-site-nav aria-label="Documentation">
-        <a href="index.html">Overview</a>
-        <a href="reference.html" aria-current="page">Protocol</a>
-        <a href="guide.html">Build</a>
-        <a href="transactions.html">Transactions</a>
-        <a href="indexer.html">Indexer</a>
-        <a href="safety.html">Safety</a>
+        <a href="index.html">Start here</a>
+        <a href="guide.html">How it works</a>
+        <a href="transactions.html">Send safely</a>
+        <a href="safety.html">Stay safe</a>
+        <a href="reference.html" aria-current="page">Technical reference</a>
+        <a href="indexer.html">For builders</a>
       </nav>
-      <div class="header-links"><a href="https://github.com/bitcoinuniverse/dust-20-docs" target="_blank" rel="noreferrer">Source</a></div>
+      <div class="header-links"><a href="https://github.com/bitcoinuniverse/dust-20" target="_blank" rel="noreferrer">Source</a></div>
     </div>
   </header>
 
   <main id="content">
     <section class="shell page-hero">
       <div class="hero-copy">
-        <p class="eyebrow">Protocol reference</p>
-        <h1>Fields that <span class="accent">change value.</span></h1>
-        <p class="lead">This is a compatibility profile for the DUST-20 material published in the legacy guide. It makes the visible arithmetic explicit, flags the current Universe implementation split, and refuses to invent a consensus transfer format where none has been published.</p>
-        <nav class="page-nav" aria-label="On this page"><a href="#profile">Profile</a><a href="#deploy">Deploy</a><a href="#mint">Mint</a><a href="#fields">Fields</a><a href="#validation">Validation</a><a href="#vectors">Vectors</a></nav>
+        <p class="eyebrow">Technical reference</p>
+        <h1>Technical field <span class="accent">reference.</span></h1>
+        <p class="lead">Most people do not need this page to send or receive DUST-20. Start with How it works and Send safely first. This page keeps the exact field names and arithmetic visible for technical readers.</p>
+        <nav class="page-nav" aria-label="On this page"><a href="#profile">What this means</a><a href="#deploy">Set the rule</a><a href="#mint">Create units</a><a href="#fields">Fields</a><a href="#validation">Checks</a><a href="#vectors">Examples</a></nav>
       </div>
     </section>
 
@@ -46,8 +46,8 @@
         <div class="notice">
           <div class="notice-mark">i</div>
           <div>
-            <h3>Read the profile before copying a payload</h3>
-            <p>The legacy guide presents `p`, `op`, `tick`, `supply`, `unit_sats`, and `max_sats` for deploy, with optional `lim_sats`. It presents `p`, `op`, `tick`, `amt`, and `sats` for mint. It also requires the mint inscription output value to equal `sats`. Treat 546 sats as a documented common unit, not an implicit protocol default.</p>
+            <h3>For technical readers</h3>
+            <p>In simple terms, a deploy sets how much Bitcoin backs one DUST-20 unit, and a mint creates an amount that follows that rule. The exact fields below come from the legacy guide. Treat 546 sats as a documented common example, not a hidden default.</p>
           </div>
         </div>
       </div>
@@ -56,8 +56,8 @@
     <section class="section" id="deploy">
       <div class="shell">
         <div class="section-heading">
-          <div><p class="section-kicker">Deploy payload</p><h2>Declare the ratio and total backing together.</h2></div>
-          <p>`max_sats` is derived, not a second independent supply choice. A compatible parser should reject a mismatch instead of silently trusting one of the two values.</p>
+          <div><p class="section-kicker">Set the rule</p><h2>State the sats-per-unit rule and total backing together.</h2></div>
+          <p>In simple terms, the total backing is not a second guess. It must equal the supply multiplied by the sats that back each unit.</p>
         </div>
         <div class="grid two">
           <article class="card packet">
@@ -170,7 +170,7 @@
     </section>
   </main>
 
-  <footer class="footer"><div class="footer-inner"><div><h2>DUST-20 documentation</h2><p>Experimental compatibility reference. Last updated 2026-07-18.</p></div><div><h2>Read next</h2><ul><li><a href="guide.html">Build and verify</a></li><li><a href="transactions.html">Transactions</a></li><li><a href="indexer.html">Indexer model</a></li></ul></div><div><h2>Sources</h2><ul><li><a href="https://dust-20.gitbook.io/dust20">Legacy guide</a></li><li><a href="https://github.com/bitcoinuniverse/dust-20-docs">Docs repository</a></li><li><a href="llms.txt">llms.txt</a></li></ul></div></div><div class="footer-bottom">Verify exact integer arithmetic and transaction outputs before signing.</div></footer>
+  <footer class="footer"><div class="footer-inner"><div><h2>DUST-20 documentation</h2><p>Experimental compatibility reference. Last updated 2026-07-18.</p></div><div><h2>Read next</h2><ul><li><a href="guide.html">Build and verify</a></li><li><a href="transactions.html">Transactions</a></li><li><a href="indexer.html">Indexer model</a></li></ul></div><div><h2>Sources</h2><ul><li><a href="https://dust-20.gitbook.io/dust20">Legacy guide</a></li><li><a href="https://github.com/bitcoinuniverse/dust-20">Docs repository</a></li><li><a href="llms.txt">llms.txt</a></li></ul></div></div><div class="footer-bottom">Verify exact integer arithmetic and transaction outputs before signing.</div></footer>
   <script src="assets/site.js"></script>
 </body>
 </html>

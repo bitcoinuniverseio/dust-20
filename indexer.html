@@ -3,47 +3,47 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="DUST-20 indexer guidance for source confidence, allocation state, event ordering, reorgs, replacement transactions, and APIs.">
-  <meta name="theme-color" content="#10212e">
-  <meta property="og:title" content="DUST-20 indexer model">
-  <meta property="og:description" content="Source confidence, allocation state, event ordering, reorgs, replacement transactions, and API boundaries.">
+  <meta name="description" content="DUST-20 guidance for app and indexer builders who show balance information to users.">
+  <meta name="theme-color" content="#3b2d19">
+  <meta property="og:title" content="DUST-20 for app and indexer builders">
+  <meta property="og:description" content="How DUST-20 balance services can explain what they are showing and when it may change.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://bitcoinuniverse.github.io/dust-20-docs/indexer.html">
   <link rel="canonical" href="https://bitcoinuniverse.github.io/dust-20-docs/indexer.html">
   <link rel="stylesheet" href="assets/site.css">
-  <title>DUST-20 indexer model | Bitcoin Universe</title>
+  <title>DUST-20 for app and indexer builders | Bitcoin Universe</title>
 </head>
 <body>
   <a class="skip-link" href="#content">Skip to content</a>
   <header class="site-header">
     <div class="header-inner">
-      <a class="brand" href="index.html" aria-label="DUST-20 documentation home"><span class="brand-mark">D20</span><span>DUST-20</span></a>
+      <a class="brand" href="index.html" aria-label="DUST-20 documentation home"><span class="brand-mark">DUST</span><span>DUST-20</span></a>
       <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-navigation">Menu</button>
       <nav class="site-nav" id="site-navigation" data-site-nav aria-label="Documentation">
-        <a href="index.html">Overview</a>
-        <a href="reference.html">Protocol</a>
-        <a href="guide.html">Build</a>
-        <a href="transactions.html">Transactions</a>
-        <a href="indexer.html" aria-current="page">Indexer</a>
-        <a href="safety.html">Safety</a>
+        <a href="index.html">Start here</a>
+        <a href="guide.html">How it works</a>
+        <a href="transactions.html">Send safely</a>
+        <a href="safety.html">Stay safe</a>
+        <a href="reference.html">Technical reference</a>
+        <a href="indexer.html" aria-current="page">For builders</a>
       </nav>
-      <div class="header-links"><a href="https://github.com/bitcoinuniverse/dust-20-docs" target="_blank" rel="noreferrer">Source</a></div>
+      <div class="header-links"><a href="https://github.com/bitcoinuniverse/dust-20" target="_blank" rel="noreferrer">Source</a></div>
     </div>
   </header>
 
   <main id="content">
     <section class="shell page-hero">
       <div class="hero-copy">
-        <p class="eyebrow">Indexer model</p>
-        <h1>Balances are a <span class="accent">derived view.</span></h1>
-        <p class="lead">An indexer is essential infrastructure for DUST-20, but it is not Bitcoin consensus. It observes transaction data, applies an interpretation, and returns a view that must retain provenance, freshness, and the ability to be rolled back.</p>
-        <nav class="page-nav" aria-label="On this page"><a href="#boundaries">Boundaries</a><a href="#record">Allocation record</a><a href="#lifecycle">Lifecycle</a><a href="#reorgs">Reorgs and RBF</a><a href="#api">API profile</a></nav>
+        <p class="eyebrow">For app and indexer builders</p>
+        <h1>A balance screen is a helpful <span class="accent">view, not the final authority.</span></h1>
+        <p class="lead">Most people can skip this page. It is for people building DUST-20 tools. A balance service reads Bitcoin activity, applies rules, and should clearly say where its number came from and when it might change.</p>
+        <nav class="page-nav" aria-label="On this page"><a href="#boundaries">Sources</a><a href="#record">Balance records</a><a href="#lifecycle">Updates</a><a href="#reorgs">Chain changes</a><a href="#api">API profile</a></nav>
       </div>
     </section>
 
     <section class="section tint" id="boundaries">
       <div class="shell">
-        <div class="section-heading"><div><p class="section-kicker">Source boundaries</p><h2>Name the source before displaying a number.</h2></div><p>A value can be on-chain observed, indexer-derived, marketplace-derived, or application-cached. These categories are useful for different jobs and unsafe when silently substituted for one another.</p></div>
+        <div class="section-heading"><div><p class="section-kicker">Sources</p><h2>Tell people where a balance number came from.</h2></div><p>A number can come from Bitcoin itself, a balance service, a marketplace, or a cached app response. These are useful for different jobs and should never be silently swapped.</p></div>
         <div class="grid four">
           <article class="card"><span class="card-index">CHAIN</span><h3>Transaction and outpoint</h3><p>The durable Bitcoin objects. An indexer must preserve the transaction ID, output index, value, confirmation state, and chain position it observed.</p></article>
           <article class="card"><span class="card-index">INDEXER</span><h3>Allocation interpretation</h3><p>The indexer's determination that a particular outpoint represents a ticker and number of units under its rules.</p></article>
@@ -121,7 +121,7 @@
     </section>
   </main>
 
-  <footer class="footer"><div class="footer-inner"><div><h2>DUST-20 documentation</h2><p>Experimental indexer guidance. Last updated 2026-07-18.</p></div><div><h2>Read next</h2><ul><li><a href="reference.html">Protocol reference</a></li><li><a href="transactions.html">Transactions</a></li><li><a href="safety.html">Safety and operations</a></li></ul></div><div><h2>Sources</h2><ul><li><a href="https://dust-20.gitbook.io/dust20">Legacy guide</a></li><li><a href="https://github.com/bitcoinuniverse/dust-20-docs">Docs repository</a></li><li><a href="llms.txt">llms.txt</a></li></ul></div></div><div class="footer-bottom">Indexer data is an observable service view, not Bitcoin consensus.</div></footer>
+  <footer class="footer"><div class="footer-inner"><div><h2>DUST-20 documentation</h2><p>Experimental indexer guidance. Last updated 2026-07-18.</p></div><div><h2>Read next</h2><ul><li><a href="reference.html">Protocol reference</a></li><li><a href="transactions.html">Transactions</a></li><li><a href="safety.html">Safety and operations</a></li></ul></div><div><h2>Sources</h2><ul><li><a href="https://dust-20.gitbook.io/dust20">Legacy guide</a></li><li><a href="https://github.com/bitcoinuniverse/dust-20">Docs repository</a></li><li><a href="llms.txt">llms.txt</a></li></ul></div></div><div class="footer-bottom">Indexer data is an observable service view, not Bitcoin consensus.</div></footer>
   <script src="assets/site.js"></script>
 </body>
 </html>

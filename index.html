@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="DUST-20 protocol documentation: a careful field guide to satoshi-backed colored UTXOs on Bitcoin.">
-  <meta name="theme-color" content="#10212e">
+  <meta name="description" content="A friendly, safety-first guide to DUST-20 on Bitcoin.">
+  <meta name="theme-color" content="#3b2d19">
   <meta property="og:title" content="DUST-20 documentation">
-  <meta property="og:description" content="A careful field guide to DUST-20 deploys, mints, colored UTXOs, transfers, indexers, and safety boundaries.">
+  <meta property="og:description" content="A friendly, safety-first guide to understanding and using experimental DUST-20 on Bitcoin.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://bitcoinuniverse.github.io/dust-20-docs/">
   <link rel="canonical" href="https://bitcoinuniverse.github.io/dust-20-docs/">
@@ -17,37 +17,44 @@
   <a class="skip-link" href="#content">Skip to content</a>
   <header class="site-header">
     <div class="header-inner">
-      <a class="brand" href="index.html" aria-label="DUST-20 documentation home"><span class="brand-mark">D20</span><span>DUST-20</span></a>
+      <a class="brand" href="index.html" aria-label="DUST-20 documentation home"><span class="brand-mark">DUST</span><span>DUST-20</span></a>
       <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-navigation">Menu</button>
       <nav class="site-nav" id="site-navigation" data-site-nav aria-label="Documentation">
-        <a href="index.html" aria-current="page">Overview</a>
-        <a href="reference.html">Protocol</a>
-        <a href="guide.html">Build</a>
-        <a href="transactions.html">Transactions</a>
-        <a href="indexer.html">Indexer</a>
-        <a href="safety.html">Safety</a>
+        <a href="index.html" aria-current="page">Start here</a>
+        <a href="guide.html">How it works</a>
+        <a href="transactions.html">Send safely</a>
+        <a href="safety.html">Stay safe</a>
+        <a href="reference.html">Technical reference</a>
+        <a href="indexer.html">For builders</a>
       </nav>
-      <div class="header-links"><a href="https://github.com/bitcoinuniverse/dust-20-docs" target="_blank" rel="noreferrer">Source</a></div>
+      <div class="header-links"><a href="https://github.com/bitcoinuniverse/dust-20" target="_blank" rel="noreferrer">Source</a></div>
     </div>
   </header>
 
   <main id="content">
     <section class="shell hero">
       <div>
-        <p class="eyebrow">Bitcoin UTXO field guide</p>
-        <h1>DUST-20, <span class="accent">made legible.</span></h1>
-        <p class="lead">DUST-20 is an experimental fungibility model where token units are represented by satoshis in colored UTXOs. This site explains what the legacy guide says, what Universe tooling currently emits, and what remains unresolved.</p>
+        <p class="eyebrow">A simple guide to DUST-20 on Bitcoin</p>
+        <h1>Understand DUST-20 <span class="accent">before you send.</span></h1>
+        <p class="lead">DUST-20 is an experimental way to represent tokens on Bitcoin. Each unit is tied to a fixed number of satoshis, the smallest parts of bitcoin. Start small, check every transaction, and only approve what you understand.</p>
         <div class="hero-actions">
-          <a class="button" href="reference.html">Read the protocol profile <span aria-hidden="true">&rarr;</span></a>
-          <a class="button secondary" href="guide.html">Build and verify safely</a>
+          <a class="button" href="#basics">Start with the basics <span aria-hidden="true">&rarr;</span></a>
+          <a class="button secondary" href="transactions.html">See a safe send</a>
         </div>
       </div>
-      <div class="hero-figure" aria-label="DUST-20 state model illustration">
-        <div class="orbit-core">D20<small>sats in state</small></div>
-        <div class="orbit-note one"><b>Deploy</b>Declare units and satoshi backing.</div>
-        <div class="orbit-note two"><b>Mint</b>Bind amount to an exact output value.</div>
-        <div class="orbit-note three"><b>Transfer</b>Preserve colored value and explicit change.</div>
-      </div>
+      <figure class="dust-lifecycle" aria-labelledby="lifecycle-title">
+        <div class="lifecycle-heading">
+          <span class="lifecycle-name">DUST-20</span>
+          <div><strong id="lifecycle-title">The simple DUST-20 journey</strong><span>Token units backed by satoshis</span></div>
+        </div>
+        <ol class="lifecycle-steps">
+          <li class="lifecycle-step start"><span class="lifecycle-number">1</span><span class="lifecycle-kind">Deploy</span><h3>Set the rules</h3><p>Choose a name, a supply, and the bitcoin backing for one unit.</p></li>
+          <li class="lifecycle-step"><span class="lifecycle-number">2</span><span class="lifecycle-kind">Mint</span><h3>Create units</h3><p>Create an amount where the units and satoshi value match exactly.</p></li>
+          <li class="lifecycle-step"><span class="lifecycle-number">3</span><span class="lifecycle-kind">Transfer</span><h3>Send units</h3><p>Send DUST-20 to someone. Put any remaining units into change.</p></li>
+          <li class="lifecycle-step check"><span class="lifecycle-number">4</span><span class="lifecycle-kind">Confirm</span><h3>Check the result</h3><p>After confirmation, check the recipient, your change, and the shown balance.</p></li>
+        </ol>
+        <figcaption>A satoshi is the smallest piece of bitcoin. DUST-20 uses specific Bitcoin outputs to carry the backing.</figcaption>
+      </figure>
     </section>
 
     <section class="section tint">
@@ -55,26 +62,27 @@
         <div class="notice critical">
           <div class="notice-mark">!</div>
           <div>
-            <h3>Experimental profile, not Bitcoin consensus</h3>
-            <p>DUST-20 is an experiment. A valid-looking JSON payload, wallet screen, marketplace listing, or indexer row does not prove a safe allocation transition. Review the transaction outputs and use only low-value, controlled tests until the unresolved rules are settled.</p>
+            <h3>DUST-20 is still experimental</h3>
+            <p>There is no single final DUST-20 rulebook yet. A Bitcoin transaction can confirm while different DUST-20 tools show it differently. Start with a small test, wait for confirmation, and never send more than you can afford to lose.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="basics">
       <div class="shell">
         <div class="section-heading">
           <div>
-            <p class="section-kicker">One model, three layers</p>
-            <h2>Know which statement you are relying on.</h2>
+            <p class="section-kicker">Start here</p>
+            <h2>Four things to know before you approve.</h2>
           </div>
-          <p>The old guide, the live application, and a robust indexer do not yet describe one fully settled contract. This documentation keeps their boundaries visible.</p>
+          <p>You do not need to learn every technical word. These four checks help you make a safer decision when DUST-20 appears in a wallet or app.</p>
         </div>
-        <div class="grid three">
-          <article class="card"><span class="card-index">01 / LEGACY GUIDE</span><h3>Documented payload facts</h3><p>The legacy DUST-20 guide documents deploy and mint fields, the satoshi arithmetic, and a colored-change transfer example. It does not define every transaction or indexer edge case.</p></article>
-          <article class="card"><span class="card-index">02 / UNIVERSE PROFILE</span><h3>Implementation behavior</h3><p>Universe Inscribe currently constructs deploy, mint, and transfer previews. Its payload choices can differ from the legacy example, so they are identified as implementation behavior, not silent consensus.</p></article>
-          <article class="card"><span class="card-index">03 / OPEN RULES</span><h3>What must not be guessed</h3><p>Duplicate tickers, output ordering, multiple colored inputs, RBF, reorgs, accidental burns, and indexer disagreement need explicit policy before balances or automation can be treated as dependable.</p></article>
+        <div class="grid four">
+          <article class="card"><span class="card-index">01 / SATS</span><h3>Each unit has bitcoin backing</h3><p>A satoshi, or sat, is the smallest part of bitcoin. DUST-20 uses sats as the backing for token units.</p></article>
+          <article class="card"><span class="card-index">02 / OUTPUT</span><h3>Your DUST-20 has a location</h3><p>DUST-20 is attached to a specific piece of a Bitcoin transaction, called an output. That location matters when you send it.</p></article>
+          <article class="card"><span class="card-index">03 / CHANGE</span><h3>Keep what you do not send</h3><p>If you send part of a larger DUST-20 amount, the rest needs its own change output back to you.</p></article>
+          <article class="card"><span class="card-index">04 / FEE</span><h3>Pay fees with regular bitcoin</h3><p>The Bitcoin network fee should come from separate regular bitcoin, not from the sats that back your DUST-20.</p></article>
         </div>
       </div>
     </section>
@@ -83,16 +91,16 @@
       <div class="shell">
         <div class="section-heading">
           <div>
-            <p class="section-kicker">The lifecycle</p>
-            <h2>Metadata starts the story. Outputs carry it forward.</h2>
+            <p class="section-kicker">How it works</p>
+            <h2>Set a rule, create units, then move them carefully.</h2>
           </div>
-          <p>Every step should be observable to a wallet, a user, and an indexer. The wallet must never let a fee quietly consume the satoshi backing that represents a token allocation.</p>
+          <p>The technical details live on the later pages. This is the everyday version: keep the token amount, its Bitcoin backing, and the network fee clearly separated.</p>
         </div>
         <div class="steps">
-          <article class="step"><h3>Deploy</h3><p>Declare a ticker, supply, explicit unit size, and a maximum backing calculation in the legacy profile.</p></article>
-          <article class="step"><h3>Mint</h3><p>Inscribe an amount whose declared `sats` and actual inscription output value both equal the exact allocation.</p></article>
-          <article class="step"><h3>Transfer</h3><p>Spend colored inputs to recipient allocation outputs and an explicit colored change output when a remainder exists.</p></article>
-          <article class="step"><h3>Reconcile</h3><p>Confirm, then compare on-chain outputs with the indexer. Treat a mismatch as an investigation, not a cosmetic display problem.</p></article>
+          <article class="step"><h3>Set the rule</h3><p>A deploy describes how many sats back one unit and how much can exist.</p></article>
+          <article class="step"><h3>Create an amount</h3><p>A mint creates units whose stated backing matches the actual Bitcoin output.</p></article>
+          <article class="step"><h3>Send with change</h3><p>A partial send needs a recipient output and a separate DUST-20 change output for the rest.</p></article>
+          <article class="step"><h3>Check after confirmation</h3><p>Make sure the recipient, your remaining amount, and the balance view all agree.</p></article>
         </div>
       </div>
     </section>
@@ -101,17 +109,17 @@
       <div class="shell">
         <div class="section-heading">
           <div>
-            <p class="section-kicker">Documentation map</p>
-            <h2>Read the page that matches the decision in front of you.</h2>
+            <p class="section-kicker">Choose your path</p>
+            <h2>Start with the page that matches what you need to do.</h2>
           </div>
-          <p>Each page distinguishes protocol facts from cautious integration guidance. Start with the reference before creating a deploy or mint, and with safety before opening a wallet.</p>
+          <p>The first four pages use everyday language. The technical reference and builder page are there when you need the deeper details.</p>
         </div>
         <div class="grid three">
-          <a class="source-link" href="reference.html"><span><b>Protocol reference</b>Fields, arithmetic, compatibility split, validation, and conformance vectors.</span><em>Open</em></a>
-          <a class="source-link" href="guide.html"><span><b>Build and verify</b>Preflight, deploy, mint, transfer review, and recovery-oriented error handling.</span><em>Open</em></a>
-          <a class="source-link" href="transactions.html"><span><b>Transactions</b>Worked split and merge examples, colored change, fee separation, and invalid patterns.</span><em>Open</em></a>
-          <a class="source-link" href="indexer.html"><span><b>Indexer model</b>Event ordering, state records, source confidence, reorgs, RBF, and API expectations.</span><em>Open</em></a>
-          <a class="source-link" href="safety.html"><span><b>Safety and operations</b>PSBT review, wallet boundaries, red flags, incident response, and release gates.</span><em>Open</em></a>
+          <a class="source-link" href="guide.html"><span><b>How DUST-20 works</b>A plain-language walkthrough of the rule, amount, send, and confirmation steps.</span><em>Read</em></a>
+          <a class="source-link" href="transactions.html"><span><b>Send DUST-20 safely</b>See why a partial send needs change and why fees use regular bitcoin.</span><em>Read</em></a>
+          <a class="source-link" href="safety.html"><span><b>Stay safe</b>Know what to check before your wallet asks you to approve.</span><em>Read</em></a>
+          <a class="source-link" href="reference.html"><span><b>Technical reference</b>Exact field names, arithmetic, examples, and compatibility notes.</span><em>Technical</em></a>
+          <a class="source-link" href="indexer.html"><span><b>For app and indexer builders</b>How balance services can explain what they are showing.</span><em>Technical</em></a>
           <a class="source-link" href="llms.txt"><span><b>LLM-readable index</b>A compact, source-aware summary for retrieval systems and agents.</span><em>Open</em></a>
         </div>
       </div>
@@ -127,7 +135,7 @@
           <p>The previously linked source path was not a published DUST-20 documentation page. This GitHub Pages site and its repository are now the public canonical entry points.</p>
         </div>
         <div class="source-list">
-          <a class="source-link" href="https://github.com/bitcoinuniverse/dust-20-docs" target="_blank" rel="noreferrer"><span><b>Public documentation repository</b>Versioned source for this Pages site.</span><em>GitHub</em></a>
+          <a class="source-link" href="https://github.com/bitcoinuniverse/dust-20" target="_blank" rel="noreferrer"><span><b>Public documentation repository</b>Versioned source for this Pages site.</span><em>GitHub</em></a>
           <a class="source-link" href="https://dust-20.gitbook.io/dust20" target="_blank" rel="noreferrer"><span><b>Legacy DUST-20 guide</b>Original deploy, mint, and colored-UTXO motivation.</span><em>Legacy</em></a>
           <a class="source-link" href="https://inscribe.bitcoinuniverse.io" target="_blank" rel="noreferrer"><span><b>Universe Inscribe</b>Application surface. Its behavior is implementation-specific and subject to change.</span><em>App</em></a>
         </div>
@@ -139,7 +147,7 @@
     <div class="footer-inner">
       <div><h2>DUST-20 documentation</h2><p>Last updated 2026-07-18. A source-aware field guide for an experimental Bitcoin UTXO model.</p></div>
       <div><h2>Read next</h2><ul><li><a href="reference.html">Protocol reference</a></li><li><a href="guide.html">Build and verify</a></li><li><a href="safety.html">Safety and operations</a></li></ul></div>
-      <div><h2>Public links</h2><ul><li><a href="https://bitcoinuniverse.github.io/dust-20-docs/">Documentation home</a></li><li><a href="https://github.com/bitcoinuniverse/dust-20-docs">GitHub source</a></li><li><a href="llms.txt">llms.txt</a></li></ul></div>
+      <div><h2>Public links</h2><ul><li><a href="https://bitcoinuniverse.github.io/dust-20-docs/">Documentation home</a></li><li><a href="https://github.com/bitcoinuniverse/dust-20">GitHub source</a></li><li><a href="llms.txt">llms.txt</a></li></ul></div>
     </div>
     <div class="footer-bottom">Experimental documentation. Verify network, transaction outputs, and source freshness before signing.</div>
   </footer>

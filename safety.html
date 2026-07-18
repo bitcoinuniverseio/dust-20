@@ -3,41 +3,41 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="DUST-20 safety guidance for wallets, PSBT review, private-key boundaries, indexer risk, and operational release gates.">
-  <meta name="theme-color" content="#10212e">
-  <meta property="og:title" content="DUST-20 safety and operations">
-  <meta property="og:description" content="Wallet boundaries, PSBT review, indexer risk, incident response, and release gates for DUST-20.">
+  <meta name="description" content="A plain-language safety guide for checking a DUST-20 transaction before you sign it.">
+  <meta name="theme-color" content="#3b2d19">
+  <meta property="og:title" content="Stay safe with DUST-20">
+  <meta property="og:description" content="Know what to check before approving an experimental DUST-20 transaction.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://bitcoinuniverse.github.io/dust-20-docs/safety.html">
   <link rel="canonical" href="https://bitcoinuniverse.github.io/dust-20-docs/safety.html">
   <link rel="stylesheet" href="assets/site.css">
-  <title>DUST-20 safety and operations | Bitcoin Universe</title>
+  <title>Stay safe with DUST-20 | Bitcoin Universe</title>
 </head>
 <body>
   <a class="skip-link" href="#content">Skip to content</a>
   <header class="site-header">
     <div class="header-inner">
-      <a class="brand" href="index.html" aria-label="DUST-20 documentation home"><span class="brand-mark">D20</span><span>DUST-20</span></a>
+      <a class="brand" href="index.html" aria-label="DUST-20 documentation home"><span class="brand-mark">DUST</span><span>DUST-20</span></a>
       <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-navigation">Menu</button>
       <nav class="site-nav" id="site-navigation" data-site-nav aria-label="Documentation">
-        <a href="index.html">Overview</a>
-        <a href="reference.html">Protocol</a>
-        <a href="guide.html">Build</a>
-        <a href="transactions.html">Transactions</a>
-        <a href="indexer.html">Indexer</a>
-        <a href="safety.html" aria-current="page">Safety</a>
+        <a href="index.html">Start here</a>
+        <a href="guide.html">How it works</a>
+        <a href="transactions.html">Send safely</a>
+        <a href="safety.html" aria-current="page">Stay safe</a>
+        <a href="reference.html">Technical reference</a>
+        <a href="indexer.html">For builders</a>
       </nav>
-      <div class="header-links"><a href="https://github.com/bitcoinuniverse/dust-20-docs" target="_blank" rel="noreferrer">Source</a></div>
+      <div class="header-links"><a href="https://github.com/bitcoinuniverse/dust-20" target="_blank" rel="noreferrer">Source</a></div>
     </div>
   </header>
 
   <main id="content">
     <section class="shell page-hero">
       <div class="hero-copy">
-        <p class="eyebrow">Safety and operations</p>
-        <h1>Make the irreversible step <span class="accent">boring.</span></h1>
-        <p class="lead">DUST-20's colored-UTXO model makes output review central to user safety. The transaction can confirm while the intended allocation is wrong. Good tooling prevents that mismatch before a wallet signature is requested.</p>
-        <nav class="page-nav" aria-label="On this page"><a href="#boundaries">Boundaries</a><a href="#psbt">PSBT review</a><a href="#threats">Threats</a><a href="#incident">Incidents</a><a href="#gates">Release gates</a></nav>
+        <p class="eyebrow">Stay safe with DUST-20</p>
+        <h1>Know what you are approving <span class="accent">before you sign.</span></h1>
+        <p class="lead">Bitcoin transactions usually cannot be undone. Only approve when you recognize the network, receiver, DUST-20 amount, DUST-20 change, and Bitcoin fee.</p>
+        <nav class="page-nav" aria-label="On this page"><a href="#boundaries">Never share secrets</a><a href="#psbt">Before you approve</a><a href="#threats">For builders</a><a href="#incident">If something goes wrong</a><a href="#gates">Release checks</a></nav>
       </div>
     </section>
 
@@ -45,30 +45,30 @@
       <div class="shell">
         <div class="notice critical">
           <div class="notice-mark">!</div>
-          <div><h3>Never ask for a seed phrase or wallet private key</h3><p>A wallet should sign a fully reviewed PSBT locally. If a product generates, stores, uploads, or transmits a temporary private key, it has crossed a major custody boundary and must be treated as test-only until independently redesigned and reviewed.</p></div>
+          <div><h3>Never share your recovery phrase or private key</h3><p>Your wallet should approve a reviewed transaction on your device. No DUST-20 app needs your recovery phrase or private key. Leave immediately if a site asks for either one.</p></div>
         </div>
-        <div class="section-heading" style="margin-top:2.5rem"><div><p class="section-kicker">Trust boundaries</p><h2>Every boundary needs a visible control.</h2></div><p>Wallets, local builders, remote indexers, listings, and Bitcoin nodes can disagree or fail. The UI should make both the data source and the stopping rule clear.</p></div>
+        <div class="section-heading" style="margin-top:2.5rem"><div><p class="section-kicker">Never share secrets</p><h2>Keep control of your wallet.</h2></div><p>Your wallet, the DUST-20 app, and the balance service each have different jobs. A safe app makes it clear where information comes from and when you should stop.</p></div>
         <div class="grid three">
-          <article class="card"><span class="card-index">BROWSER TO WALLET</span><h3>Sign only reviewed outputs</h3><p>Render an app-side summary of inputs, output roles, values, network, and fee. The wallet confirmation screen should corroborate, not replace, that review.</p></article>
-          <article class="card"><span class="card-index">APP TO BUILDER</span><h3>Construct, do not custody</h3><p>A server may prepare a PSBT, but it must never need the user's seed phrase or signing key. Validate request values and redact logs.</p></article>
-          <article class="card"><span class="card-index">APP TO INDEXER</span><h3>Observe, do not blindly trust</h3><p>Record source and freshness. A missing, malformed, stale, or contradictory response blocks a risky action instead of becoming a zero balance.</p></article>
+          <article class="card"><span class="card-index">APP TO WALLET</span><h3>Approve only what you reviewed</h3><p>The app should show the receiver, DUST-20 amount, DUST-20 change, network, and fee before your wallet appears. The wallet screen is a second check, not the first one.</p></article>
+          <article class="card"><span class="card-index">APP TO YOU</span><h3>Keep your keys private</h3><p>An app may prepare an unsigned transaction, but it should never need your recovery phrase or private key to do that.</p></article>
+          <article class="card"><span class="card-index">BALANCE SERVICE</span><h3>Use balance data carefully</h3><p>A balance service reads Bitcoin activity and gives an interpretation. If it is missing, old, or disagrees with another service, stop before a risky send.</p></article>
         </div>
       </div>
     </section>
 
     <section class="section" id="psbt">
       <div class="shell">
-        <div class="section-heading"><div><p class="section-kicker">PSBT review</p><h2>Show the user the allocation map.</h2></div><p>Before opening the wallet, present a stable review panel. It should permit a user or support operator to compare the intended outcome with the decoded PSBT later.</p></div>
+        <div class="section-heading"><div><p class="section-kicker">Before you approve</p><h2>See where every amount is going.</h2></div><p>A PSBT is simply the unsigned transaction your wallet shows before approval. Before you open the wallet, a good app shows a clear summary you can compare with the wallet screen.</p></div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Review field</th><th>Why it matters</th><th>Expected behavior</th></tr></thead>
+            <thead><tr><th>Check</th><th>Why it matters</th><th>What a safe app should show</th></tr></thead>
             <tbody>
-              <tr><td>Network and wallet</td><td>A valid address can still be wrong for the current context.</td><td>Block network mismatch and label payment versus ordinal or receiver address roles.</td></tr>
-              <tr><td>Inputs</td><td>Colored allocation inputs must not be confused with fee funding.</td><td>List outpoint, value, ticker, allocation units, and input role.</td></tr>
-              <tr><td>Recipient outputs</td><td>The user needs to see where allocation backing lands.</td><td>List address, sats, units, and recipient role for every colored output.</td></tr>
-              <tr><td>Colored change</td><td>A missing remainder can change the asset result.</td><td>Require explicit colored change when selected allocation exceeds recipient allocation.</td></tr>
-              <tr><td>Cardinal fee and change</td><td>Miner fee must not consume token backing.</td><td>Show fee funding input, estimated fee, and ordinary change as separate roles.</td></tr>
-              <tr><td>Source freshness</td><td>Selected output or listing may have changed since rendering.</td><td>Show indexer source and retrieval time, then revalidate near PSBT construction.</td></tr>
+              <tr><td>Network and wallet</td><td>A real Bitcoin address can still be wrong for the network you are using.</td><td>Show the network and block a mismatch. Label the receiver address clearly.</td></tr>
+              <tr><td>What is being used</td><td>DUST-20 backing must not be mixed up with fee money.</td><td>List the DUST-20 amount, its backing, and the regular bitcoin that pays the fee.</td></tr>
+              <tr><td>What the receiver gets</td><td>You need to see where the DUST-20 is going.</td><td>Show the receiver address, sats, and DUST-20 units for each DUST-20 output.</td></tr>
+              <tr><td>Your DUST-20 change</td><td>Missing change can change the result of the send.</td><td>Show DUST-20 change whenever you selected more than you are sending.</td></tr>
+              <tr><td>Bitcoin fee and change</td><td>The miner fee must not consume DUST-20 backing.</td><td>Show the fee, fee funding, and regular bitcoin change separately.</td></tr>
+              <tr><td>How fresh the information is</td><td>The selected output may have changed since the app loaded.</td><td>Show the balance-service source and time, then check again just before creating the unsigned transaction.</td></tr>
             </tbody>
           </table>
         </div>
@@ -77,7 +77,7 @@
 
     <section class="section dark" id="threats">
       <div class="shell">
-        <div class="section-heading"><div><p class="section-kicker">Threat model</p><h2>Threats that change a user's outcome.</h2></div><p>These are not theoretical formatting concerns. Each one can result in a signed transaction, a misleading balance, or a custody failure if it is not detected early.</p></div>
+        <div class="section-heading"><div><p class="section-kicker">For app builders</p><h2>Technical safety checks for people building tools.</h2></div><p>Most people can stop after the review checklist above. Builders should use the checks below so the app does not lead a user into an unsafe approval.</p></div>
         <div class="grid three">
           <article class="card dark"><span class="card-index">PSBT SUBSTITUTION</span><h3>Recipient or change is altered</h3><p>Decode and compare every output role before prompting the wallet. Reject any response that cannot be explained by the review model.</p></article>
           <article class="card dark"><span class="card-index">STALE LISTING</span><h3>Output was already spent</h3><p>Revalidate outpoint and listing state immediately before construction. A local marketplace record is not chain truth.</p></article>
@@ -91,7 +91,7 @@
 
     <section class="section" id="incident">
       <div class="shell">
-        <div class="section-heading"><div><p class="section-kicker">Incident posture</p><h2>Stop the risky action, preserve the useful facts.</h2></div><p>Bitcoin transactions cannot be reversed through an application rollback. Incident response should focus on disabling the unsafe path, protecting users, and preserving redacted evidence.</p></div>
+        <div class="section-heading"><div><p class="section-kicker">If something goes wrong</p><h2>Stop the risky action and keep the useful facts.</h2></div><p>Bitcoin transactions cannot be undone through an app rollback. If something looks unsafe, pause the action, protect people, and keep only the information needed to investigate.</p></div>
         <div class="timeline">
           <div class="timeline-item"><span class="timeline-key">STOP</span><div><h3>Disable the narrowest affected mutation</h3><p>Pause buy, transfer, split, merge, or key-sensitive flow. Keep read-only state visibly degraded rather than pretending the system is healthy.</p></div></div>
           <div class="timeline-item"><span class="timeline-key">PRESERVE</span><div><h3>Capture redacted context</h3><p>Keep transaction IDs, outpoints, route, build version, source timestamps, and error classification. Do not collect seeds, private keys, or unrelated wallet history.</p></div></div>
@@ -103,7 +103,7 @@
 
     <section class="section tint" id="gates">
       <div class="shell">
-        <div class="section-heading"><div><p class="section-kicker">Release gates</p><h2>What must be true before wider exposure.</h2></div><p>Documentation alone cannot make a transaction flow safe. These gates turn the field guide into a concrete readiness checklist.</p></div>
+        <div class="section-heading"><div><p class="section-kicker">Release checks</p><h2>What builders should prove before showing a flow to more people.</h2></div><p>Documentation does not make a transaction flow safe on its own. These checks help builders test the important details before wider use.</p></div>
         <ul class="checklist">
           <li>Deploy and mint conformance fixtures cover valid and invalid field combinations, exact arithmetic, and actual inscription output values.</li>
           <li>PSBT fixture tests assert selected inputs, recipient outputs, colored change, cardinal fee funding, ordinary change, and marketplace charges.</li>
@@ -116,7 +116,7 @@
     </section>
   </main>
 
-  <footer class="footer"><div class="footer-inner"><div><h2>DUST-20 documentation</h2><p>Experimental safety guidance. Last updated 2026-07-18.</p></div><div><h2>Read next</h2><ul><li><a href="guide.html">Build and verify</a></li><li><a href="transactions.html">Transactions</a></li><li><a href="indexer.html">Indexer model</a></li></ul></div><div><h2>Sources</h2><ul><li><a href="https://dust-20.gitbook.io/dust20">Legacy guide</a></li><li><a href="https://github.com/bitcoinuniverse/dust-20-docs">Docs repository</a></li><li><a href="llms.txt">llms.txt</a></li></ul></div></div><div class="footer-bottom">Preserve user control of signing and make every output role visible before the wallet prompt.</div></footer>
+  <footer class="footer"><div class="footer-inner"><div><h2>DUST-20 documentation</h2><p>Experimental safety guidance. Last updated 2026-07-18.</p></div><div><h2>Read next</h2><ul><li><a href="guide.html">Build and verify</a></li><li><a href="transactions.html">Transactions</a></li><li><a href="indexer.html">Indexer model</a></li></ul></div><div><h2>Sources</h2><ul><li><a href="https://dust-20.gitbook.io/dust20">Legacy guide</a></li><li><a href="https://github.com/bitcoinuniverse/dust-20">Docs repository</a></li><li><a href="llms.txt">llms.txt</a></li></ul></div></div><div class="footer-bottom">Preserve user control of signing and make every output role visible before the wallet prompt.</div></footer>
   <script src="assets/site.js"></script>
 </body>
 </html>

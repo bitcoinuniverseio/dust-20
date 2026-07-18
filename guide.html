@@ -3,74 +3,74 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A cautious DUST-20 build and verification guide for deploys, mints, transfers, wallets, and indexers.">
-  <meta name="theme-color" content="#10212e">
-  <meta property="og:title" content="DUST-20 build and verification guide">
-  <meta property="og:description" content="A cautious sequence for building and reviewing experimental DUST-20 transactions.">
+  <meta name="description" content="A plain-language, safety-first guide to understanding and using DUST-20.">
+  <meta name="theme-color" content="#3b2d19">
+  <meta property="og:title" content="How DUST-20 works">
+  <meta property="og:description" content="A plain-language guide to checking an experimental DUST-20 transaction before you approve it.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://bitcoinuniverse.github.io/dust-20-docs/guide.html">
   <link rel="canonical" href="https://bitcoinuniverse.github.io/dust-20-docs/guide.html">
   <link rel="stylesheet" href="assets/site.css">
-  <title>DUST-20 build and verify | Bitcoin Universe</title>
+  <title>How DUST-20 works | Bitcoin Universe</title>
 </head>
 <body>
   <a class="skip-link" href="#content">Skip to content</a>
   <header class="site-header">
     <div class="header-inner">
-      <a class="brand" href="index.html" aria-label="DUST-20 documentation home"><span class="brand-mark">D20</span><span>DUST-20</span></a>
+      <a class="brand" href="index.html" aria-label="DUST-20 documentation home"><span class="brand-mark">DUST</span><span>DUST-20</span></a>
       <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-navigation">Menu</button>
       <nav class="site-nav" id="site-navigation" data-site-nav aria-label="Documentation">
-        <a href="index.html">Overview</a>
-        <a href="reference.html">Protocol</a>
-        <a href="guide.html" aria-current="page">Build</a>
-        <a href="transactions.html">Transactions</a>
-        <a href="indexer.html">Indexer</a>
-        <a href="safety.html">Safety</a>
+        <a href="index.html">Start here</a>
+        <a href="guide.html" aria-current="page">How it works</a>
+        <a href="transactions.html">Send safely</a>
+        <a href="safety.html">Stay safe</a>
+        <a href="reference.html">Technical reference</a>
+        <a href="indexer.html">For builders</a>
       </nav>
-      <div class="header-links"><a href="https://github.com/bitcoinuniverse/dust-20-docs" target="_blank" rel="noreferrer">Source</a></div>
+      <div class="header-links"><a href="https://github.com/bitcoinuniverse/dust-20" target="_blank" rel="noreferrer">Source</a></div>
     </div>
   </header>
 
   <main id="content">
     <section class="shell page-hero">
       <div class="hero-copy">
-        <p class="eyebrow">Build and verify</p>
-        <h1>Do not make the wallet <span class="accent">the first review.</span></h1>
-        <p class="lead">A DUST-20 transaction is ready to sign only when its payload, selected UTXOs, output values, recipient, colored change, fee funding, and indexer interpretation agree. Build that proof before a wallet prompt appears.</p>
-        <nav class="page-nav" aria-label="On this page"><a href="#preflight">Preflight</a><a href="#deploy">Deploy</a><a href="#mint">Mint</a><a href="#transfer">Transfer</a><a href="#errors">Errors</a></nav>
+        <p class="eyebrow">How DUST-20 works</p>
+        <h1>Check the details <span class="accent">before you approve.</span></h1>
+        <p class="lead">Before your wallet asks you to approve, check the Bitcoin network, receiver, amount, remaining DUST-20, and Bitcoin fee. If one of these is unclear, stop and ask for help before signing.</p>
+        <nav class="page-nav" aria-label="On this page"><a href="#preflight">Start safely</a><a href="#deploy">Set the rule</a><a href="#mint">Create units</a><a href="#transfer">Send units</a><a href="#errors">When to stop</a></nav>
       </div>
     </section>
 
     <section class="section tint" id="preflight">
       <div class="shell">
-        <div class="section-heading"><div><p class="section-kicker">Preflight</p><h2>Collect evidence before building a transaction.</h2></div><p>A transaction builder should keep protocol-critical values visible in the application UI, not hide them behind generic send language or a wallet-specific confirmation screen.</p></div>
+        <div class="section-heading"><div><p class="section-kicker">Start safely</p><h2>Check the basics before you make a transaction.</h2></div><p>Good DUST-20 tools show the important details before your wallet opens. You should not have to guess what a generic “send” button will do.</p></div>
         <div class="grid three">
-          <article class="card"><span class="card-index">NETWORK</span><h3>Confirm the environment</h3><p>Show the Bitcoin network, active wallet, payment address, ordinal or receiver address, and fee rate. Stop on a network or address-type mismatch.</p></article>
-          <article class="card"><span class="card-index">STATE</span><h3>Refresh external state</h3><p>Read the deployment, selected output status, and listing state from the configured indexer. Preserve the retrieval time and source with the request.</p></article>
-          <article class="card"><span class="card-index">MATH</span><h3>Calculate with integers</h3><p>Use exact whole-satoshi and whole-unit arithmetic. Reject blank, negative, fractional, overflowed, or rounded values before a PSBT is constructed.</p></article>
+          <article class="card"><span class="card-index">NETWORK</span><h3>Confirm where you are</h3><p>Check the Bitcoin network, the wallet, the receiver address, and the fee. Stop if the network or address looks wrong.</p></article>
+          <article class="card"><span class="card-index">BALANCE VIEW</span><h3>Refresh what the app sees</h3><p>Ask the DUST-20 balance service for the latest information. It is helpful, but it is still one service’s view of the chain.</p></article>
+          <article class="card"><span class="card-index">WHOLE NUMBERS</span><h3>Do not round</h3><p>Use whole units and whole sats only. The app should stop before creating a transaction with a blank, negative, fractional, or rounded amount.</p></article>
         </div>
       </div>
     </section>
 
     <section class="section" id="deploy">
       <div class="shell">
-        <div class="section-heading"><div><p class="section-kicker">Deploy</p><h2>Establish the ratio explicitly.</h2></div><p>Deployment starts an interpretation rule. It should be easy for an independent reader to reconstruct the unit size and total promised backing without relying on UI defaults.</p></div>
+        <div class="section-heading"><div><p class="section-kicker">Set the rule</p><h2>Make the backing rule easy for anyone to check.</h2></div><p>A deploy says how many sats back one unit and how many units can exist. The rule should be clear without relying on a hidden app default.</p></div>
         <ol class="checklist">
-          <li>Require a nonempty ticker and show the exact original spelling that will be inscribed. The legacy guide does not settle case normalization or duplicate resolution.</li>
-          <li>Require positive integer `supply` and `unit_sats`, then compute `max_sats = supply * unit_sats` exactly.</li>
-          <li>Show optional `lim_sats` separately and explain that it caps one mint's satoshi backing only where the relevant policy applies.</li>
-          <li>Build the deploy text from the reviewed values. Never manually concatenate unvalidated user input into JSON.</li>
-          <li>After broadcast, record the transaction ID, output, confirmation state, and observed indexer interpretation. A submitted deploy is not final proof of unique ticker ownership.</li>
+          <li>Choose a nonempty ticker and show its exact spelling. The legacy guide does not settle how duplicate names or uppercase and lowercase names should be handled.</li>
+          <li>Use positive whole-number `supply` and `unit_sats` values. The total backing is `max_sats = supply * unit_sats`.</li>
+          <li>Show `lim_sats` separately when it is used. It can limit the Bitcoin backing of one mint under the relevant policy.</li>
+          <li>Show the reviewed values before creating the deploy text. Do not quietly add or change a value while preparing the JSON.</li>
+          <li>After broadcast, save the transaction ID and wait for confirmation. A deploy does not by itself prove that nobody else used the same ticker.</li>
         </ol>
       </div>
     </section>
 
     <section class="section dark" id="mint">
       <div class="shell">
-        <div class="section-heading"><div><p class="section-kicker">Mint</p><h2>Bind amount, declared sats, and output sats.</h2></div><p>The most important mint check is triplicate: the deployment's unit size, the JSON `sats` field, and the actual inscription output must all report the same exact allocation.</p></div>
+        <div class="section-heading"><div><p class="section-kicker">Create units</p><h2>Make the token amount and Bitcoin amount match.</h2></div><p>For a mint, three numbers must agree: the sats per unit set by the deploy, the `sats` written in the JSON, and the actual Bitcoin output value.</p></div>
         <div class="grid two">
           <div class="formula"><code>mint_sats = amt * unit_sats</code><small>With 91 units and 546 sats per unit, both the payload and inscription output must be 49,686 sats.</small></div>
-          <article class="card dark"><h3>Mint review panel</h3><p>Display ticker, deployment output, amount, unit size, computed sats, declared sats, actual output value, remaining supply, optional limit, fee rate, receiver, and funding UTXOs in one stable review surface.</p></article>
+          <article class="card dark"><h3>What to see before you approve</h3><p>Show the ticker, amount, sats per unit, total sats, remaining supply, fee, receiver, and the Bitcoin outputs that will pay for the transaction in one clear review screen.</p></article>
         </div>
         <ul class="checklist" style="margin-top:1.15rem">
           <li>Resolve an accepted deployment before accepting `amt`.</li>
@@ -84,7 +84,7 @@
 
     <section class="section" id="transfer">
       <div class="shell">
-        <div class="section-heading"><div><p class="section-kicker">Transfer and change</p><h2>A partial send needs an explicit colored remainder.</h2></div><p>The legacy guide offers a split example but not a normative transfer JSON schema. Use this as conservative transaction-construction guidance, not a claim of consensus for every multi-input case.</p></div>
+        <div class="section-heading"><div><p class="section-kicker">Send units</p><h2>When you send part, put the rest in change.</h2></div><p>If you send 10 units from an output holding 91, the remaining 81 need their own DUST-20 output. This is called DUST-20 change.</p></div>
         <div class="split-figure" aria-label="Colored UTXO split example">
           <div class="utxo"><span class="label">Colored input</span><strong>49,686 sats</strong><small>91 units at 546 sats each</small></div>
           <div class="split-arrow" aria-hidden="true">&rarr;</div>
@@ -94,15 +94,15 @@
           </div>
         </div>
         <div class="grid two" style="margin-top:1.15rem">
-          <article class="card"><span class="card-index">COLORED SIDE</span><h3>Conserve allocation sats</h3><p>For a normal transfer, sum of selected colored input sats should equal recipient colored sats plus colored change sats. Every claimed colored output should be divisible by the deployment unit size.</p></article>
-          <article class="card"><span class="card-index">CARDINAL SIDE</span><h3>Fund the miner fee separately</h3><p>Use a non-colored cardinal UTXO for network fees and ordinary change. Do not trim colored backing to pay a fee and then call the resulting output a valid token allocation.</p></article>
+          <article class="card"><span class="card-index">DUST-20 SIDE</span><h3>Keep the backing balanced</h3><p>The sats you start with should equal the sats sent to the receiver plus the sats in your DUST-20 change. The amount must stay divisible by the sats-per-unit rule.</p></article>
+          <article class="card"><span class="card-index">REGULAR BITCOIN</span><h3>Pay the miner fee separately</h3><p>Use regular bitcoin for the network fee and ordinary change. Do not take sats from DUST-20 backing to pay a fee.</p></article>
         </div>
       </div>
     </section>
 
     <section class="section tint" id="errors">
       <div class="shell">
-        <div class="section-heading"><div><p class="section-kicker">Failure behavior</p><h2>Stop safely, explain specifically.</h2></div><p>Do not turn an unavailable indexer, an ambiguous broadcast, or a changed listing into an empty successful state. A user needs enough information to inspect, retry safely, or seek support.</p></div>
+        <div class="section-heading"><div><p class="section-kicker">When to stop</p><h2>If something is unclear, stop.</h2></div><p>A missing balance, uncertain broadcast, or changed output is not a successful send. Keep the details, refresh carefully, or ask for help.</p></div>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Condition</th><th>Safe action</th><th>User-facing language</th></tr></thead>
@@ -119,7 +119,7 @@
     </section>
   </main>
 
-  <footer class="footer"><div class="footer-inner"><div><h2>DUST-20 documentation</h2><p>Experimental build guidance. Last updated 2026-07-18.</p></div><div><h2>Read next</h2><ul><li><a href="reference.html">Protocol reference</a></li><li><a href="transactions.html">Transactions</a></li><li><a href="safety.html">Safety and operations</a></li></ul></div><div><h2>Sources</h2><ul><li><a href="https://dust-20.gitbook.io/dust20">Legacy guide</a></li><li><a href="https://github.com/bitcoinuniverse/dust-20-docs">Docs repository</a></li><li><a href="llms.txt">llms.txt</a></li></ul></div></div><div class="footer-bottom">Do not use experimental documentation as a substitute for transaction review.</div></footer>
+  <footer class="footer"><div class="footer-inner"><div><h2>DUST-20 documentation</h2><p>Experimental build guidance. Last updated 2026-07-18.</p></div><div><h2>Read next</h2><ul><li><a href="reference.html">Protocol reference</a></li><li><a href="transactions.html">Transactions</a></li><li><a href="safety.html">Safety and operations</a></li></ul></div><div><h2>Sources</h2><ul><li><a href="https://dust-20.gitbook.io/dust20">Legacy guide</a></li><li><a href="https://github.com/bitcoinuniverse/dust-20">Docs repository</a></li><li><a href="llms.txt">llms.txt</a></li></ul></div></div><div class="footer-bottom">Do not use experimental documentation as a substitute for transaction review.</div></footer>
   <script src="assets/site.js"></script>
 </body>
 </html>

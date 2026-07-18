@@ -1,7 +1,7 @@
 # DUST-20 documentation
 
 > Public docs: https://bitcoinuniverse.github.io/dust-20-docs/
-> Source: https://github.com/bitcoinuniverse/dust-20-docs
+> Source: https://github.com/bitcoinuniverse/dust-20
 > Status: Experimental compatibility field guide, updated 2026-07-18.
 
 ## What DUST-20 is
@@ -23,7 +23,7 @@ This document does not claim Bitcoin consensus or a universal DUST-20 standard. 
 ## Source hierarchy
 
 1. Legacy DUST-20 guide: https://dust-20.gitbook.io/dust20
-2. Public documentation source: https://github.com/bitcoinuniverse/dust-20-docs
+2. Public documentation source: https://github.com/bitcoinuniverse/dust-20
 3. Universe Inscribe application: https://inscribe.bitcoinuniverse.io
 
 The legacy guide documents deploy and mint payloads and a colored-UTXO transfer example. It does not publish a complete canonical transfer schema, indexer API, duplicate-ticker policy, output-order policy, RBF policy, reorg policy, or burn rule.
