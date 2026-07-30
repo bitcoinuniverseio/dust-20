@@ -24,6 +24,8 @@ html { scroll-behavior: smooth; scroll-padding-top: 7rem; }
 body {
   margin: 0;
   min-width: 320px;
+  max-width: 100%;
+  overflow-x: hidden;
   color: var(--ink);
   background:
     radial-gradient(circle at 88% 2%, rgba(216, 154, 37, 0.23), transparent 23rem),
@@ -122,6 +124,7 @@ main { overflow: hidden; }
   padding: 5.8rem 0 4.5rem;
   gap: clamp(2rem, 7vw, 6rem);
 }
+.hero > * { min-width: 0; }
 .eyebrow {
   display: inline-flex;
   align-items: center;
@@ -351,7 +354,9 @@ tr:last-child td { border-bottom: 0; }
   .lifecycle-steps { grid-template-columns: 1fr; }
   .lifecycle-step { min-height: 0; }
   .lifecycle-step::after { display: none; }
-  h1 { font-size: clamp(3rem, 16vw, 5.2rem); }
+  h1 { font-size: clamp(2.75rem, 12.5vw, 4rem); overflow-wrap: anywhere; }
+  .hero-actions { align-items: flex-start; flex-direction: column; }
+  .button { max-width: 100%; text-align: center; }
   .section { padding: 3.8rem 0; }
   .grid.two, .grid.three, .grid.four, .steps { grid-template-columns: 1fr; }
   .split-figure { grid-template-columns: 1fr; }
