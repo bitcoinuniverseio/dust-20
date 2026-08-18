@@ -1,0 +1,182 @@
+      <div class="page-hero">
+        <p class="eyebrow">Transactions</p>
+        <h1>Transactions and the UTXO visualizer</h1>
+        <p class="lead">Sending DUST-20 is building a Bitcoin transaction whose output layout produces the result you intended. Change the layout below and watch which units survive.</p>
+      </div>
+
+      <div class="prose">
+        <section id="rule">
+          <h2>The rule that matters</h2>
+          <p>A unit survives a spend only when its whole block of <code>unit_sats</code> satoshis lands inside a single supported output. Everything else is burned — silently, in a transaction Bitcoin confirms normally.</p>
+
+          <div class="formula">
+            <code>input_units = surviving_units + burned_units</code>
+            <small>There is no third outcome. Units are never partially moved, rounded, or held in reserve.</small>
+          </div>
+
+          <p>Three things must be true of a safe send:</p>
+          <ul>
+            <li><strong>The receiver's output is large enough</strong> to hold the units you are sending, positioned so each unit fits whole.</li>
+            <li><strong>A colored change output exists</strong> for every unit you are keeping, unless you are sending the entire allocation.</li>
+            <li><strong>A cardinal input funds the fee</strong>, so no colored satoshi is paid to a miner.</li>
+          </ul>
+
+          <div class="notice critical">
+            <span class="notice-mark" aria-hidden="true">!</span>
+            <div>
+              <p class="notice-title">Missing colored change is not a formatting problem</p>
+              <p>If you spend an allocation of 91 units and only create an output for 10, the other 81 are destroyed. There is no recovery, no mempool warning and no error from your wallet. Confirm the change output exists before you approve anything.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="visualizer">
+          <h2>Transaction visualizer</h2>
+          <p>Build a transaction and see exactly where each unit lands. Inputs and outputs are laid end to end into satoshi ranges, and units are matched by position — the same algorithm a production indexer runs.</p>
+          <noscript><p class="noscript-note">The visualizer needs JavaScript. The worked scenarios below are also published in <a href="conformance.json">conformance.json</a>, and the rules they demonstrate are documented in the <a href="reference.html#rules">protocol reference</a>.</p></noscript>
+
+          <div class="lab" data-visualizer>
+            <div class="lab-header">
+              <div>
+                <p class="lab-title">Build a transaction</p>
+                <p>Adjust the amounts, the unit size, and how outputs are allocated. Invalid constructions are flagged immediately.</p>
+              </div>
+              <div class="lab-actions">
+                <label class="visually-hidden" for="viz-scenario">Load a scenario</label>
+                <select id="viz-scenario" data-viz-scenario style="padding:.4rem .6rem;border:1px solid var(--line-strong);border-radius:.55rem;background:var(--paper-strong);font-size:.8rem"></select>
+              </div>
+            </div>
+            <div class="lab-body">
+              <div class="field-grid">
+                <div class="field">
+                  <label for="viz-unit-sats">Satoshis per unit <code>unit_sats</code></label>
+                  <input id="viz-unit-sats" type="text" inputmode="numeric" autocomplete="off" value="546">
+                  <span class="hint">Fixed by the deployment. Changing it changes where every unit boundary falls.</span>
+                </div>
+
+                <div class="field">
+                  <label>Inputs</label>
+                  <span class="hint">Type, units carried (DUST-20 only), and the output's satoshi value.</span>
+                  <div class="io-editor" data-viz-inputs></div>
+                  <button class="button small secondary" type="button" data-viz-add-input style="justify-self:start;margin-top:.4rem">Add input</button>
+                </div>
+
+                <div class="field">
+                  <label>Outputs</label>
+                  <span class="hint">Give units to size a colored output automatically, or set satoshis directly. Order matters.</span>
+                  <div class="io-editor" data-viz-outputs></div>
+                  <button class="button small secondary" type="button" data-viz-add-output style="justify-self:start;margin-top:.4rem">Add output</button>
+                </div>
+              </div>
+
+              <div class="result-stack">
+                <div class="utxo-diagram" data-viz-diagram></div>
+                <div data-viz-report aria-live="polite"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="notice info">
+            <span class="notice-mark" aria-hidden="true">i</span>
+            <div>
+              <p class="notice-title">Try deleting the change output</p>
+              <p>Load "Partial send with colored change", then remove the second output. The verdict flips from all units surviving to 49 destroyed — because the ordinary bitcoin change output absorbs the colored satoshis that follow the receiver's share, and only whole units inside it survive.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="scenarios">
+          <h2>Worked scenarios</h2>
+          <p>Each of these is computed live by the same validator. The bar shows the output satoshi range in proportion, and where units actually sit within it.</p>
+          <div data-scenarios></div>
+        </section>
+
+        <section id="cases">
+          <h2>Cases and failure modes</h2>
+
+          <h3>Constructions that work</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Case</th><th>What to build</th><th>Why it holds</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Full send</strong></td>
+                  <td>One colored output sized to the whole allocation, plus a cardinal input for the fee.</td>
+                  <td>Nothing remains, so no colored change is needed. The review should still state plainly that everything is being sent.</td>
+                </tr>
+                <tr>
+                  <td><strong>Partial send</strong></td>
+                  <td>A colored output for the receiver, a colored change output for the remainder, a cardinal input for the fee.</td>
+                  <td>The colored range is fully covered by supported outputs, so every unit lands whole.</td>
+                </tr>
+                <tr>
+                  <td><strong>Merge</strong></td>
+                  <td>Several colored inputs of the same ticker and unit size, combined into one output large enough for all of them.</td>
+                  <td>Each contributing unit still lands whole inside the destination. Allocations of different tickers keep separate identities by offset.</td>
+                </tr>
+                <tr>
+                  <td><strong>Multiple recipients</strong></td>
+                  <td>One colored output per recipient, in the order you intend, then colored change.</td>
+                  <td>Ordinal flow fills outputs in order, so the first output takes the first units.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Constructions that destroy units</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Failure</th><th>What happens</th><th>How to avoid it</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Missing colored change</strong></td>
+                  <td>Units beyond the receiver's share fall into ordinary outputs or the fee and are destroyed.</td>
+                  <td>Always create a colored change output when you are sending less than the full allocation.</td>
+                </tr>
+                <tr>
+                  <td><strong>Fee taken from backing</strong></td>
+                  <td>The colored range extends past the last output. Those satoshis go to the miner and their units are burned.</td>
+                  <td>Add a cardinal input sized to cover the fee. Never shrink a colored output to make room.</td>
+                </tr>
+                <tr>
+                  <td><strong>Output too small</strong></td>
+                  <td>A colored output that cannot hold a whole unit receives nothing; the units that would have landed there are burned.</td>
+                  <td>Size every colored output to at least units × <code>unit_sats</code>.</td>
+                </tr>
+                <tr>
+                  <td><strong>Split across a boundary</strong></td>
+                  <td>A unit straddling two outputs does not survive in either.</td>
+                  <td>Align output sizes to whole multiples of the unit size wherever colored satoshis flow.</td>
+                </tr>
+                <tr>
+                  <td><strong>Unsupported output</strong></td>
+                  <td>Units reaching an output the indexer cannot attribute to an address are burned.</td>
+                  <td>Send colored value only to standard, addressable outputs.</td>
+                </tr>
+                <tr>
+                  <td><strong>Reordered outputs</strong></td>
+                  <td>Units land in whichever output occupies their position in the satoshi range — possibly the ordinary change output.</td>
+                  <td>Treat output order as part of the transaction's meaning, and test your builder's exact ordering.</td>
+                </tr>
+                <tr>
+                  <td><strong>Stale input</strong></td>
+                  <td>The selected output was already spent, so the transaction is invalid or spends something you did not intend.</td>
+                  <td>Revalidate every outpoint immediately before building, not at page load.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Situations that are genuinely ambiguous</h3>
+          <p>Some questions have no authoritative answer. They are documented as open rather than resolved by guesswork — see the <a href="reference.html#open">open questions</a> for the full list and the safe posture for each.</p>
+          <ul>
+            <li><strong>Replacement transactions.</strong> An RBF replacement can have a different output layout, so it can burn units the original preserved. Always re-derive allocation from the transaction that actually confirmed.</li>
+            <li><strong>Unconfirmed state.</strong> Mempool coverage is partial, so pending DUST-20 state is not a safe basis for an irreversible decision.</li>
+            <li><strong>Cross-implementation agreement.</strong> Most transfer behaviour is settled by one production implementation rather than a multi-party specification. Test against the indexer your users will actually see.</li>
+          </ul>
+        </section>
+      </div>

@@ -1,0 +1,832 @@
+{
+  "generator": "tools/build.mjs from assets/protocol-vectors.js",
+  "warning": "Generated file. Edit assets/protocol-vectors.js and run `npm run generate`; changes made here are overwritten.",
+  "updated": "2026-08-18",
+  "documentation": "https://bitcoinuniverseio.github.io/dust-20/conformance.html",
+  "note": "Each case is executed live in the browser at the URL above and asserted by test/protocol.test.mjs.",
+  "referenceDeployment": {
+    "tick": "dust",
+    "display": "DUST",
+    "supply": "1000000",
+    "unitSats": "546",
+    "maxSats": "546000000",
+    "limSats": "54600",
+    "minted": "0"
+  },
+  "count": 31,
+  "cases": [
+    {
+      "id": "deploy-valid",
+      "group": "Deploy",
+      "title": "Valid deploy",
+      "expect": "accept",
+      "code": null,
+      "status": "verified",
+      "reason": "Every field is a canonical integer string and max_sats equals supply × unit_sats.",
+      "context": null,
+      "payload": {
+        "p": "dust-20",
+        "op": "deploy",
+        "tick": "dust",
+        "supply": "1000000",
+        "unit_sats": "546",
+        "max_sats": "546000000",
+        "lim_sats": "54600"
+      },
+      "raw": null
+    },
+    {
+      "id": "deploy-no-limit",
+      "group": "Deploy",
+      "title": "Valid deploy with lim_sats omitted",
+      "expect": "accept",
+      "code": null,
+      "status": "verified",
+      "reason": "lim_sats is optional. Omitting it means there is no per-mint cap.",
+      "context": null,
+      "payload": {
+        "p": "dust-20",
+        "op": "deploy",
+        "tick": "grain",
+        "supply": "21000",
+        "unit_sats": "1000",
+        "max_sats": "21000000"
+      },
+      "raw": null
+    },
+    {
+      "id": "deploy-zero-limit",
+      "group": "Deploy",
+      "title": "lim_sats of \"0\" means no cap",
+      "expect": "accept",
+      "code": null,
+      "status": "universe",
+      "reason": "Zero is explicitly \"no limit\", not a cap of zero satoshis.",
+      "context": null,
+      "payload": {
+        "p": "dust-20",
+        "op": "deploy",
+        "tick": "grain",
+        "supply": "21000",
+        "unit_sats": "1000",
+        "max_sats": "21000000",
+        "lim_sats": "0"
+      },
+      "raw": null
+    },
+    {
+      "id": "deploy-arithmetic-mismatch",
+      "group": "Deploy",
+      "title": "Arithmetic mismatch in max_sats",
+      "expect": "reject",
+      "code": "max_sats_mismatch",
+      "status": "verified",
+      "reason": "max_sats must equal supply × unit_sats exactly. Being one satoshi low usually means the builder used floating-point arithmetic.",
+      "context": null,
+      "payload": {
+        "p": "dust-20",
+        "op": "deploy",
+        "tick": "dust",
+        "supply": "1000000",
+        "unit_sats": "546",
+        "max_sats": "545999999",
+        "lim_sats": "54600"
+      },
+      "raw": null
+    },
+    {
+      "id": "deploy-missing-max-sats",
+      "group": "Deploy",
+      "title": "Deploy missing max_sats",
+      "expect": "reject",
+      "code": "missing_field",
+      "status": "universe",
+      "reason": "max_sats is required. Earlier documentation reported this as an unreconciled compatibility split; the current implementation rejects the payload rather than deriving the value.",
+      "context": null,
+      "payload": {
+        "p": "dust-20",
+        "op": "deploy",
+        "tick": "dust",
+        "supply": "1000000",
+        "unit_sats": "546",
+        "lim_sats": "54600"
+      },
+      "raw": null
+    },
+    {
+      "id": "deploy-unknown-field",
+      "group": "Deploy",
+      "title": "Deploy carrying an unknown field",
+      "expect": "reject",
+      "code": "unknown_field",
+      "status": "universe",
+      "reason": "Operations declare exact key sets. An unknown field is rejected, not ignored, so one payload cannot be read two ways.",
+      "context": null,
+      "payload": {
+        "p": "dust-20",
+        "op": "deploy",
+        "tick": "dust",
+        "supply": "1000000",
+        "unit_sats": "546",
+        "max_sats": "546000000",
+        "dec": "0"
+      },
+      "raw": null
+    },
+    {
+      "id": "deploy-leading-zero",
+      "group": "Deploy",
+      "title": "Malformed integer with a leading zero",
+      "expect": "reject",
+      "code": "bad_integer",
+      "status": "universe",
+      "reason": "Integers are canonical decimal strings. \"0546\" is not canonical even though it parses.",
+      "context": null,
+      "payload": {
+        "p": "dust-20",
+        "op": "deploy",
+        "tick": "dust",
+        "supply": "0546",
+        "unit_sats": "546",
+        "max_sats": "298116"
+      },
+      "raw": null
+    },
+    {
+      "id": "deploy-float",
+      "group": "Deploy",
+      "title": "Fractional unit_sats",
+      "expect": "reject",
+      "code": "bad_integer",
+      "status": "verified",
+      "reason": "Satoshis are indivisible. Decimal points are rejected outright.",
+      "context": null,
+      "payload": {
+        "p": "dust-20",
+        "op": "deploy",
+        "tick": "dust",
+        "supply": "1000",
+        "unit_sats": "546.5",
+        "max_sats": "546500"
+      },
+      "raw": null
+    },
+    {
+      "id": "deploy-zero-supply",
+      "group": "Deploy",
+      "title": "Zero supply",
+      "expect": "reject",
+      "code": "bad_integer",
+      "status": "verified",
+      "reason": "supply must be a positive integer. Zero and negative values are rejected.",
+      "context": null,
+      "payload": {
+        "p": "dust-20",
+        "op": "deploy",
+        "tick": "dust",
+        "supply": "0",
+        "unit_sats": "546",
+        "max_sats": "0"
+      },
+      "raw": null
+    },
+    {
+      "id": "deploy-negative",
+      "group": "Deploy",
+      "title": "Negative unit_sats",
+      "expect": "reject",
+      "code": "bad_integer",
+      "status": "verified",
+      "reason": "A minus sign is not part of a canonical DUST-20 integer.",
+      "context": null,
+      "payload": {
+        "p": "dust-20",
+        "op": "deploy",
+        "tick": "dust",
+        "supply": "1000",
+        "unit_sats": "-546",
+        "max_sats": "546000"
+      },
+      "raw": null
+    },
+    {
+      "id": "deploy-exceeds-money",
+      "group": "Deploy",
+      "title": "Backing exceeds Bitcoin’s monetary supply",
+      "expect": "reject",
+      "code": "exceeds_money_supply",
+      "status": "universe",
+      "reason": "max_sats of 10,000,000,000,000,000 exceeds the 2,100,000,000,000,000 satoshis that will ever exist. The arithmetic is self-consistent but unbackable.",
+      "context": null,
+      "payload": {
+        "p": "dust-20",
+        "op": "deploy",
+        "tick": "huge",
+        "supply": "1000000000",
+        "unit_sats": "10000000",
+        "max_sats": "10000000000000000"
+      },
+      "raw": null
+    },
+    {
+      "id": "deploy-limit-above-max",
+      "group": "Deploy",
+      "title": "lim_sats greater than max_sats",
+      "expect": "reject",
+      "code": "lim_sats_above_max",
+      "status": "universe",
+      "reason": "A per-mint cap larger than the entire backing is contradictory.",
+      "context": null,
+      "payload": {
+        "p": "dust-20",
+        "op": "deploy",
+        "tick": "dust",
+        "supply": "1000",
+        "unit_sats": "546",
+        "max_sats": "546000",
+        "lim_sats": "546001"
+      },
+      "raw": null
+    },
+    {
+      "id": "deploy-tick-whitespace",
+      "group": "Deploy",
+      "title": "Ticker containing whitespace",
+      "expect": "reject",
+      "code": "bad_tick",
+      "status": "universe",
+      "reason": "Tickers exclude whitespace, control characters and the URL delimiters / ? # \\ so an identity is always addressable.",
+      "context": null,
+      "payload": {
+        "p": "dust-20",
+        "op": "deploy",
+        "tick": "my dust",
+        "supply": "1000",
+        "unit_sats": "546",
+        "max_sats": "546000"
+      },
+      "raw": null
+    },
+    {
+      "id": "deploy-duplicate-ticker",
+      "group": "Deploy",
+      "title": "Redeploying an existing ticker",
+      "expect": "reject",
+      "code": "duplicate_deployment",
+      "status": "universe",
+      "reason": "Identity is the NFC form folded to lower case, so \"DUST\" is the same ticker as \"dust\". The first valid deployment wins.",
+      "context": {
+        "deployment": {
+          "tick": "dust",
+          "display": "DUST",
+          "supply": "1000000",
+          "unitSats": "546",
+          "maxSats": "546000000",
+          "limSats": "54600",
+          "minted": "0"
+        }
+      },
+      "payload": {
+        "p": "dust-20",
+        "op": "deploy",
+        "tick": "DUST",
+        "supply": "5000",
+        "unit_sats": "546",
+        "max_sats": "2730000"
+      },
+      "raw": null
+    },
+    {
+      "id": "mint-valid",
+      "group": "Mint",
+      "title": "Valid mint with matching output",
+      "expect": "accept",
+      "code": null,
+      "status": "verified",
+      "reason": "sats equals amt × unit_sats, and the observed output value equals sats.",
+      "context": {
+        "deployment": {
+          "tick": "dust",
+          "display": "DUST",
+          "supply": "1000000",
+          "unitSats": "546",
+          "maxSats": "546000000",
+          "limSats": "54600",
+          "minted": "0"
+        },
+        "outputValueSats": "54600"
+      },
+      "payload": {
+        "p": "dust-20",
+        "op": "mint",
+        "tick": "dust",
+        "amt": "100",
+        "sats": "54600"
+      },
+      "raw": null
+    },
+    {
+      "id": "mint-case-insensitive-tick",
+      "group": "Mint",
+      "title": "Mint naming the ticker in a different case",
+      "expect": "accept",
+      "code": null,
+      "status": "universe",
+      "reason": "The mint resolves against the folded identity, so casing does not prevent resolution.",
+      "context": {
+        "deployment": {
+          "tick": "dust",
+          "display": "DUST",
+          "supply": "1000000",
+          "unitSats": "546",
+          "maxSats": "546000000",
+          "limSats": "54600",
+          "minted": "0"
+        },
+        "outputValueSats": "546"
+      },
+      "payload": {
+        "p": "dust-20",
+        "op": "mint",
+        "tick": "DuSt",
+        "amt": "1",
+        "sats": "546"
+      },
+      "raw": null
+    },
+    {
+      "id": "mint-sats-mismatch",
+      "group": "Mint",
+      "title": "Declared sats do not match the deployment ratio",
+      "expect": "reject",
+      "code": "mint_sats_mismatch",
+      "status": "verified",
+      "reason": "100 units at 546 satoshis is 54,600, not 54,000.",
+      "context": {
+        "deployment": {
+          "tick": "dust",
+          "display": "DUST",
+          "supply": "1000000",
+          "unitSats": "546",
+          "maxSats": "546000000",
+          "limSats": "54600",
+          "minted": "0"
+        },
+        "outputValueSats": "54000"
+      },
+      "payload": {
+        "p": "dust-20",
+        "op": "mint",
+        "tick": "dust",
+        "amt": "100",
+        "sats": "54000"
+      },
+      "raw": null
+    },
+    {
+      "id": "mint-output-mismatch",
+      "group": "Mint",
+      "title": "Output value differs from declared sats by one satoshi",
+      "expect": "reject",
+      "code": "output_value_mismatch",
+      "status": "verified",
+      "reason": "The payload is internally consistent, but the real Bitcoin output holds 54,599 satoshis. The mint is invalid and cannot be repaired after broadcast.",
+      "context": {
+        "deployment": {
+          "tick": "dust",
+          "display": "DUST",
+          "supply": "1000000",
+          "unitSats": "546",
+          "maxSats": "546000000",
+          "limSats": "54600",
+          "minted": "0"
+        },
+        "outputValueSats": "54599"
+      },
+      "payload": {
+        "p": "dust-20",
+        "op": "mint",
+        "tick": "dust",
+        "amt": "100",
+        "sats": "54600"
+      },
+      "raw": null
+    },
+    {
+      "id": "mint-limit-violation",
+      "group": "Mint",
+      "title": "Mint exceeds lim_sats",
+      "expect": "reject",
+      "code": "mint_exceeds_limit",
+      "status": "verified",
+      "reason": "55,146 satoshis exceeds the declared per-mint cap of 54,600.",
+      "context": {
+        "deployment": {
+          "tick": "dust",
+          "display": "DUST",
+          "supply": "1000000",
+          "unitSats": "546",
+          "maxSats": "546000000",
+          "limSats": "54600",
+          "minted": "0"
+        },
+        "outputValueSats": "55146"
+      },
+      "payload": {
+        "p": "dust-20",
+        "op": "mint",
+        "tick": "dust",
+        "amt": "101",
+        "sats": "55146"
+      },
+      "raw": null
+    },
+    {
+      "id": "mint-exceeds-supply",
+      "group": "Mint",
+      "title": "Mint exceeds remaining supply",
+      "expect": "reject",
+      "code": "mint_exceeds_supply",
+      "status": "verified",
+      "reason": "999,950 units are already minted, so only 50 remain. The mint is rejected in full rather than partially filled.",
+      "context": {
+        "deployment": {
+          "tick": "dust",
+          "display": "DUST",
+          "supply": "1000000",
+          "unitSats": "546",
+          "maxSats": "546000000",
+          "limSats": "0",
+          "minted": "999950"
+        },
+        "outputValueSats": "54600"
+      },
+      "payload": {
+        "p": "dust-20",
+        "op": "mint",
+        "tick": "dust",
+        "amt": "100",
+        "sats": "54600"
+      },
+      "raw": null
+    },
+    {
+      "id": "mint-no-deployment",
+      "group": "Mint",
+      "title": "Mint for a ticker that was never deployed",
+      "expect": "reject",
+      "code": "deployment_missing",
+      "status": "verified",
+      "reason": "A mint must resolve exactly one accepted deployment. Without it there is no unit size to check against.",
+      "context": null,
+      "payload": {
+        "p": "dust-20",
+        "op": "mint",
+        "tick": "ghost",
+        "amt": "10",
+        "sats": "5460"
+      },
+      "raw": null
+    },
+    {
+      "id": "mint-missing-field",
+      "group": "Mint",
+      "title": "Mint missing the sats field",
+      "expect": "reject",
+      "code": "missing_field",
+      "status": "verified",
+      "reason": "sats is required. It is never inferred from amt, even though the ratio is known.",
+      "context": {
+        "deployment": {
+          "tick": "dust",
+          "display": "DUST",
+          "supply": "1000000",
+          "unitSats": "546",
+          "maxSats": "546000000",
+          "limSats": "54600",
+          "minted": "0"
+        }
+      },
+      "payload": {
+        "p": "dust-20",
+        "op": "mint",
+        "tick": "dust",
+        "amt": "100"
+      },
+      "raw": null
+    },
+    {
+      "id": "mint-zero-amount",
+      "group": "Mint",
+      "title": "Mint of zero units",
+      "expect": "reject",
+      "code": "bad_integer",
+      "status": "verified",
+      "reason": "amt must be a positive integer.",
+      "context": {
+        "deployment": {
+          "tick": "dust",
+          "display": "DUST",
+          "supply": "1000000",
+          "unitSats": "546",
+          "maxSats": "546000000",
+          "limSats": "54600",
+          "minted": "0"
+        }
+      },
+      "payload": {
+        "p": "dust-20",
+        "op": "mint",
+        "tick": "dust",
+        "amt": "0",
+        "sats": "0"
+      },
+      "raw": null
+    },
+    {
+      "id": "unknown-operation",
+      "group": "Reader",
+      "title": "Unknown operation",
+      "expect": "reject",
+      "code": "bad_operation",
+      "status": "universe",
+      "reason": "Only deploy and mint exist. Any other op is rejected.",
+      "context": null,
+      "payload": {
+        "p": "dust-20",
+        "op": "update",
+        "tick": "dust",
+        "amt": "1"
+      },
+      "raw": null
+    },
+    {
+      "id": "transfer-inscription",
+      "group": "Reader",
+      "title": "A transfer inscription",
+      "expect": "reject",
+      "code": "bad_operation",
+      "status": "universe",
+      "reason": "No transfer inscription is valid. Movement happens by spending the satoshis that carry the units. Earlier documentation listed a canonical transfer payload as an open question; the current implementation answers it by accepting none.",
+      "context": null,
+      "payload": {
+        "p": "dust-20",
+        "op": "transfer",
+        "tick": "dust",
+        "amt": "10"
+      },
+      "raw": null
+    },
+    {
+      "id": "wrong-protocol",
+      "group": "Reader",
+      "title": "A different protocol identifier",
+      "expect": "reject",
+      "code": "bad_protocol",
+      "status": "verified",
+      "reason": "Content whose p is not dust-20 is not a DUST-20 message.",
+      "context": null,
+      "payload": {
+        "p": "brc-20",
+        "op": "deploy",
+        "tick": "dust",
+        "max": "1000",
+        "lim": "10"
+      },
+      "raw": null
+    },
+    {
+      "id": "non-string-value",
+      "group": "Reader",
+      "title": "A numeric JSON value",
+      "expect": "reject",
+      "code": "not_flat_strings",
+      "status": "universe",
+      "reason": "Every value must be a JSON string. A bare number is rejected because JSON numbers cannot carry large integers exactly.",
+      "context": null,
+      "payload": null,
+      "raw": "{\"p\":\"dust-20\",\"op\":\"mint\",\"tick\":\"dust\",\"amt\":100,\"sats\":\"54600\"}"
+    },
+    {
+      "id": "duplicate-key",
+      "group": "Reader",
+      "title": "A repeated field",
+      "expect": "reject",
+      "code": "duplicate_key",
+      "status": "universe",
+      "reason": "A duplicate key is rejected rather than resolved last-wins, because two readers would otherwise disagree about the amount.",
+      "context": null,
+      "payload": null,
+      "raw": "{\"p\":\"dust-20\",\"op\":\"mint\",\"tick\":\"dust\",\"amt\":\"100\",\"amt\":\"1\",\"sats\":\"54600\"}"
+    },
+    {
+      "id": "trailing-content",
+      "group": "Reader",
+      "title": "Trailing content after the object",
+      "expect": "reject",
+      "code": "trailing_content",
+      "status": "universe",
+      "reason": "Content after the closing brace makes the message ambiguous and is rejected.",
+      "context": null,
+      "payload": null,
+      "raw": "{\"p\":\"dust-20\",\"op\":\"mint\",\"tick\":\"dust\",\"amt\":\"1\",\"sats\":\"546\"} extra"
+    },
+    {
+      "id": "nested-object",
+      "group": "Reader",
+      "title": "A nested object",
+      "expect": "reject",
+      "code": "not_flat_strings",
+      "status": "universe",
+      "reason": "A payload is a flat object of strings. Nesting is rejected.",
+      "context": null,
+      "payload": null,
+      "raw": "{\"p\":\"dust-20\",\"op\":\"deploy\",\"tick\":\"dust\",\"meta\":{\"x\":\"1\"}}"
+    },
+    {
+      "id": "not-json",
+      "group": "Reader",
+      "title": "Content that is not a JSON object",
+      "expect": "reject",
+      "code": "not_object",
+      "status": "universe",
+      "reason": "Inscription content must parse as a single JSON object.",
+      "context": null,
+      "payload": null,
+      "raw": "dust-20 deploy dust 1000"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "partial-send",
+      "title": "Partial send with colored change",
+      "summary": "Send 10 of 91 units and keep the rest. The canonical safe construction.",
+      "unitSats": "546",
+      "tick": "dust",
+      "inputs": [
+        {
+          "kind": "colored",
+          "units": "91",
+          "valueSats": "49686",
+          "label": "Your DUST allocation"
+        },
+        {
+          "kind": "cardinal",
+          "valueSats": "20000",
+          "label": "Ordinary bitcoin for the fee"
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "colored",
+          "units": "10",
+          "label": "Receiver"
+        },
+        {
+          "kind": "colored",
+          "units": "81",
+          "label": "Your DUST change"
+        },
+        {
+          "kind": "cardinal",
+          "valueSats": "18000",
+          "label": "Ordinary bitcoin change"
+        }
+      ],
+      "expect": "safe"
+    },
+    {
+      "id": "full-send",
+      "title": "Send the whole allocation",
+      "summary": "Nothing remains, so no colored change output is needed.",
+      "unitSats": "546",
+      "tick": "dust",
+      "inputs": [
+        {
+          "kind": "colored",
+          "units": "91",
+          "valueSats": "49686",
+          "label": "Your DUST allocation"
+        },
+        {
+          "kind": "cardinal",
+          "valueSats": "20000",
+          "label": "Ordinary bitcoin for the fee"
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "colored",
+          "units": "91",
+          "label": "Receiver"
+        },
+        {
+          "kind": "cardinal",
+          "valueSats": "18000",
+          "label": "Ordinary bitcoin change"
+        }
+      ],
+      "expect": "safe"
+    },
+    {
+      "id": "missing-change",
+      "title": "Missing colored change burns the remainder",
+      "summary": "Only the receiver output is colored, so the other 81 units are destroyed.",
+      "unitSats": "546",
+      "tick": "dust",
+      "inputs": [
+        {
+          "kind": "colored",
+          "units": "91",
+          "valueSats": "49686",
+          "label": "Your DUST allocation"
+        },
+        {
+          "kind": "cardinal",
+          "valueSats": "20000",
+          "label": "Ordinary bitcoin for the fee"
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "colored",
+          "units": "10",
+          "label": "Receiver"
+        },
+        {
+          "kind": "cardinal",
+          "valueSats": "18000",
+          "label": "Ordinary bitcoin change"
+        }
+      ],
+      "expect": "burn"
+    },
+    {
+      "id": "fee-from-backing",
+      "title": "Paying the fee out of colored backing",
+      "summary": "No cardinal input, so the fee eats into the colored range and burns units.",
+      "unitSats": "546",
+      "tick": "dust",
+      "inputs": [
+        {
+          "kind": "colored",
+          "units": "91",
+          "valueSats": "49686",
+          "label": "Your DUST allocation"
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "colored",
+          "units": "10",
+          "label": "Receiver"
+        },
+        {
+          "kind": "colored",
+          "units": "78",
+          "label": "Your DUST change (short)"
+        }
+      ],
+      "expect": "burn"
+    },
+    {
+      "id": "merge",
+      "title": "Merging two allocations",
+      "summary": "Two colored inputs of the same ticker combine into one output.",
+      "unitSats": "546",
+      "tick": "dust",
+      "inputs": [
+        {
+          "kind": "colored",
+          "units": "30",
+          "valueSats": "16380",
+          "label": "Allocation A"
+        },
+        {
+          "kind": "colored",
+          "units": "61",
+          "valueSats": "33306",
+          "label": "Allocation B"
+        },
+        {
+          "kind": "cardinal",
+          "valueSats": "20000",
+          "label": "Ordinary bitcoin for the fee"
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "colored",
+          "units": "91",
+          "label": "Merged allocation"
+        },
+        {
+          "kind": "cardinal",
+          "valueSats": "18000",
+          "label": "Ordinary bitcoin change"
+        }
+      ],
+      "expect": "safe"
+    }
+  ]
+}

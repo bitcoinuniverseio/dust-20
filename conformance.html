@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DUST-20 conformance laboratory | DUST-20</title>
+  <meta name="description" content="Valid and invalid DUST-20 examples, each executed live in your browser, showing exactly why it passes or fails. Load any case into the playground.">
+  <link rel="canonical" href="https://bitcoinuniverseio.github.io/dust-20/conformance.html">
+  <meta name="theme-color" content="#3b2d19">
+  <meta name="color-scheme" content="light">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="DUST-20 documentation">
+  <meta property="og:title" content="DUST-20 conformance laboratory | DUST-20">
+  <meta property="og:description" content="Valid and invalid DUST-20 examples, each executed live in your browser, showing exactly why it passes or fails. Load any case into the playground.">
+  <meta property="og:url" content="https://bitcoinuniverseio.github.io/dust-20/conformance.html">
+  <meta property="og:image" content="https://bitcoinuniverseio.github.io/dust-20/assets/og.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DUST-20 conformance laboratory | DUST-20">
+  <meta name="twitter:description" content="Valid and invalid DUST-20 examples, each executed live in your browser, showing exactly why it passes or fails. Load any case into the playground.">
+  <meta name="twitter:image" content="https://bitcoinuniverseio.github.io/dust-20/assets/og.svg">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/site.css">
+  <script type="module" src="assets/site.js"></script>
+  <script type="module" src="assets/app.js"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","name":"DUST-20 conformance laboratory | DUST-20","headline":"Conformance laboratory","description":"Valid and invalid DUST-20 examples, each executed live in your browser, showing exactly why it passes or fails. Load any case into the playground.","url":"https://bitcoinuniverseio.github.io/dust-20/conformance.html","inLanguage":"en","dateModified":"2026-08-18","isPartOf":{"@type":"WebSite","name":"DUST-20 documentation","url":"https://bitcoinuniverseio.github.io/dust-20/"},"publisher":{"@type":"Organization","name":"Bitcoin Universe","url":"https://github.com/bitcoinuniverseio"}}</script>
+</head>
+<body data-page="conformance">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="./"><span class="brand-mark" aria-hidden="true">DUST</span><span>DUST-20</span></a>
+      <nav class="site-nav" data-site-nav aria-label="Primary"><a href="./">Start here</a><a href="how-it-works.html">How it works</a><a href="playground.html">Playground</a><a href="transactions.html">Transactions</a><a href="reference.html">Reference</a><a href="conformance.html" aria-current="page">Conformance</a><a href="indexer.html">For builders</a><a href="safety.html">Safety</a><a href="glossary.html">Glossary</a></nav>
+      <div class="header-tools">
+        <button class="search-trigger" type="button" data-search-trigger aria-label="Search the documentation">
+          <span aria-hidden="true">Search</span><kbd>/</kbd>
+        </button>
+        <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-navigation">Menu</button>
+      </div>
+    </div>
+  </header>
+  <dialog class="search-dialog" data-search-dialog aria-label="Search the documentation">
+    <form method="dialog" role="search">
+      <input type="search" placeholder="Search pages, fields, rules, terms…" aria-label="Search query" autocomplete="off">
+      <button class="button small secondary" type="button" onclick="this.closest('dialog').close()">Close</button>
+    </form>
+    <ul class="search-results" data-search-results></ul>
+  </dialog>
+  <div class="docs-layout">
+    <aside class="docs-sidebar">
+      <nav aria-label="Documentation">
+        <h2>Documentation</h2>
+        <ul class="sidebar-list">
+        <li><a href="./">Start here</a></li>
+        <li><a href="how-it-works.html">How it works</a></li>
+        <li><a href="playground.html">Playground</a></li>
+        <li><a href="transactions.html">Transactions</a></li>
+        <li><a href="reference.html">Reference</a></li>
+        <li><a href="conformance.html" aria-current="page">Conformance</a></li>
+        <li><a href="indexer.html">For builders</a></li>
+        <li><a href="safety.html">Safety</a></li>
+        <li><a href="glossary.html">Glossary</a></li>
+        </ul>
+      </nav>
+    </aside>
+    <main class="docs-main" id="main">
+      <div class="page-hero">
+        <p class="eyebrow">Conformance</p>
+        <h1>Conformance laboratory</h1>
+        <p class="lead">Every documented valid and invalid case, executed live in your browser right now by the same validator that powers the playground. If a case ever stopped behaving as documented, this page would say so.</p>
+      </div>
+
+      <div class="prose">
+        <p class="filter-status" data-conformance-status role="status">Running cases…</p>
+        <noscript><p class="noscript-note">These cases are executed in your browser. With JavaScript disabled, every case — its input, expected outcome and reason — is published in <a href="conformance.json">conformance.json</a>.</p></noscript>
+
+        <div class="chip-legend" data-status-legend></div>
+
+        <section id="lab">
+          <h2>Test cases</h2>
+          <p>Expand a case to see its input, the resolved deployment where one applies, the exact validator output, and a button to load it into the playground.</p>
+
+          <div class="filter-bar">
+            <div>
+              <label class="visually-hidden" for="vector-search">Search cases</label>
+              <input id="vector-search" type="search" data-vector-search placeholder="Search cases, reasons and issue codes…" autocomplete="off">
+            </div>
+            <div class="filter-chips" data-vector-filters role="group" aria-label="Filter by expected outcome">
+              <button type="button" data-expect-filter="all" aria-pressed="true">All</button>
+              <button type="button" data-expect-filter="accept" aria-pressed="false">Accepted</button>
+              <button type="button" data-expect-filter="reject" aria-pressed="false">Rejected</button>
+            </div>
+          </div>
+
+          <div data-conformance></div>
+        </section>
+
+        <section id="codes">
+          <h2>Issue codes</h2>
+          <p>Every rejection reports a stable code. These are the codes the fixtures assert against, so a change in behaviour breaks the test suite rather than quietly changing the documentation.</p>
+          <div class="table-wrap" data-issue-codes></div>
+
+          <div class="notice info">
+            <span class="notice-mark" aria-hidden="true">i</span>
+            <div>
+              <p class="notice-title">These cases are also a test suite</p>
+              <p>The same fixtures run under <code>npm test</code> in the repository. A documentation claim and the running validator therefore cannot drift apart: if a vector says a payload is rejected with a given code, the build fails unless the validator agrees.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    <nav class="page-nav" aria-label="Pagination">
+      <a href="reference.html"><em>Previous</em><b>Reference</b></a>
+      <a href="indexer.html"><em>Next</em><b>For builders</b></a>
+    </nav>
+    </main>
+    <aside class="docs-toc">
+      <nav aria-label="On this page">
+        <h2>On this page</h2>
+        <ul class="toc-list">
+        <li><a href="#lab">Test cases</a></li>
+        <li><a href="#codes">Issue codes</a></li>
+        </ul>
+      </nav>
+    </aside>
+  </div>
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <span class="footer-brand-mark" aria-hidden="true">DUST</span>
+        <h2>DUST-20</h2>
+        <p>DUST-20 binds every token unit to an exact number of satoshis. Deploy and mint are inscriptions; every later movement is an ordinary Bitcoin spend of the satoshis that carry the units.</p>
+      </div>
+      <div>
+        <h2>Documentation</h2>
+        <ul><li><a href="./">Start here</a></li><li><a href="how-it-works.html">How it works</a></li><li><a href="playground.html">Playground</a></li><li><a href="transactions.html">Transactions</a></li><li><a href="reference.html">Reference</a></li></ul>
+      </div>
+      <div>
+        <h2>More</h2>
+        <ul><li><a href="conformance.html">Conformance</a></li><li><a href="indexer.html">For builders</a></li><li><a href="safety.html">Safety</a></li><li><a href="glossary.html">Glossary</a></li></ul>
+      </div>
+      <div>
+        <h2>Machine readable</h2>
+        <ul>
+          <li><a href="llms.txt">llms.txt</a></li>
+          <li><a href="docs.json">docs.json</a></li>
+          <li><a href="conformance.json">conformance.json</a></li>
+          <li><a href="https://github.com/bitcoinuniverseio/dust-20">Source repository</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      Experimental documentation, last updated 2026-08-18. Review every Bitcoin transaction in your wallet before signing — this site never asks for a key and never signs anything.
+    </div>
+  </footer>
+</body>
+</html>

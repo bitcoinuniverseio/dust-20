@@ -1,0 +1,170 @@
+    <div class="shell hero">
+      <div>
+        <p class="eyebrow">A tangible token model on Bitcoin</p>
+        <h1>Tokens with <span class="accent">Bitcoin at their core.</span></h1>
+        <p class="lead">DUST-20 connects every token unit to an explicit amount of satoshis. Supply, ownership and movement all live inside Bitcoin's own UTXO model — and this site lets you build, validate and visualize all of it in your browser.</p>
+        <div class="hero-actions">
+          <a class="button" href="how-it-works.html">Understand DUST-20 <span aria-hidden="true">→</span></a>
+          <a class="button secondary" href="playground.html">Open the playground</a>
+        </div>
+      </div>
+      <figure class="dust-lifecycle">
+        <div class="lifecycle-heading">
+          <span class="lifecycle-name">DUST-20</span>
+          <span><strong>One public story</strong><span>from idea to ownership</span></span>
+        </div>
+        <ol class="lifecycle-steps">
+          <li class="lifecycle-step"><span class="lifecycle-number">1</span><span class="lifecycle-kind">Deploy</span><p class="lifecycle-title">Fix the rule</p><p>A ticker, a supply, and the exact satoshis that back one unit.</p></li>
+          <li class="lifecycle-step"><span class="lifecycle-number">2</span><span class="lifecycle-kind">Mint</span><p class="lifecycle-title">Create units</p><p>Units appear in an output holding exactly the declared satoshis.</p></li>
+          <li class="lifecycle-step"><span class="lifecycle-number">3</span><span class="lifecycle-kind">Hold</span><p class="lifecycle-title">Own the output</p><p>The allocation lives in a Bitcoin UTXO under your keys.</p></li>
+          <li class="lifecycle-step"><span class="lifecycle-number">4</span><span class="lifecycle-kind">Move</span><p class="lifecycle-title">Spend the satoshis</p><p>An ordinary Bitcoin spend carries the units to their next home.</p></li>
+        </ol>
+        <figcaption>Every confirmed step becomes part of Bitcoin's lasting public history.</figcaption>
+      </figure>
+    </div>
+
+    <section class="section tint" id="what">
+      <div class="shell">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Start here</p>
+            <h2>What is DUST-20?</h2>
+          </div>
+          <p>A way of representing fungible tokens on Bitcoin where each unit is tied to a fixed number of satoshis, so the token and the bitcoin carrying it move together.</p>
+        </div>
+        <div class="grid three">
+          <article class="card">
+            <span class="card-index">01 / THE IDEA</span>
+            <h3>A unit is a measured piece of bitcoin</h3>
+            <p>A deploy declares how many satoshis stand behind one unit. That number never changes, so any unit of that ticker always occupies exactly the same amount of Bitcoin.</p>
+          </article>
+          <article class="card">
+            <span class="card-index">02 / THE CARRIER</span>
+            <h3>Ownership is an unspent output</h3>
+            <p>There are no balances or accounts. You own units because you control the UTXO whose satoshis carry them — the same thing that makes you own bitcoin.</p>
+          </article>
+          <article class="card">
+            <span class="card-index">03 / THE MOVEMENT</span>
+            <h3>Sending is an ordinary spend</h3>
+            <p>There is no transfer message. You move units by spending the satoshis that hold them, which means the transaction you build <em>is</em> the transfer.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="satoshis">
+      <div class="shell">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Why it matters</p>
+            <h2>Why satoshis matter here.</h2>
+          </div>
+          <p>In most token systems the amount is just a number in a message. In DUST-20 the amount is physically present in the transaction as bitcoin.</p>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>The amount is verifiable without trusting anyone</h3>
+            <p>If a ticker is backed at 546 satoshis per unit, then 91 units occupy exactly 49,686 satoshis. Anyone can check that number against the raw transaction — it is not a claim in a database.</p>
+          </article>
+          <article class="card">
+            <h3>It also means satoshis can be lost</h3>
+            <p>Because the units live in the satoshis, anything that happens to those satoshis happens to the units. Pay them to a miner as a fee and the units are destroyed. This is the single most important thing to understand before you send.</p>
+          </article>
+        </div>
+        <div class="notice critical" style="margin-top:1.05rem">
+          <span class="notice-mark" aria-hidden="true">!</span>
+          <div>
+            <p class="notice-title">Sending part of your balance requires a change output</p>
+            <p>If you hold 91 units and send 10, the remaining 81 need their own output. Leave it out and those 81 units are burned — Bitcoin will confirm the transaction normally and nothing will warn you. The <a href="transactions.html#visualizer">transaction visualizer</a> shows exactly what happens.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section tint" id="utxo">
+      <div class="shell">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">The object</p>
+            <h2>What is a DUST-20 UTXO?</h2>
+          </div>
+          <p>An ordinary Bitcoin output that an indexer has determined carries token units, because of where its satoshis came from.</p>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Bitcoin sees an ordinary output</h3>
+            <p>There is no special script, no metadata attached to the output, and no way for a Bitcoin node to tell the difference. A DUST-20 output is a normal output holding a specific number of satoshis.</p>
+          </article>
+          <article class="card">
+            <h3>The colour is an interpretation</h3>
+            <p>Software follows the history: a mint created units in an output, and every spend since then moved those satoshis. Anyone applying the same rules to the same chain reaches the same answer — but it is a reading of Bitcoin, not something Bitcoin enforces.</p>
+          </article>
+        </div>
+        <p class="lead" style="margin-top:1.6rem;max-width:62ch">Because the interpretation depends on <em>which satoshis went where</em>, the order and size of a transaction's outputs decide the result. That is why building a DUST-20 transaction is different from building an ordinary payment.</p>
+      </div>
+    </section>
+
+    <section class="section" id="operations">
+      <div class="shell">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">The operations</p>
+            <h2>Deploy, mint and transfer.</h2>
+          </div>
+          <p>Only two of these are messages you write. The third is something you do with a Bitcoin transaction.</p>
+        </div>
+        <div class="grid four" data-operation-summary>
+          <article class="card"><h3>Deploy</h3><p>Creates a ticker and fixes its satoshi backing rule.</p></article>
+          <article class="card"><h3>Mint</h3><p>Creates units in an output matching the declared backing.</p></article>
+          <article class="card"><h3>Transfer</h3><p>An ordinary Bitcoin spend. There is no transfer inscription.</p></article>
+          <article class="card"><h3>Burn</h3><p>A derived outcome when satoshis carrying units are lost.</p></article>
+        </div>
+        <div class="notice info" style="margin-top:1.2rem">
+          <span class="notice-mark" aria-hidden="true">i</span>
+          <div>
+            <p class="notice-title">Every rule on this site says where it comes from</p>
+            <p>Statements are labelled as verified protocol rules, current Universe implementation behaviour, legacy profile, or unresolved. Nothing is invented to fill a gap — see the <a href="reference.html#reconciliation">reconciliation section</a> for the places where sources disagree and what this site does about it.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section tint" id="paths">
+      <div class="shell">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Choose your path</p>
+            <h2>Where do you want to go?</h2>
+          </div>
+          <p>This documentation serves people discovering DUST-20 for the first time and developers implementing support from scratch.</p>
+        </div>
+        <div class="path-grid">
+          <a class="path-card" href="how-it-works.html">
+            <em>UNDERSTAND</em>
+            <b>I just want to understand DUST-20</b>
+            <span>Start with the lifecycle: what a deploy fixes, what a mint creates, and why satoshis matter.</span>
+          </a>
+          <a class="path-card" href="playground.html#deploy">
+            <em>CREATE</em>
+            <b>I want to create a token</b>
+            <span>Build a deploy in the playground, watch the arithmetic derive itself, then mint against it.</span>
+          </a>
+          <a class="path-card" href="indexer.html">
+            <em>BUILD</em>
+            <b>I want to build DUST-20 support</b>
+            <span>Discovery, resolution, allocation records, reorgs and the API expectations an integration needs.</span>
+          </a>
+          <a class="path-card" href="reference.html">
+            <em>REFERENCE</em>
+            <b>I want the technical reference</b>
+            <span>Every field, type, constraint, validation rule and provenance label, searchable.</span>
+          </a>
+        </div>
+
+        <div class="source-list" style="margin-top:1.6rem">
+          <a class="source-link" href="conformance.html"><span><b>Conformance laboratory</b>Valid and invalid payloads, executed live in your browser.</span><em>OPEN</em></a>
+          <a class="source-link" href="safety.html"><span><b>Stay safe</b>What to check before you approve a DUST-20 transaction.</span><em>OPEN</em></a>
+          <a class="source-link" href="https://inscribe.bitcoinuniverse.io"><span><b>Create with Bitcoin Universe</b>Turn a deploy or mint into an on-chain inscription.</span><em>OPEN ↗</em></a>
+        </div>
+      </div>
+    </section>

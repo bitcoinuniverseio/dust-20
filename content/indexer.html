@@ -1,0 +1,161 @@
+      <div class="page-hero">
+        <p class="eyebrow">For builders</p>
+        <h1>Indexer and builder guide</h1>
+        <p class="lead">What it takes to reconstruct DUST-20 state correctly: strict parsing, deployment resolution, positional allocation records, and honest handling of the moments when the chain moves under you.</p>
+      </div>
+
+      <div class="prose">
+        <div class="notice info">
+          <span class="notice-mark" aria-hidden="true">i</span>
+          <div>
+            <p class="notice-title">A balance is a service's view, not consensus</p>
+            <p>Bitcoin does not know what DUST-20 is. Every balance is one implementation's interpretation of the chain. That makes provenance — source, coverage, observation height — part of the answer, not metadata to be stripped.</p>
+          </div>
+        </div>
+
+        <section id="pipeline">
+          <h2>The pipeline</h2>
+          <p>Indexing DUST-20 means indexing state transitions, not page loads. Each stage below has a job it must finish before the next one can be correct.</p>
+          <div class="timeline" data-indexer-stages></div>
+
+          <h3>What you need to read from</h3>
+          <p>Two sources are required, and they must be cross-checked against each other:</p>
+          <ul>
+            <li><strong>Complete blocks</strong> with input values, output values and output addresses. Without input values you cannot build the satoshi range, and without it you cannot compute a single transfer.</li>
+            <li><strong>Authoritative inscription data</strong> for inscription identity, content, genesis output and genesis offset. A mint is only valid if its inscription sits at offset zero of an output holding exactly the declared satoshis.</li>
+          </ul>
+          <p>Verify the network, the genesis hash, block continuity and agreement between the two sources on every poll. Fail closed on a gap, a mismatch, a malformed response or an unavailable upstream. An empty result after a timeout is <em>unavailable</em>, never a verified zero balance.</p>
+        </section>
+
+        <section id="allocation">
+          <h2>The allocation record</h2>
+          <p>A balance is the sum of allocation records. Each record must answer which output, which rule, which source, and what chain state produced its interpretation.</p>
+          <div class="table-wrap" data-allocation-record></div>
+
+          <div class="packet">
+            <div class="packet-header">
+              <span>Illustrative allocation record</span>
+              <button class="copy-button" type="button" data-copy-target="[data-allocation-json]">Copy JSON</button>
+            </div>
+            <pre><code data-allocation-json>{
+  "outpoint": "&lt;txid&gt;:0",
+  "tick": "dust",
+  "amount": "91",
+  "unit_sats": "546",
+  "offset_sats": "0",
+  "output_value_sats": "49686",
+  "origin_inscription_id": "&lt;inscription id&gt;",
+  "owner_address": "&lt;address&gt;",
+  "status": "confirmed",
+  "observed_height": 0,
+  "source": "your-indexer-id"
+}</code></pre>
+            <p>An implementation-facing shape, not a standardized public API. The requirement is traceability: a client must be able to recheck how the amount was derived.</p>
+          </div>
+        </section>
+
+        <section id="propagation">
+          <h2>Propagation algorithm</h2>
+          <p>This is the core of a DUST-20 indexer. Everything else is bookkeeping around it.</p>
+
+          <ol>
+            <li>Skip coinbase transactions.</li>
+            <li>Walk the inputs in order, accumulating a running satoshi total. For each input, look up any allocations on that outpoint. An allocation's span in the combined input range is <code>[running_total + offset, running_total + offset + amount × unit_sats)</code>.</li>
+            <li>If no input carries an allocation, there is nothing to do.</li>
+            <li>Mark every contributing outpoint spent.</li>
+            <li>Walk the outputs in order, accumulating a second running total, to give each output a span <code>[start, start + value)</code>. Resolve each output to an address; an output you cannot attribute is unsupported.</li>
+            <li>For each allocation, intersect its span with each output span. Skip unsupported outputs. Within the intersection, compute the first whole unit boundary at or after the intersection start and the last whole boundary at or before its end. The units between them survive, at a new offset inside that output.</li>
+            <li>Anything not accounted for is burned: <code>burned = amount − surviving</code>.</li>
+            <li>Emit a transfer effect only where the owning address actually changed. Same-owner movement is a split or merge, not a transfer.</li>
+          </ol>
+
+          <div class="formula">
+            <code>first = ⌈(∩start − span_start) / unit_sats⌉   last = ⌊(∩end − span_start) / unit_sats⌋</code>
+            <small>Units surviving in an output = last − first, when positive. Use exact integer division; a float here loses satoshi precision and produces wrong balances.</small>
+          </div>
+
+          <div class="notice critical">
+            <span class="notice-mark" aria-hidden="true">!</span>
+            <div>
+              <p class="notice-title">Conserve, then verify</p>
+              <p>Assert <code>surviving + burned = input_units</code> for every allocation, every time. An unexplained satoshi difference is a defect in your implementation, not a rounding artifact to be tolerated. Treat it as a failure and stop.</p>
+            </div>
+          </div>
+
+          <p>The <a href="transactions.html#visualizer">transaction visualizer</a> runs exactly this algorithm in the browser, and <a href="conformance.json">conformance.json</a> publishes the scenarios you can test against.</p>
+        </section>
+
+        <section id="chain-state">
+          <h2>Chain instability</h2>
+          <p>Reorgs and replacements are product states, not rare edge cases. They must be designed for, because they directly affect what a wallet may safely spend or list.</p>
+
+          <div class="grid two">
+            <article class="card">
+              <h3>Reorganizations</h3>
+              <p>Emit invalidations newest first. Reverse ledger mutations, restore allocations that had been marked spent, remove allocations the orphaned branch created, then replay the replacement branch. Track block association so this is possible at all.</p>
+            </article>
+            <article class="card">
+              <h3>Replacement and double-spend</h3>
+              <p>A replaced transaction can have a different output layout, so it can burn units the original preserved. Mark affected pending allocations invalid or uncertain — never retain the old interpretation as spendable.</p>
+            </article>
+            <article class="card">
+              <h3>Mempool</h3>
+              <p>Coverage of unconfirmed state is partial: there is no exhaustive feed with a stable pending lifecycle and disappearance handling. Label pending state as such and never let it back an irreversible decision.</p>
+            </article>
+            <article class="card">
+              <h3>Finality</h3>
+              <p>The protocol defines no confirmation threshold. Publish your own finality depth, expose confirmation counts, and recompute derived state when the chain moves.</p>
+            </article>
+          </div>
+        </section>
+
+        <section id="api">
+          <h2>API expectations</h2>
+          <p>No canonical DUST-20 indexer API exists. Consumers should treat any remote response as a contract that needs schema validation and an explicit source policy.</p>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Area</th><th>Expectation</th><th>Failure mode it prevents</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Reads</strong></td>
+                  <td>Return source identity, coverage level, observation height or time, pagination and a state label alongside the data.</td>
+                  <td>A bare array that cannot say whether it is complete, fresh, or from the source you think.</td>
+                </tr>
+                <tr>
+                  <td><strong>Errors</strong></td>
+                  <td>Differentiate unavailable, malformed, stale, invalid-request, not-found and contradictory-state.</td>
+                  <td>A client interpreting every failure as an empty balance, then letting a user spend against it.</td>
+                </tr>
+                <tr>
+                  <td><strong>Near signing</strong></td>
+                  <td>Revalidate selected outpoints at build time and return the height or timestamp the decision was made at.</td>
+                  <td>Building against an output that was spent while the page was open.</td>
+                </tr>
+                <tr>
+                  <td><strong>Coverage</strong></td>
+                  <td>State plainly whether coverage is complete, partial or unavailable, and for which asset classes.</td>
+                  <td>Silently presenting partial mempool coverage as a full picture.</td>
+                </tr>
+                <tr>
+                  <td><strong>Versioning</strong></td>
+                  <td>Version the response shape, or expose the uncertainty explicitly.</td>
+                  <td>A schema change breaking consumers with no signal that anything changed.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Before you ship a flow to users</h3>
+          <ul class="checklist">
+            <li>Deploy and mint conformance fixtures cover valid and invalid field combinations, exact arithmetic and real output values.</li>
+            <li>Transaction fixtures assert selected inputs, recipient outputs, colored change, cardinal fee funding and ordinary change — including the constructions that burn units.</li>
+            <li>Conservation is asserted on every allocation transition, and a mismatch fails the build.</li>
+            <li>Reorg, replacement, stale-listing and indexer-outage behaviour is tested, not assumed.</li>
+            <li>Any workflow that could expose private key material is removed or independently security-reviewed.</li>
+            <li>Operators have rehearsed the stop, diagnose, communicate and re-enable sequence with redacted evidence.</li>
+          </ul>
+        </section>
+      </div>

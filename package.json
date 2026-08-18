@@ -1,0 +1,21 @@
+{
+  "name": "dust-20",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "DUST-20 interactive documentation and protocol laboratory.",
+  "homepage": "https://bitcoinuniverseio.github.io/dust-20/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bitcoinuniverseio/dust-20.git"
+  },
+  "license": "MIT",
+  "scripts": {
+    "generate": "node tools/build.mjs",
+    "check:generated": "node tools/build.mjs --check",
+    "test:protocol": "node --test test/protocol.test.mjs",
+    "test:docs": "node tools/check-docs.mjs",
+    "test": "npm run check:generated && npm run test:protocol && npm run test:docs",
+    "serve": "node tools/serve.mjs"
+  }
+}

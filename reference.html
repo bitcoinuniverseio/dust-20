@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DUST-20 protocol reference | DUST-20</title>
+  <meta name="description" content="Complete searchable DUST-20 field reference: types, constraints, examples, validation rules, provenance and compatibility notes for every field of every operation.">
+  <link rel="canonical" href="https://bitcoinuniverseio.github.io/dust-20/reference.html">
+  <meta name="theme-color" content="#3b2d19">
+  <meta name="color-scheme" content="light">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="DUST-20 documentation">
+  <meta property="og:title" content="DUST-20 protocol reference | DUST-20">
+  <meta property="og:description" content="Complete searchable DUST-20 field reference: types, constraints, examples, validation rules, provenance and compatibility notes for every field of every operation.">
+  <meta property="og:url" content="https://bitcoinuniverseio.github.io/dust-20/reference.html">
+  <meta property="og:image" content="https://bitcoinuniverseio.github.io/dust-20/assets/og.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DUST-20 protocol reference | DUST-20">
+  <meta name="twitter:description" content="Complete searchable DUST-20 field reference: types, constraints, examples, validation rules, provenance and compatibility notes for every field of every operation.">
+  <meta name="twitter:image" content="https://bitcoinuniverseio.github.io/dust-20/assets/og.svg">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/site.css">
+  <script type="module" src="assets/site.js"></script>
+  <script type="module" src="assets/app.js"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","name":"DUST-20 protocol reference | DUST-20","headline":"Protocol reference","description":"Complete searchable DUST-20 field reference: types, constraints, examples, validation rules, provenance and compatibility notes for every field of every operation.","url":"https://bitcoinuniverseio.github.io/dust-20/reference.html","inLanguage":"en","dateModified":"2026-08-18","isPartOf":{"@type":"WebSite","name":"DUST-20 documentation","url":"https://bitcoinuniverseio.github.io/dust-20/"},"publisher":{"@type":"Organization","name":"Bitcoin Universe","url":"https://github.com/bitcoinuniverseio"}}</script>
+</head>
+<body data-page="reference">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="./"><span class="brand-mark" aria-hidden="true">DUST</span><span>DUST-20</span></a>
+      <nav class="site-nav" data-site-nav aria-label="Primary"><a href="./">Start here</a><a href="how-it-works.html">How it works</a><a href="playground.html">Playground</a><a href="transactions.html">Transactions</a><a href="reference.html" aria-current="page">Reference</a><a href="conformance.html">Conformance</a><a href="indexer.html">For builders</a><a href="safety.html">Safety</a><a href="glossary.html">Glossary</a></nav>
+      <div class="header-tools">
+        <button class="search-trigger" type="button" data-search-trigger aria-label="Search the documentation">
+          <span aria-hidden="true">Search</span><kbd>/</kbd>
+        </button>
+        <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-navigation">Menu</button>
+      </div>
+    </div>
+  </header>
+  <dialog class="search-dialog" data-search-dialog aria-label="Search the documentation">
+    <form method="dialog" role="search">
+      <input type="search" placeholder="Search pages, fields, rules, terms…" aria-label="Search query" autocomplete="off">
+      <button class="button small secondary" type="button" onclick="this.closest('dialog').close()">Close</button>
+    </form>
+    <ul class="search-results" data-search-results></ul>
+  </dialog>
+  <div class="docs-layout">
+    <aside class="docs-sidebar">
+      <nav aria-label="Documentation">
+        <h2>Documentation</h2>
+        <ul class="sidebar-list">
+        <li><a href="./">Start here</a></li>
+        <li><a href="how-it-works.html">How it works</a></li>
+        <li><a href="playground.html">Playground</a></li>
+        <li><a href="transactions.html">Transactions</a></li>
+        <li><a href="reference.html" aria-current="page">Reference</a></li>
+        <li><a href="conformance.html">Conformance</a></li>
+        <li><a href="indexer.html">For builders</a></li>
+        <li><a href="safety.html">Safety</a></li>
+        <li><a href="glossary.html">Glossary</a></li>
+        </ul>
+      </nav>
+    </aside>
+    <main class="docs-main" id="main">
+      <div class="page-hero">
+        <p class="eyebrow">Reference</p>
+        <h1>Protocol reference</h1>
+        <p class="lead">Every operation, field, formula and rule, each labelled with where it comes from. Where the legacy specification and the current implementation disagree, both positions are stated and the difference is explained rather than hidden.</p>
+      </div>
+
+      <div class="prose">
+        <div class="chip-legend" data-status-legend>
+          <div><span class="chip good">VERIFIED</span><p>Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer.</p></div>
+        </div>
+
+        <section id="operations">
+          <h2>Operations</h2>
+          <p>DUST-20 uses inscriptions for exactly two operations. Movement and destruction are consequences of ordinary Bitcoin spends, not messages anyone writes.</p>
+          <div class="grid two" data-operations></div>
+        </section>
+
+        <section id="fields">
+          <h2>Field ledger</h2>
+          <p>Each operation declares an exact key set. A payload carrying an unknown field, or missing a required one, is rejected outright — it does not degrade to a warning.</p>
+
+          <div class="filter-bar">
+            <div>
+              <label class="visually-hidden" for="field-search">Search fields</label>
+              <input id="field-search" type="search" data-field-search placeholder="Search fields, constraints and rules…" autocomplete="off">
+            </div>
+            <div class="filter-chips" data-field-status role="group" aria-label="Filter by provenance">
+              <button type="button" data-status-filter="all" aria-pressed="true">All</button>
+              <button type="button" data-status-filter="verified" aria-pressed="false">Verified</button>
+              <button type="button" data-status-filter="universe" aria-pressed="false">Universe</button>
+              <button type="button" data-status-filter="legacy" aria-pressed="false">Legacy</button>
+              <button type="button" data-status-filter="unresolved" aria-pressed="false">Unresolved</button>
+            </div>
+          </div>
+          <p class="filter-status" data-field-count role="status"></p>
+          <noscript><p class="noscript-note">Search and filtering need JavaScript, but the complete field ledger is rendered below. The same data is published in <a href="docs.json">docs.json</a> and <a href="llms.txt">llms.txt</a>.</p></noscript>
+
+          <div data-fields></div>
+        </section>
+
+        <section id="formulas">
+          <h2>Formulas</h2>
+          <p>All arithmetic uses exact integers. Satoshi values routinely exceed what a 64-bit float can hold without loss, so an implementation using doubles will silently produce wrong results at scale.</p>
+          <div data-formulas></div>
+        </section>
+
+        <section id="rules">
+          <h2>Rules</h2>
+          <p>Constraints that span more than one field, covering the reader profile, deployment resolution, mint placement, transfer semantics and indexer behaviour.</p>
+          <div data-rules></div>
+        </section>
+
+        <section id="reconciliation">
+          <h2>Where sources disagree</h2>
+          <p>This is the part of the documentation that matters most for anyone implementing DUST-20. Earlier versions of these docs listed several of these as unreconciled compatibility splits. The current production implementation answers most of them — but it answers them as one implementation, not as a ratified standard.</p>
+          <div data-reconciliations></div>
+        </section>
+
+        <section id="open">
+          <h2>Open questions</h2>
+          <p>These have no authoritative answer. They are documented as open rather than filled in with a plausible-sounding rule, because a wrong guess here destroys balances.</p>
+          <div data-open-questions></div>
+
+          <div class="notice">
+            <span class="notice-mark" aria-hidden="true">i</span>
+            <div>
+              <p class="notice-title">Machine-readable versions</p>
+              <p>Everything on this page is generated from one data model and published as <a href="docs.json">docs.json</a>, <a href="llms.txt">llms.txt</a> and <a href="conformance.json">conformance.json</a>. There is no second, contradictory protocol definition anywhere in this repository.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    <nav class="page-nav" aria-label="Pagination">
+      <a href="transactions.html"><em>Previous</em><b>Transactions</b></a>
+      <a href="conformance.html"><em>Next</em><b>Conformance</b></a>
+    </nav>
+    </main>
+    <aside class="docs-toc">
+      <nav aria-label="On this page">
+        <h2>On this page</h2>
+        <ul class="toc-list">
+        <li><a href="#operations">Operations</a></li>
+        <li><a href="#fields">Field ledger</a></li>
+        <li><a href="#formulas">Formulas</a></li>
+        <li><a href="#rules">Rules</a></li>
+        <li><a href="#reconciliation">Where sources disagree</a></li>
+        <li><a href="#open">Open questions</a></li>
+        </ul>
+      </nav>
+    </aside>
+  </div>
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <span class="footer-brand-mark" aria-hidden="true">DUST</span>
+        <h2>DUST-20</h2>
+        <p>DUST-20 binds every token unit to an exact number of satoshis. Deploy and mint are inscriptions; every later movement is an ordinary Bitcoin spend of the satoshis that carry the units.</p>
+      </div>
+      <div>
+        <h2>Documentation</h2>
+        <ul><li><a href="./">Start here</a></li><li><a href="how-it-works.html">How it works</a></li><li><a href="playground.html">Playground</a></li><li><a href="transactions.html">Transactions</a></li><li><a href="reference.html">Reference</a></li></ul>
+      </div>
+      <div>
+        <h2>More</h2>
+        <ul><li><a href="conformance.html">Conformance</a></li><li><a href="indexer.html">For builders</a></li><li><a href="safety.html">Safety</a></li><li><a href="glossary.html">Glossary</a></li></ul>
+      </div>
+      <div>
+        <h2>Machine readable</h2>
+        <ul>
+          <li><a href="llms.txt">llms.txt</a></li>
+          <li><a href="docs.json">docs.json</a></li>
+          <li><a href="conformance.json">conformance.json</a></li>
+          <li><a href="https://github.com/bitcoinuniverseio/dust-20">Source repository</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      Experimental documentation, last updated 2026-08-18. Review every Bitcoin transaction in your wallet before signing — this site never asks for a key and never signs anything.
+    </div>
+  </footer>
+</body>
+</html>

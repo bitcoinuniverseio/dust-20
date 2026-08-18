@@ -1,0 +1,1076 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "generator": "tools/build.mjs from assets/protocol-data.js",
+  "warning": "Generated file. Edit assets/protocol-data.js and run `npm run generate`; changes made here are overwritten.",
+  "protocol": {
+    "id": "dust-20",
+    "name": "DUST-20",
+    "chain": "Bitcoin",
+    "classification": "Satoshi-denominated colored UTXO fungibility protocol",
+    "updated": "2026-08-18",
+    "site": "https://bitcoinuniverseio.github.io/dust-20/",
+    "repository": "https://github.com/bitcoinuniverseio/dust-20",
+    "organization": "https://github.com/bitcoinuniverseio",
+    "inscribe": "https://inscribe.bitcoinuniverse.io",
+    "summary": "DUST-20 binds every token unit to an exact number of satoshis. Deploy and mint are inscriptions; every later movement is an ordinary Bitcoin spend of the satoshis that carry the units."
+  },
+  "updated": "2026-08-18",
+  "limits": {
+    "maxBitcoinSats": "2100000000000000",
+    "maxAtomic": "340282366920938463463374607431768211455",
+    "maxContentBytes": 4096,
+    "minTickBytes": 1,
+    "maxTickBytes": 64,
+    "decimals": 0
+  },
+  "statuses": {
+    "verified": {
+      "id": "verified",
+      "label": "Verified protocol rule",
+      "short": "VERIFIED",
+      "tone": "good",
+      "description": "Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree."
+    },
+    "universe": {
+      "id": "universe",
+      "label": "Current Universe implementation",
+      "short": "UNIVERSE",
+      "tone": "info",
+      "description": "Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ."
+    },
+    "legacy": {
+      "id": "legacy",
+      "label": "Legacy profile",
+      "short": "LEGACY",
+      "tone": "muted",
+      "description": "Stated by legacy DUST-20 documentation. Superseded, narrowed, or not enforced identically by the current implementation."
+    },
+    "implementation": {
+      "id": "implementation",
+      "label": "Implementation-specific",
+      "short": "IMPL",
+      "tone": "warn",
+      "description": "The behaviour of one application or service. Useful evidence, but not a protocol rule. Do not rely on it across implementations."
+    },
+    "unresolved": {
+      "id": "unresolved",
+      "label": "Unresolved / experimental",
+      "short": "UNRESOLVED",
+      "tone": "danger",
+      "description": "No authoritative answer exists. Documented as an open question rather than invented. Stop before an irreversible step."
+    }
+  },
+  "sources": {
+    "legacy": {
+      "id": "legacy",
+      "label": "Legacy DUST-20 specification",
+      "url": "https://dust-20.gitbook.io/dust20/readme.md",
+      "note": "Documents the deploy and mint payloads and a colored-UTXO transfer example."
+    },
+    "universe": {
+      "id": "universe",
+      "label": "Bitcoin Universe production indexer",
+      "url": "https://github.com/bitcoinuniverseio",
+      "note": "index-dust20 — reconstructs colored UTXO ownership from Bitcoin Core and a shared Ord 0.29 instance."
+    },
+    "inscribe": {
+      "id": "inscribe",
+      "label": "Bitcoin Universe Inscribe",
+      "url": "https://inscribe.bitcoinuniverse.io",
+      "note": "Application that builds DUST-20 deploy and mint inscriptions."
+    },
+    "docs": {
+      "id": "docs",
+      "label": "This documentation repository",
+      "url": "https://github.com/bitcoinuniverseio/dust-20",
+      "note": "Source of the published documentation and its conformance fixtures."
+    }
+  },
+  "operations": [
+    {
+      "id": "deploy",
+      "label": "Deploy",
+      "carrier": "inscription",
+      "status": "verified",
+      "summary": "Creates a ticker and fixes the satoshi backing rule for every one of its units.",
+      "detail": "A deploy declares the maximum supply, the exact satoshis that back one unit, the total backing that follows from those two numbers, and an optional per-mint satoshi cap.",
+      "required": [
+        "p",
+        "op",
+        "tick",
+        "supply",
+        "unit_sats",
+        "max_sats"
+      ],
+      "optional": [
+        "lim_sats"
+      ]
+    },
+    {
+      "id": "mint",
+      "label": "Mint",
+      "carrier": "inscription",
+      "status": "verified",
+      "summary": "Creates units in a Bitcoin output whose value equals the declared satoshi backing.",
+      "detail": "A mint resolves an accepted deployment, states an amount of whole units, and states the satoshis backing them. The Bitcoin output that carries the inscription must hold exactly that many satoshis.",
+      "required": [
+        "p",
+        "op",
+        "tick",
+        "amt",
+        "sats"
+      ],
+      "optional": []
+    },
+    {
+      "id": "transfer",
+      "label": "Transfer",
+      "carrier": "bitcoin-spend",
+      "status": "universe",
+      "summary": "An ordinary Bitcoin spend. There is no transfer inscription.",
+      "detail": "Units follow the satoshis that carry them, in ordinal first-in-first-out order. A whole unit that lands entirely inside one supported output survives; anything else is burned. No JSON payload participates.",
+      "required": [],
+      "optional": []
+    },
+    {
+      "id": "burn",
+      "label": "Burn",
+      "carrier": "bitcoin-spend",
+      "status": "universe",
+      "summary": "A derived outcome, not an operation anyone writes.",
+      "detail": "Units are burned when the satoshis carrying them are paid to miners as fees, sent to an output the indexer cannot attribute to an address, or split so that no whole unit fits inside a single output.",
+      "required": [],
+      "optional": []
+    }
+  ],
+  "fields": [
+    {
+      "name": "p",
+      "ops": [
+        "deploy",
+        "mint"
+      ],
+      "type": "string",
+      "required": true,
+      "constraint": "Exactly \"dust-20\".",
+      "example": "dust-20",
+      "rule": "Content whose \"p\" is not the literal dust-20 is not a DUST-20 message and is ignored.",
+      "status": "verified",
+      "source": [
+        "legacy",
+        "universe"
+      ],
+      "notes": "The protocol identifier is matched literally. There is no aliasing, casing tolerance, or versioned variant."
+    },
+    {
+      "name": "op",
+      "ops": [
+        "deploy",
+        "mint"
+      ],
+      "type": "string",
+      "required": true,
+      "constraint": "Exactly \"deploy\" or \"mint\".",
+      "example": "deploy",
+      "rule": "Any other operation value is rejected. No transfer or burn inscription exists.",
+      "status": "verified",
+      "source": [
+        "legacy",
+        "universe"
+      ],
+      "notes": "The production indexer rejects an inscription whose op is anything other than deploy or mint, including op: \"transfer\"."
+    },
+    {
+      "name": "tick",
+      "ops": [
+        "deploy",
+        "mint"
+      ],
+      "type": "string",
+      "required": true,
+      "constraint": "Unicode NFC text, 1 to 64 UTF-8 bytes, with no control characters, whitespace, or the URL delimiters / ? # \\.",
+      "example": "dust",
+      "rule": "The identity of a ticker is its NFC form case-folded to lower case. A mint resolves against that folded identity.",
+      "status": "universe",
+      "source": [
+        "universe"
+      ],
+      "notes": "The legacy guide says the ticker is not limited to four bytes but does not settle case handling or duplicates. The production indexer settles both: identity is NFC plus lower-case folding, and the first valid deployment of an identity wins. Later deploys of the same identity are rejected."
+    },
+    {
+      "name": "supply",
+      "ops": [
+        "deploy"
+      ],
+      "type": "integer string",
+      "required": true,
+      "constraint": "Canonical positive integer string matching /^[1-9][0-9]*$/, at most 2^128 - 1.",
+      "example": "1000000",
+      "rule": "Total whole units that may ever be minted for this ticker.",
+      "status": "verified",
+      "source": [
+        "legacy",
+        "universe"
+      ],
+      "notes": "No leading zeros, no sign, no decimal point, no exponent, no whitespace. DUST-20 balances have zero decimal places, so a unit is always a whole number."
+    },
+    {
+      "name": "unit_sats",
+      "ops": [
+        "deploy"
+      ],
+      "type": "integer string",
+      "required": true,
+      "constraint": "Canonical positive integer string, at most Bitcoin’s monetary supply of 2,100,000,000,000,000 satoshis.",
+      "example": "546",
+      "rule": "The exact number of satoshis that back one unit for the entire life of the ticker.",
+      "status": "verified",
+      "source": [
+        "legacy",
+        "universe"
+      ],
+      "notes": "546 is a common documented example because it is Bitcoin’s usual dust threshold for P2WPKH. It is not a default. A payload that omits unit_sats is rejected — never assume 546."
+    },
+    {
+      "name": "max_sats",
+      "ops": [
+        "deploy"
+      ],
+      "type": "integer string",
+      "required": true,
+      "constraint": "Canonical positive integer string that equals supply × unit_sats and does not exceed 2,100,000,000,000,000.",
+      "example": "546000000",
+      "rule": "Rejected unless it equals supply × unit_sats exactly, computed with exact integer arithmetic.",
+      "status": "verified",
+      "source": [
+        "legacy",
+        "universe"
+      ],
+      "notes": "This is a redundancy check, not an independent quantity. It exists so a reader can detect a builder that computed the backing with floating point or the wrong unit size. See the reconciliation note about earlier reports that this field was optional."
+    },
+    {
+      "name": "lim_sats",
+      "ops": [
+        "deploy"
+      ],
+      "type": "integer string",
+      "required": false,
+      "constraint": "Optional canonical non-negative integer string, at most max_sats. Omitted or \"0\" means no per-mint limit.",
+      "example": "54600",
+      "rule": "When present and greater than zero, every mint of this ticker must satisfy sats ≤ lim_sats.",
+      "status": "verified",
+      "source": [
+        "legacy",
+        "universe"
+      ],
+      "notes": "The cap is expressed in satoshis, not units. The equivalent unit cap is lim_sats ÷ unit_sats. A lim_sats that is not a whole multiple of unit_sats simply makes the effective unit cap the floor of that division."
+    },
+    {
+      "name": "amt",
+      "ops": [
+        "mint"
+      ],
+      "type": "integer string",
+      "required": true,
+      "constraint": "Canonical positive integer string matching /^[1-9][0-9]*$/, at most 2^128 - 1.",
+      "example": "100",
+      "rule": "Whole units to create. Rejected if previously minted units plus amt would exceed supply.",
+      "status": "verified",
+      "source": [
+        "legacy",
+        "universe"
+      ],
+      "notes": "Zero, negative, fractional, and leading-zero values are rejected outright."
+    },
+    {
+      "name": "sats",
+      "ops": [
+        "mint"
+      ],
+      "type": "integer string",
+      "required": true,
+      "constraint": "Canonical positive integer string that equals amt × unit_sats of the resolved deployment.",
+      "example": "54600",
+      "rule": "Rejected unless it equals amt × unit_sats, and unless the Bitcoin output carrying the inscription holds exactly this many satoshis.",
+      "status": "verified",
+      "source": [
+        "legacy",
+        "universe"
+      ],
+      "notes": "Three numbers must agree: the deployment ratio, the sats field in the JSON, and the real output value on Bitcoin. A one-satoshi difference invalidates the mint."
+    }
+  ],
+  "formulas": [
+    {
+      "id": "max-sats",
+      "op": "deploy",
+      "expression": "max_sats = supply × unit_sats",
+      "plain": "Total backing is supply multiplied by the satoshis behind one unit.",
+      "example": "1,000,000 units × 546 sats = 546,000,000 sats",
+      "status": "verified"
+    },
+    {
+      "id": "mint-sats",
+      "op": "mint",
+      "expression": "sats = amt × unit_sats",
+      "plain": "The satoshis a mint declares are the units it creates multiplied by the unit size.",
+      "example": "100 units × 546 sats = 54,600 sats",
+      "status": "verified"
+    },
+    {
+      "id": "mint-output",
+      "op": "mint",
+      "expression": "output_value = sats",
+      "plain": "The Bitcoin output that carries the mint inscription must hold exactly the declared satoshis.",
+      "example": "A mint declaring 54,600 sats must sit in an output worth exactly 54,600 sats.",
+      "status": "verified"
+    },
+    {
+      "id": "unit-cap",
+      "op": "deploy",
+      "expression": "mint_unit_cap = ⌊ lim_sats ÷ unit_sats ⌋",
+      "plain": "A satoshi cap per mint implies a whole-unit cap per mint.",
+      "example": "54,600 ÷ 546 = 100 units per mint",
+      "status": "universe"
+    },
+    {
+      "id": "conservation",
+      "op": "transfer",
+      "expression": "input_units = surviving_units + burned_units",
+      "plain": "Units leaving an input either land whole inside a supported output or are burned. Nothing else can happen to them.",
+      "example": "91 units in → 10 to the receiver + 81 as change + 0 burned",
+      "status": "universe"
+    },
+    {
+      "id": "backing",
+      "op": "transfer",
+      "expression": "output_backing = units_in_output × unit_sats",
+      "plain": "Every output carrying units must hold at least the satoshis those whole units occupy, positioned so each unit fits entirely inside it.",
+      "example": "81 units × 546 = 44,226 sats of backing",
+      "status": "universe"
+    },
+    {
+      "id": "fee",
+      "op": "transfer",
+      "expression": "fee = Σ inputs − Σ outputs",
+      "plain": "The miner fee is whatever the transaction does not pay out. Any colored satoshi that falls into that gap is burned, so fees must be funded by ordinary bitcoin.",
+      "example": "Fund the fee from a separate cardinal input, never by shrinking a colored output.",
+      "status": "universe"
+    }
+  ],
+  "rules": [
+    {
+      "id": "payload-shape",
+      "scope": "reader",
+      "title": "A payload is a flat JSON object of strings",
+      "body": "Inscription content must be valid UTF-8 and a single flat JSON object whose every value is a string. Nested objects, arrays, numbers, booleans and null are rejected. So are duplicate keys, trailing content after the closing brace, and content larger than 4096 bytes.",
+      "status": "universe",
+      "source": [
+        "universe"
+      ]
+    },
+    {
+      "id": "exact-keys",
+      "scope": "reader",
+      "title": "Unknown fields are rejected, not ignored",
+      "body": "Each operation declares an exact key set. A deploy carrying an extra field, or a mint missing one, does not degrade to a warning — the whole payload is rejected. This is stricter than \"ignore what you do not understand\" and prevents a malformed message from being read two different ways.",
+      "status": "universe",
+      "source": [
+        "universe"
+      ]
+    },
+    {
+      "id": "canonical-integers",
+      "scope": "reader",
+      "title": "Integers are canonical decimal strings",
+      "body": "Every numeric field is a string. Leading zeros, a leading plus, a minus sign, whitespace, decimal points and exponent notation are all rejected. Implementations must use exact integer arithmetic — a 64-bit float silently loses precision above 2^53, well inside the satoshi range.",
+      "status": "verified",
+      "source": [
+        "legacy",
+        "universe"
+      ]
+    },
+    {
+      "id": "first-deploy-wins",
+      "scope": "deploy",
+      "title": "The first valid deployment of a ticker wins",
+      "body": "Ticker identity is the NFC form of tick, case-folded to lower case. Once a valid deployment exists for an identity, every later deployment of that identity is rejected. \"DUST\", \"dust\" and \"Dust\" are the same ticker.",
+      "status": "universe",
+      "source": [
+        "universe"
+      ]
+    },
+    {
+      "id": "mint-resolution",
+      "scope": "mint",
+      "title": "A mint resolves exactly one accepted deployment",
+      "body": "A mint naming a ticker that has no accepted deployment is rejected. The unit size used to check the mint always comes from the resolved deployment, never from the mint payload.",
+      "status": "verified",
+      "source": [
+        "legacy",
+        "universe"
+      ]
+    },
+    {
+      "id": "mint-supply",
+      "scope": "mint",
+      "title": "Mints stop at the declared supply",
+      "body": "Previously minted units plus amt must not exceed supply. There is no partial fill: a mint that would cross the supply ceiling is rejected in full rather than trimmed.",
+      "status": "verified",
+      "source": [
+        "legacy",
+        "universe"
+      ]
+    },
+    {
+      "id": "mint-placement",
+      "scope": "mint",
+      "title": "The inscription must begin at offset zero of its output",
+      "body": "The mint inscription must sit at satoshi offset 0 of the output that carries it, that output must hold exactly sats satoshis, and the output must not already carry a DUST-20 allocation. A mint whose padding does not match its sats field exactly is rejected.",
+      "status": "universe",
+      "source": [
+        "universe"
+      ]
+    },
+    {
+      "id": "no-transfer-inscription",
+      "scope": "transfer",
+      "title": "No transfer inscription is valid",
+      "body": "DUST-20 uses inscriptions only for deploy and mint. Movement happens by spending the satoshis that carry the units. An inscription with op: \"transfer\" is rejected — it does not move anything, and treating it as a transfer is a compatibility error.",
+      "status": "universe",
+      "source": [
+        "universe"
+      ]
+    },
+    {
+      "id": "ordinal-flow",
+      "scope": "transfer",
+      "title": "Units follow satoshis in first-in-first-out order",
+      "body": "Lay every input value end to end to form one satoshi range, and every output value end to end to form another. A colored allocation occupies a contiguous span in the input range. Each unit is a block of unit_sats satoshis inside that span, and it survives only where a whole block lands inside a single output.",
+      "status": "universe",
+      "source": [
+        "universe"
+      ]
+    },
+    {
+      "id": "burn-conditions",
+      "scope": "transfer",
+      "title": "Three ways units are destroyed",
+      "body": "A unit is burned when its satoshis fall past the last output and become the miner fee, when they land in an output the indexer cannot attribute to a supported address, or when they straddle an output boundary so no whole unit fits. Burns are silent on Bitcoin: the transaction confirms normally.",
+      "status": "universe",
+      "source": [
+        "universe"
+      ]
+    },
+    {
+      "id": "partial-send-change",
+      "scope": "transfer",
+      "title": "A partial send needs an explicit colored change output",
+      "body": "If you spend an allocation of 91 units and send 10, the other 81 need their own output with at least 81 × unit_sats satoshis, aligned so each unit fits whole. Omitting that output does not keep the units — it burns them.",
+      "status": "verified",
+      "source": [
+        "legacy",
+        "universe"
+      ]
+    },
+    {
+      "id": "fee-separation",
+      "scope": "transfer",
+      "title": "Fund miner fees with ordinary bitcoin",
+      "body": "Colored satoshis and fee funding are different concepts. Add a separate cardinal input to pay the fee. Shaving satoshis off a colored output to cover a fee moves the colored range and can burn the units it was meant to carry.",
+      "status": "verified",
+      "source": [
+        "legacy",
+        "universe"
+      ]
+    },
+    {
+      "id": "merge",
+      "scope": "transfer",
+      "title": "Merging works when the ticker and unit size match",
+      "body": "Several colored inputs of the same ticker can be combined into one output, provided each contributing unit lands whole inside it. Allocations of different tickers keep separate identities even inside one output; they are tracked by their own offsets.",
+      "status": "universe",
+      "source": [
+        "universe"
+      ]
+    },
+    {
+      "id": "reorg",
+      "scope": "indexer",
+      "title": "Reorganizations roll the ledger back",
+      "body": "On a reorg the indexer emits invalidations newest first, reverses ledger mutations, restores allocations that had been marked spent, removes allocations the orphaned branch created, and replays the replacement branch. A balance is only as final as the depth it was confirmed at.",
+      "status": "universe",
+      "source": [
+        "universe"
+      ]
+    },
+    {
+      "id": "mempool-coverage",
+      "scope": "indexer",
+      "title": "Mempool coverage is partial",
+      "body": "The production indexer reports coverage as partial: confirmed history and complete holder snapshots are indexed, but there is no exhaustive mempool feed with a stable pending lifecycle. Unconfirmed DUST-20 state is therefore not a reliable input to an irreversible decision.",
+      "status": "universe",
+      "source": [
+        "universe"
+      ]
+    }
+  ],
+  "reconciliations": [
+    {
+      "id": "max-sats-required",
+      "title": "Is max_sats required in a deploy?",
+      "legacy": "The legacy profile includes max_sats and frames it as supply × unit_sats. Earlier versions of this documentation additionally reported that the Inscribe builder emitted deploys without max_sats, and labelled the question an unreconciled compatibility split.",
+      "current": "The production indexer requires max_sats. Its deploy key set is exactly p, op, tick, supply, unit_sats, max_sats, with lim_sats optional, and a deploy missing max_sats is rejected rather than inferred.",
+      "resolution": "Resolved in favour of required. Emit max_sats and verify it equals supply × unit_sats. A deploy without it is not indexed by the current implementation.",
+      "status": "verified"
+    },
+    {
+      "id": "transfer-payload",
+      "title": "Is there a canonical transfer payload?",
+      "legacy": "The legacy guide documents deploy and mint JSON and a colored-UTXO transfer example, but publishes no transfer schema. Earlier documentation listed a transfer inscription as an open question and noted an application emitting a transfer preview containing amt.",
+      "current": "The production indexer accepts no transfer inscription at all. Movement is derived purely from ordinal satoshi flow through ordinary Bitcoin spends.",
+      "resolution": "Resolved: there is no transfer payload. Treat any op: \"transfer\" inscription as invalid, and treat an application preview containing amt as a user-interface artifact, not a protocol message.",
+      "status": "universe"
+    },
+    {
+      "id": "ticker-identity",
+      "title": "How are duplicate and differently-cased tickers handled?",
+      "legacy": "The legacy guide states the ticker is not limited to four bytes but does not settle case normalization or which deployment wins when a name is reused.",
+      "current": "Identity is the NFC form case-folded to lower case, bounded to 64 UTF-8 bytes, excluding control characters, whitespace and the delimiters / ? # \\. The first valid deployment of an identity wins; later ones are rejected.",
+      "resolution": "Resolved by the current implementation. Independent implementations that compare tickers byte-for-byte will disagree with it, so preserve the original spelling for display and compare on the folded identity.",
+      "status": "universe"
+    },
+    {
+      "id": "burn-definition",
+      "title": "What counts as a burn?",
+      "legacy": "The legacy material defines no burn rule, and earlier documentation advised showing recovery actions as potentially allocation-destroying rather than canonical burns.",
+      "current": "Burning is defined precisely and is a consequence of transaction shape, not an instruction: satoshis paid as fees, sent to an unsupported output, or split so no whole unit fits are burned, and the supply accounting records it.",
+      "resolution": "Resolved as a derived outcome. There is still no way to express \"burn this\" as a message — you burn by constructing a transaction that drops the satoshis.",
+      "status": "universe"
+    },
+    {
+      "id": "output-ordering",
+      "title": "Does output order matter?",
+      "legacy": "Earlier documentation listed output ordering as an open question.",
+      "current": "Order matters completely. Allocation is positional: inputs and outputs are concatenated into satoshi ranges in index order, so moving an output changes which units land where.",
+      "resolution": "Resolved: build outputs deliberately and test the exact ordering your builder produces. Reordering outputs is never cosmetic.",
+      "status": "universe"
+    },
+    {
+      "id": "indexer-api",
+      "title": "Is there a canonical DUST-20 indexer API?",
+      "legacy": "No API schema, pagination model, or response versioning is published in the legacy guide.",
+      "current": "The production indexer exposes its own normalized and legacy routes with bearer authentication, stable cursors and explicit coverage labels, but these are one service’s contract.",
+      "resolution": "Unresolved as a standard. Validate remote responses against a schema you control and treat coverage, source identity and observation height as part of every answer.",
+      "status": "unresolved"
+    }
+  ],
+  "openQuestions": [
+    {
+      "id": "independent-implementations",
+      "question": "Do independent implementations agree with these rules?",
+      "why": "Most of the transfer, burn and ticker-identity behaviour on this site is settled by one production implementation rather than by a multi-party specification.",
+      "posture": "Treat rules marked Current Universe implementation as a working profile. Before relying on them across tools, test against the specific indexer your users will see."
+    },
+    {
+      "id": "confirmation-threshold",
+      "question": "How many confirmations make a DUST-20 balance safe to act on?",
+      "why": "The protocol defines no threshold, and reorg handling restores or removes allocations depending on depth.",
+      "posture": "Publish your own finality depth, show confirmation counts to users, and never present unconfirmed DUST-20 state as settled."
+    },
+    {
+      "id": "mempool-lifecycle",
+      "question": "What is the pending lifecycle for an unconfirmed DUST-20 movement?",
+      "why": "The production indexer reports partial coverage precisely because it has no exhaustive mempool feed with stable pending and disappearance handling.",
+      "posture": "Do not build balance guarantees on mempool state. Show pending movements as unverified and re-check at confirmation."
+    },
+    {
+      "id": "rbf",
+      "question": "What happens to DUST-20 state when a transaction is replaced?",
+      "why": "Replace-by-fee can change the output layout, which changes where colored satoshis land — a replacement can burn units the original preserved.",
+      "posture": "Re-derive allocation from the transaction that actually confirmed. Never carry forward the pre-replacement interpretation, and never blindly rebroadcast."
+    },
+    {
+      "id": "dust-threshold",
+      "question": "What if unit_sats is below Bitcoin’s relay dust threshold?",
+      "why": "DUST-20 permits any positive unit_sats, but Bitcoin nodes will not relay outputs below the standard dust limit for their script type.",
+      "posture": "A deploy with a very small unit_sats can be valid to an indexer yet unspendable in practice. Check the dust threshold for your output type before deploying."
+    }
+  ],
+  "indexerStages": [
+    {
+      "id": "observe",
+      "label": "Observe",
+      "title": "Ingest raw chain events",
+      "body": "Read complete blocks with input values, output values and output addresses, plus authoritative inscription identity. Record the transaction, output, inscription association and block position before declaring anything about balances.",
+      "status": "universe"
+    },
+    {
+      "id": "normalize",
+      "label": "Normalize",
+      "title": "Parse strictly and keep failures visible",
+      "body": "Apply the flat-string-object reader, exact key sets and canonical integer parsing. Keep parse failures as recorded invalid events rather than dropping them into an unexplained empty result.",
+      "status": "universe"
+    },
+    {
+      "id": "resolve",
+      "label": "Resolve",
+      "title": "Resolve deployment and history",
+      "body": "Fold the ticker to its identity, apply first-deploy-wins, and check the mint against the resolved unit size, the per-mint cap and remaining supply. Do not guess when two candidates conflict.",
+      "status": "universe"
+    },
+    {
+      "id": "materialize",
+      "label": "Materialize",
+      "title": "Create allocation records with position",
+      "body": "An allocation is an outpoint, a ticker, an amount, a unit size and a satoshi offset inside that output. The offset is not optional bookkeeping — it is what makes the next spend computable.",
+      "status": "universe"
+    },
+    {
+      "id": "propagate",
+      "label": "Propagate",
+      "title": "Follow satoshis through each spend",
+      "body": "Concatenate input values into one range and output values into another, intersect each allocation span with each output, keep only whole units, and record the difference as burned. Emit transfer effects only where the owning address actually changes.",
+      "status": "universe"
+    },
+    {
+      "id": "reconcile",
+      "label": "Reconcile",
+      "title": "Roll forward and roll back",
+      "body": "Track block association so a reorg can invalidate newest first, reverse mutations, restore spent allocations, remove orphaned ones and replay the replacement branch. Preserve enough history to explain every transition.",
+      "status": "universe"
+    }
+  ],
+  "allocationRecord": [
+    {
+      "field": "outpoint",
+      "why": "Identifies the actual Bitcoin output holding the units.",
+      "minimum": "Store txid, vout, output value, address where available, and spent status."
+    },
+    {
+      "field": "offset_sats",
+      "why": "Locates the colored range inside the output. Without it the next spend cannot be computed.",
+      "minimum": "Store the satoshi offset at which this allocation begins within its output."
+    },
+    {
+      "field": "tick + unit_sats",
+      "why": "Binds the output to a resolved deployment rule.",
+      "minimum": "Preserve the original spelling for display and the folded identity for comparison."
+    },
+    {
+      "field": "amount",
+      "why": "Lets a client recheck the unit arithmetic independently.",
+      "minimum": "Store exact integers as strings; assert amount × unit_sats fits within the output."
+    },
+    {
+      "field": "status",
+      "why": "Distinguishes pending, confirmed, spent, invalidated and unknown.",
+      "minimum": "Never present unknown or stale state as a confirmed balance."
+    },
+    {
+      "field": "source + observation",
+      "why": "Explains who made the interpretation and when.",
+      "minimum": "Expose upstream identity, retrieval time, observed height and coverage label."
+    },
+    {
+      "field": "origin inscription",
+      "why": "Traces an allocation back to the mint that created it.",
+      "minimum": "Retain the originating inscription id through every split and merge."
+    }
+  ],
+  "safety": [
+    {
+      "id": "secrets",
+      "severity": "critical",
+      "title": "Never share a recovery phrase or private key",
+      "body": "No DUST-20 application needs your seed phrase or private key. An app can prepare an unsigned transaction without them. Leave immediately if a site asks for either."
+    },
+    {
+      "id": "review",
+      "severity": "critical",
+      "title": "Review every output role before signing",
+      "body": "Before the wallet prompt appears you should be able to see the receiver, the units and satoshis going to them, your colored change, the ordinary bitcoin funding the fee, and the fee itself. A list of addresses is not a review."
+    },
+    {
+      "id": "colored-change",
+      "severity": "critical",
+      "title": "Missing colored change is a stop sign",
+      "body": "If you are sending part of an allocation and no colored change output is present, the remainder is not kept — it is burned. This is not a formatting detail. Do not approve it."
+    },
+    {
+      "id": "fee-inputs",
+      "severity": "high",
+      "title": "Keep fee funding separate from colored inputs",
+      "body": "Fund the miner fee from ordinary bitcoin. If the fee is taken out of colored backing, the colored range shifts and units can be destroyed even though the transaction confirms."
+    },
+    {
+      "id": "stale-utxo",
+      "severity": "high",
+      "title": "Revalidate outputs immediately before building",
+      "body": "A selected output may have been spent since the screen loaded. A marketplace listing is discovery data, not proof that an output is still unspent. Re-check at build time, not at page load."
+    },
+    {
+      "id": "indexer-disagreement",
+      "severity": "high",
+      "title": "Treat source disagreement as a blocking error",
+      "body": "If two indexers describe the same output differently, do not pick the friendlier answer. Show the conflict, block the irreversible step, and keep redacted evidence for investigation."
+    },
+    {
+      "id": "ambiguity",
+      "severity": "high",
+      "title": "Do not downgrade an ambiguous construction to a warning",
+      "body": "Unexplained satoshi differences, mixed-ticker selections and unattributable outputs are failures. Silently filling in a field, rounding a satoshi value, or assuming an unspecified payload is canonical converts a caught bug into a burned balance."
+    },
+    {
+      "id": "retry",
+      "severity": "medium",
+      "title": "Never blindly retry an uncertain broadcast",
+      "body": "Keep the transaction id and known status. Disable repeat submission until someone has inspected the transaction. A duplicate broadcast can spend the same colored inputs a second way."
+    },
+    {
+      "id": "reorg-awareness",
+      "severity": "medium",
+      "title": "Remember that confirmed is not permanent",
+      "body": "A reorg can remove a confirmation and change which transaction actually spent an output. Track confirmation depth and invalidate derived state when the chain moves under you."
+    }
+  ],
+  "glossary": [
+    {
+      "term": "Satoshi",
+      "definition": "The smallest unit of Bitcoin — one hundred-millionth of a bitcoin. Satoshis are indivisible, which is why every DUST-20 amount is a whole number."
+    },
+    {
+      "term": "Dust",
+      "definition": "A Bitcoin output so small that nodes will not relay it, because spending it would cost more in fees than it is worth. The usual threshold for a common output type is 546 satoshis, which is why that number appears throughout DUST-20 examples."
+    },
+    {
+      "term": "UTXO",
+      "definition": "An unspent transaction output — a discrete piece of bitcoin with an amount and an owner. Bitcoin has no account balances; a wallet balance is the sum of its UTXOs."
+    },
+    {
+      "term": "Outpoint",
+      "definition": "The address of a specific output, written as a transaction id and an output index, such as txid:0. It is how an allocation is identified."
+    },
+    {
+      "term": "Colored output",
+      "definition": "An output whose satoshis an indexer interprets as carrying token units. Bitcoin itself sees an ordinary output; the colour exists only in the interpretation."
+    },
+    {
+      "term": "Cardinal input",
+      "definition": "An ordinary bitcoin input carrying no token allocation. Cardinal inputs are what you use to pay miner fees without disturbing colored satoshis."
+    },
+    {
+      "term": "Backing",
+      "definition": "The satoshis that stand behind a quantity of units, equal to units × unit_sats. Backing is not a price — it is the physical space the units occupy in a transaction."
+    },
+    {
+      "term": "unit_sats",
+      "definition": "The number of satoshis that back one unit, fixed at deploy time and unchangeable afterwards. Every later calculation depends on it."
+    },
+    {
+      "term": "Deploy",
+      "definition": "The inscription that creates a ticker and fixes its supply and satoshi backing rule."
+    },
+    {
+      "term": "Mint",
+      "definition": "The inscription that creates units, in an output whose value equals the declared satoshi backing exactly."
+    },
+    {
+      "term": "Colored change",
+      "definition": "The output that receives the units you did not send. Omitting it does not keep those units — it burns them."
+    },
+    {
+      "term": "Allocation",
+      "definition": "An indexer’s record that a specific span of satoshis inside a specific output represents a number of units of a ticker."
+    },
+    {
+      "term": "Offset",
+      "definition": "Where an allocation begins inside its output, measured in satoshis from the start of that output. Without the offset, the next spend cannot be computed."
+    },
+    {
+      "term": "Ordinal flow",
+      "definition": "The first-in-first-out rule that decides which satoshis in the outputs correspond to which satoshis in the inputs. DUST-20 uses it to follow units through a spend."
+    },
+    {
+      "term": "Burn",
+      "definition": "The destruction of units, caused by their satoshis being paid as fees, sent somewhere unattributable, or split so that no whole unit fits in an output. There is no burn message."
+    },
+    {
+      "term": "Mempool",
+      "definition": "The waiting area for broadcast but unconfirmed transactions. DUST-20 mempool coverage is partial, so unconfirmed state is not a safe basis for an irreversible decision."
+    },
+    {
+      "term": "RBF",
+      "definition": "Replace-by-fee — resubmitting a transaction with a higher fee. Because the replacement can have a different output layout, it can burn units the original would have preserved."
+    },
+    {
+      "term": "Reorg",
+      "definition": "A chain reorganization, where confirmed blocks are replaced by a different branch. An indexer must roll allocations back and replay the new branch."
+    },
+    {
+      "term": "PSBT",
+      "definition": "A partially signed Bitcoin transaction — the unsigned transaction your wallet shows you before you approve it. It is your last chance to check every output role."
+    }
+  ],
+  "faq": [
+    {
+      "q": "Do I need 546 satoshis per unit?",
+      "a": "No. 546 is the most common example because it matches Bitcoin’s usual dust threshold, but unit_sats is whatever the deploy declares. Never assume 546 when a payload omits the field — omitting it makes the deploy invalid."
+    },
+    {
+      "q": "Why is there no transfer inscription?",
+      "a": "Because the satoshis themselves carry the units. Spending them moves the units, so a separate message would be redundant and could disagree with the transaction that actually happened. The current implementation rejects any op: \"transfer\" inscription."
+    },
+    {
+      "q": "What happens if I forget the colored change output?",
+      "a": "The units you meant to keep are burned. Bitcoin will confirm the transaction normally — nothing warns you. This is the single most expensive mistake in DUST-20."
+    },
+    {
+      "q": "Can I pay the miner fee from my token backing?",
+      "a": "No. Satoshis that go to the fee are gone, and any units they carried are burned. Always add a separate ordinary bitcoin input to fund the fee."
+    },
+    {
+      "q": "Are DUST-20 amounts divisible?",
+      "a": "No. Balances have zero decimal places, and a unit only survives a spend if its whole block of unit_sats satoshis lands inside one output."
+    },
+    {
+      "q": "What if two people deploy the same ticker?",
+      "a": "The first valid deployment wins. Tickers are compared after Unicode NFC normalization and lower-case folding, so \"DUST\" and \"dust\" are the same ticker."
+    },
+    {
+      "q": "Is a balance from an indexer authoritative?",
+      "a": "It is one service’s interpretation of Bitcoin, not consensus. Check its source, coverage and observation height, and treat disagreement between two indexers as a blocking error rather than a choice."
+    },
+    {
+      "q": "Is this documentation a specification?",
+      "a": "No. It documents the legacy DUST-20 specification and the behaviour of the Bitcoin Universe production indexer, labelling every statement with which of the two supports it. Where they disagree or nothing settles a question, that is stated rather than resolved by guesswork."
+    }
+  ],
+  "pages": [
+    {
+      "path": "./",
+      "url": "https://bitcoinuniverseio.github.io/dust-20/",
+      "title": "DUST-20 | Tokens with Bitcoin at their core",
+      "nav": "Start here",
+      "description": "DUST-20 binds every token unit to an exact number of satoshis. Start here to understand deploy, mint, transfer and the UTXOs that carry them.",
+      "sections": [
+        {
+          "id": "what",
+          "label": "What is DUST-20?"
+        },
+        {
+          "id": "satoshis",
+          "label": "Why satoshis matter"
+        },
+        {
+          "id": "utxo",
+          "label": "What is a DUST-20 UTXO?"
+        },
+        {
+          "id": "operations",
+          "label": "Deploy, mint and transfer"
+        },
+        {
+          "id": "paths",
+          "label": "Where to go next"
+        }
+      ]
+    },
+    {
+      "path": "how-it-works.html",
+      "url": "https://bitcoinuniverseio.github.io/dust-20/how-it-works.html",
+      "title": "How DUST-20 works | DUST-20",
+      "nav": "How it works",
+      "description": "The DUST-20 lifecycle from deploy through mint, hold, split, transfer, change and indexing, with the satoshi arithmetic made visible at every step.",
+      "sections": [
+        {
+          "id": "lifecycle",
+          "label": "The lifecycle"
+        },
+        {
+          "id": "anatomy",
+          "label": "Anatomy of a DUST-20 UTXO"
+        },
+        {
+          "id": "arithmetic",
+          "label": "The arithmetic"
+        },
+        {
+          "id": "two-kinds",
+          "label": "Two kinds of satoshi"
+        },
+        {
+          "id": "flow",
+          "label": "How units follow satoshis"
+        }
+      ]
+    },
+    {
+      "path": "playground.html",
+      "url": "https://bitcoinuniverseio.github.io/dust-20/playground.html",
+      "title": "DUST-20 playground | DUST-20",
+      "nav": "Playground",
+      "description": "Build and validate DUST-20 deploy and mint payloads in your browser with exact integer arithmetic. No wallet, no keys, no signing.",
+      "sections": [
+        {
+          "id": "deploy",
+          "label": "Deploy builder"
+        },
+        {
+          "id": "mint",
+          "label": "Mint builder"
+        },
+        {
+          "id": "inspector",
+          "label": "Payload inspector"
+        }
+      ]
+    },
+    {
+      "path": "transactions.html",
+      "url": "https://bitcoinuniverseio.github.io/dust-20/transactions.html",
+      "title": "DUST-20 transactions | DUST-20",
+      "nav": "Transactions",
+      "description": "Visualize how DUST-20 units follow satoshis through a Bitcoin spend: partial sends, colored change, merges, fee separation and the constructions that burn units.",
+      "sections": [
+        {
+          "id": "rule",
+          "label": "The rule that matters"
+        },
+        {
+          "id": "visualizer",
+          "label": "Transaction visualizer"
+        },
+        {
+          "id": "scenarios",
+          "label": "Worked scenarios"
+        },
+        {
+          "id": "cases",
+          "label": "Cases and failure modes"
+        }
+      ]
+    },
+    {
+      "path": "reference.html",
+      "url": "https://bitcoinuniverseio.github.io/dust-20/reference.html",
+      "title": "DUST-20 protocol reference | DUST-20",
+      "nav": "Reference",
+      "description": "Complete searchable DUST-20 field reference: types, constraints, examples, validation rules, provenance and compatibility notes for every field of every operation.",
+      "sections": [
+        {
+          "id": "operations",
+          "label": "Operations"
+        },
+        {
+          "id": "fields",
+          "label": "Field ledger"
+        },
+        {
+          "id": "formulas",
+          "label": "Formulas"
+        },
+        {
+          "id": "rules",
+          "label": "Rules"
+        },
+        {
+          "id": "reconciliation",
+          "label": "Where sources disagree"
+        },
+        {
+          "id": "open",
+          "label": "Open questions"
+        }
+      ]
+    },
+    {
+      "path": "conformance.html",
+      "url": "https://bitcoinuniverseio.github.io/dust-20/conformance.html",
+      "title": "DUST-20 conformance laboratory | DUST-20",
+      "nav": "Conformance",
+      "description": "Valid and invalid DUST-20 examples, each executed live in your browser, showing exactly why it passes or fails. Load any case into the playground.",
+      "sections": [
+        {
+          "id": "lab",
+          "label": "Test cases"
+        },
+        {
+          "id": "codes",
+          "label": "Issue codes"
+        }
+      ]
+    },
+    {
+      "path": "indexer.html",
+      "url": "https://bitcoinuniverseio.github.io/dust-20/indexer.html",
+      "title": "DUST-20 for indexer and app builders | DUST-20",
+      "nav": "For builders",
+      "description": "Implementation guidance for DUST-20: discovery, deployment resolution, mint validation, allocation records, spent and mempool state, reorgs, RBF and API expectations.",
+      "sections": [
+        {
+          "id": "pipeline",
+          "label": "The pipeline"
+        },
+        {
+          "id": "allocation",
+          "label": "The allocation record"
+        },
+        {
+          "id": "propagation",
+          "label": "Propagation algorithm"
+        },
+        {
+          "id": "chain-state",
+          "label": "Chain instability"
+        },
+        {
+          "id": "api",
+          "label": "API expectations"
+        }
+      ]
+    },
+    {
+      "path": "safety.html",
+      "url": "https://bitcoinuniverseio.github.io/dust-20/safety.html",
+      "title": "DUST-20 safety | DUST-20",
+      "nav": "Safety",
+      "description": "What to check before you sign a DUST-20 transaction: keys, output roles, colored change, fee funding, stale UTXOs, indexer disagreement and retries.",
+      "sections": [
+        {
+          "id": "secrets",
+          "label": "Never share secrets"
+        },
+        {
+          "id": "review",
+          "label": "Before you approve"
+        },
+        {
+          "id": "checks",
+          "label": "The full checklist"
+        },
+        {
+          "id": "builders",
+          "label": "For builders"
+        }
+      ]
+    },
+    {
+      "path": "glossary.html",
+      "url": "https://bitcoinuniverseio.github.io/dust-20/glossary.html",
+      "title": "DUST-20 glossary and FAQ | DUST-20",
+      "nav": "Glossary",
+      "description": "Plain definitions of satoshi, dust, UTXO, colored output, cardinal input, backing, outpoint, mempool, RBF, reorg and every other DUST-20 term, plus common questions.",
+      "sections": [
+        {
+          "id": "glossary",
+          "label": "Glossary"
+        },
+        {
+          "id": "faq",
+          "label": "Frequently asked questions"
+        }
+      ]
+    }
+  ]
+}
