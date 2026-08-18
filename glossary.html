@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DUST-20 glossary and FAQ | DUST-20</title>
+  <meta name="description" content="Plain definitions of satoshi, dust, UTXO, colored output, cardinal input, backing, outpoint, mempool, RBF, reorg and every other DUST-20 term, plus common questions.">
+  <link rel="canonical" href="https://bitcoinuniverseio.github.io/dust-20/glossary.html">
+  <meta name="theme-color" content="#3b2d19">
+  <meta name="color-scheme" content="light">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="DUST-20 documentation">
+  <meta property="og:title" content="DUST-20 glossary and FAQ | DUST-20">
+  <meta property="og:description" content="Plain definitions of satoshi, dust, UTXO, colored output, cardinal input, backing, outpoint, mempool, RBF, reorg and every other DUST-20 term, plus common questions.">
+  <meta property="og:url" content="https://bitcoinuniverseio.github.io/dust-20/glossary.html">
+  <meta property="og:image" content="https://bitcoinuniverseio.github.io/dust-20/assets/og.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DUST-20 glossary and FAQ | DUST-20">
+  <meta name="twitter:description" content="Plain definitions of satoshi, dust, UTXO, colored output, cardinal input, backing, outpoint, mempool, RBF, reorg and every other DUST-20 term, plus common questions.">
+  <meta name="twitter:image" content="https://bitcoinuniverseio.github.io/dust-20/assets/og.svg">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/site.css">
+  <script type="module" src="assets/site.js"></script>
+  <script type="module" src="assets/app.js"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","name":"DUST-20 glossary and FAQ | DUST-20","headline":"Glossary and FAQ","description":"Plain definitions of satoshi, dust, UTXO, colored output, cardinal input, backing, outpoint, mempool, RBF, reorg and every other DUST-20 term, plus common questions.","url":"https://bitcoinuniverseio.github.io/dust-20/glossary.html","inLanguage":"en","dateModified":"2026-08-18","isPartOf":{"@type":"WebSite","name":"DUST-20 documentation","url":"https://bitcoinuniverseio.github.io/dust-20/"},"publisher":{"@type":"Organization","name":"Bitcoin Universe","url":"https://github.com/bitcoinuniverseio"},"mainEntity":[{"@type":"Question","name":"Do I need 546 satoshis per unit?","acceptedAnswer":{"@type":"Answer","text":"No. 546 is the most common example because it matches Bitcoin’s usual dust threshold, but unit_sats is whatever the deploy declares. Never assume 546 when a payload omits the field — omitting it makes the deploy invalid."}},{"@type":"Question","name":"Why is there no transfer inscription?","acceptedAnswer":{"@type":"Answer","text":"Because the satoshis themselves carry the units. Spending them moves the units, so a separate message would be redundant and could disagree with the transaction that actually happened. The current implementation rejects any op: \"transfer\" inscription."}},{"@type":"Question","name":"What happens if I forget the colored change output?","acceptedAnswer":{"@type":"Answer","text":"The units you meant to keep are burned. Bitcoin will confirm the transaction normally — nothing warns you. This is the single most expensive mistake in DUST-20."}},{"@type":"Question","name":"Can I pay the miner fee from my token backing?","acceptedAnswer":{"@type":"Answer","text":"No. Satoshis that go to the fee are gone, and any units they carried are burned. Always add a separate ordinary bitcoin input to fund the fee."}},{"@type":"Question","name":"Are DUST-20 amounts divisible?","acceptedAnswer":{"@type":"Answer","text":"No. Balances have zero decimal places, and a unit only survives a spend if its whole block of unit_sats satoshis lands inside one output."}},{"@type":"Question","name":"What if two people deploy the same ticker?","acceptedAnswer":{"@type":"Answer","text":"The first valid deployment wins. Tickers are compared after Unicode NFC normalization and lower-case folding, so \"DUST\" and \"dust\" are the same ticker."}},{"@type":"Question","name":"Is a balance from an indexer authoritative?","acceptedAnswer":{"@type":"Answer","text":"It is one service’s interpretation of Bitcoin, not consensus. Check its source, coverage and observation height, and treat disagreement between two indexers as a blocking error rather than a choice."}},{"@type":"Question","name":"Is this documentation a specification?","acceptedAnswer":{"@type":"Answer","text":"No. It documents the legacy DUST-20 specification and the behaviour of the Bitcoin Universe production indexer, labelling every statement with which of the two supports it. Where they disagree or nothing settles a question, that is stated rather than resolved by guesswork."}}]}</script>
+</head>
+<body data-page="glossary">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="./"><span class="brand-mark" aria-hidden="true">DUST</span><span>DUST-20</span></a>
+      <nav class="site-nav" data-site-nav aria-label="Primary"><a href="./">Start here</a><a href="how-it-works.html">How it works</a><a href="playground.html">Playground</a><a href="transactions.html">Transactions</a><a href="reference.html">Reference</a><a href="conformance.html">Conformance</a><a href="indexer.html">For builders</a><a href="safety.html">Safety</a><a href="glossary.html" aria-current="page">Glossary</a></nav>
+      <div class="header-tools">
+        <button class="search-trigger" type="button" data-search-trigger aria-label="Search the documentation">
+          <span aria-hidden="true">Search</span><kbd>/</kbd>
+        </button>
+        <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-navigation">Menu</button>
+      </div>
+    </div>
+  </header>
+  <dialog class="search-dialog" data-search-dialog aria-label="Search the documentation">
+    <form method="dialog" role="search">
+      <input type="search" placeholder="Search pages, fields, rules, terms…" aria-label="Search query" autocomplete="off">
+      <button class="button small secondary" type="button" onclick="this.closest('dialog').close()">Close</button>
+    </form>
+    <ul class="search-results" data-search-results></ul>
+  </dialog>
+  <div class="docs-layout">
+    <aside class="docs-sidebar">
+      <nav aria-label="Documentation">
+        <h2>Documentation</h2>
+        <ul class="sidebar-list">
+        <li><a href="./">Start here</a></li>
+        <li><a href="how-it-works.html">How it works</a></li>
+        <li><a href="playground.html">Playground</a></li>
+        <li><a href="transactions.html">Transactions</a></li>
+        <li><a href="reference.html">Reference</a></li>
+        <li><a href="conformance.html">Conformance</a></li>
+        <li><a href="indexer.html">For builders</a></li>
+        <li><a href="safety.html">Safety</a></li>
+        <li><a href="glossary.html" aria-current="page">Glossary</a></li>
+        </ul>
+      </nav>
+    </aside>
+    <main class="docs-main" id="main">
+      <div class="page-hero">
+        <p class="eyebrow">Glossary</p>
+        <h1>Glossary and FAQ</h1>
+        <p class="lead">Plain definitions for every term this documentation uses, and direct answers to the questions people ask most often.</p>
+      </div>
+
+      <div class="prose">
+        <section id="glossary">
+          <h2>Glossary</h2>
+          <div class="filter-bar">
+            <div>
+              <label class="visually-hidden" for="glossary-search">Search terms</label>
+              <input id="glossary-search" type="search" data-glossary-search placeholder="Search terms and definitions…" autocomplete="off">
+            </div>
+          </div>
+          <p class="filter-status" data-glossary-count role="status"></p>
+          <noscript><p class="noscript-note">Search needs JavaScript, but every term is rendered below and published in <a href="docs.json">docs.json</a>.</p></noscript>
+          <dl class="glossary-list" data-glossary></dl>
+        </section>
+
+        <section id="faq">
+          <h2>Frequently asked questions</h2>
+          <div data-faq></div>
+
+          <div class="notice info">
+            <span class="notice-mark" aria-hidden="true">i</span>
+            <div>
+              <p class="notice-title">Still have a question?</p>
+              <p>The <a href="reference.html">protocol reference</a> documents every field and rule with its provenance, and the <a href="reference.html#open">open questions</a> section lists what genuinely has no authoritative answer yet. Issues and corrections are welcome on the <a href="https://github.com/bitcoinuniverseio/dust-20">documentation repository</a>.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    <nav class="page-nav" aria-label="Pagination">
+      <a href="safety.html"><em>Previous</em><b>Safety</b></a>
+    </nav>
+    </main>
+    <aside class="docs-toc">
+      <nav aria-label="On this page">
+        <h2>On this page</h2>
+        <ul class="toc-list">
+        <li><a href="#glossary">Glossary</a></li>
+        <li><a href="#faq">Frequently asked questions</a></li>
+        </ul>
+      </nav>
+    </aside>
+  </div>
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <span class="footer-brand-mark" aria-hidden="true">DUST</span>
+        <h2>DUST-20</h2>
+        <p>DUST-20 binds every token unit to an exact number of satoshis. Deploy and mint are inscriptions; every later movement is an ordinary Bitcoin spend of the satoshis that carry the units.</p>
+      </div>
+      <div>
+        <h2>Documentation</h2>
+        <ul><li><a href="./">Start here</a></li><li><a href="how-it-works.html">How it works</a></li><li><a href="playground.html">Playground</a></li><li><a href="transactions.html">Transactions</a></li><li><a href="reference.html">Reference</a></li></ul>
+      </div>
+      <div>
+        <h2>More</h2>
+        <ul><li><a href="conformance.html">Conformance</a></li><li><a href="indexer.html">For builders</a></li><li><a href="safety.html">Safety</a></li><li><a href="glossary.html">Glossary</a></li></ul>
+      </div>
+      <div>
+        <h2>Machine readable</h2>
+        <ul>
+          <li><a href="llms.txt">llms.txt</a></li>
+          <li><a href="docs.json">docs.json</a></li>
+          <li><a href="conformance.json">conformance.json</a></li>
+          <li><a href="https://github.com/bitcoinuniverseio/dust-20">Source repository</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      Experimental documentation, last updated 2026-08-18. Review every Bitcoin transaction in your wallet before signing — this site never asks for a key and never signs anything.
+    </div>
+  </footer>
+</body>
+</html>

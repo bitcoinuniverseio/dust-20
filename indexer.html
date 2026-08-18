@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DUST-20 for indexer and app builders | DUST-20</title>
+  <meta name="description" content="Implementation guidance for DUST-20: discovery, deployment resolution, mint validation, allocation records, spent and mempool state, reorgs, RBF and API expectations.">
+  <link rel="canonical" href="https://bitcoinuniverseio.github.io/dust-20/indexer.html">
+  <meta name="theme-color" content="#3b2d19">
+  <meta name="color-scheme" content="light">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="DUST-20 documentation">
+  <meta property="og:title" content="DUST-20 for indexer and app builders | DUST-20">
+  <meta property="og:description" content="Implementation guidance for DUST-20: discovery, deployment resolution, mint validation, allocation records, spent and mempool state, reorgs, RBF and API expectations.">
+  <meta property="og:url" content="https://bitcoinuniverseio.github.io/dust-20/indexer.html">
+  <meta property="og:image" content="https://bitcoinuniverseio.github.io/dust-20/assets/og.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DUST-20 for indexer and app builders | DUST-20">
+  <meta name="twitter:description" content="Implementation guidance for DUST-20: discovery, deployment resolution, mint validation, allocation records, spent and mempool state, reorgs, RBF and API expectations.">
+  <meta name="twitter:image" content="https://bitcoinuniverseio.github.io/dust-20/assets/og.svg">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/site.css">
+  <script type="module" src="assets/site.js"></script>
+  <script type="module" src="assets/app.js"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","name":"DUST-20 for indexer and app builders | DUST-20","headline":"Indexer and builder guide","description":"Implementation guidance for DUST-20: discovery, deployment resolution, mint validation, allocation records, spent and mempool state, reorgs, RBF and API expectations.","url":"https://bitcoinuniverseio.github.io/dust-20/indexer.html","inLanguage":"en","dateModified":"2026-08-18","isPartOf":{"@type":"WebSite","name":"DUST-20 documentation","url":"https://bitcoinuniverseio.github.io/dust-20/"},"publisher":{"@type":"Organization","name":"Bitcoin Universe","url":"https://github.com/bitcoinuniverseio"}}</script>
+</head>
+<body data-page="indexer">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="./"><span class="brand-mark" aria-hidden="true">DUST</span><span>DUST-20</span></a>
+      <nav class="site-nav" data-site-nav aria-label="Primary"><a href="./">Start here</a><a href="how-it-works.html">How it works</a><a href="playground.html">Playground</a><a href="transactions.html">Transactions</a><a href="reference.html">Reference</a><a href="conformance.html">Conformance</a><a href="indexer.html" aria-current="page">For builders</a><a href="safety.html">Safety</a><a href="glossary.html">Glossary</a></nav>
+      <div class="header-tools">
+        <button class="search-trigger" type="button" data-search-trigger aria-label="Search the documentation">
+          <span aria-hidden="true">Search</span><kbd>/</kbd>
+        </button>
+        <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-navigation">Menu</button>
+      </div>
+    </div>
+  </header>
+  <dialog class="search-dialog" data-search-dialog aria-label="Search the documentation">
+    <form method="dialog" role="search">
+      <input type="search" placeholder="Search pages, fields, rules, terms…" aria-label="Search query" autocomplete="off">
+      <button class="button small secondary" type="button" onclick="this.closest('dialog').close()">Close</button>
+    </form>
+    <ul class="search-results" data-search-results></ul>
+  </dialog>
+  <div class="docs-layout">
+    <aside class="docs-sidebar">
+      <nav aria-label="Documentation">
+        <h2>Documentation</h2>
+        <ul class="sidebar-list">
+        <li><a href="./">Start here</a></li>
+        <li><a href="how-it-works.html">How it works</a></li>
+        <li><a href="playground.html">Playground</a></li>
+        <li><a href="transactions.html">Transactions</a></li>
+        <li><a href="reference.html">Reference</a></li>
+        <li><a href="conformance.html">Conformance</a></li>
+        <li><a href="indexer.html" aria-current="page">For builders</a></li>
+        <li><a href="safety.html">Safety</a></li>
+        <li><a href="glossary.html">Glossary</a></li>
+        </ul>
+      </nav>
+    </aside>
+    <main class="docs-main" id="main">
+      <div class="page-hero">
+        <p class="eyebrow">For builders</p>
+        <h1>Indexer and builder guide</h1>
+        <p class="lead">What it takes to reconstruct DUST-20 state correctly: strict parsing, deployment resolution, positional allocation records, and honest handling of the moments when the chain moves under you.</p>
+      </div>
+
+      <div class="prose">
+        <div class="notice info">
+          <span class="notice-mark" aria-hidden="true">i</span>
+          <div>
+            <p class="notice-title">A balance is a service's view, not consensus</p>
+            <p>Bitcoin does not know what DUST-20 is. Every balance is one implementation's interpretation of the chain. That makes provenance — source, coverage, observation height — part of the answer, not metadata to be stripped.</p>
+          </div>
+        </div>
+
+        <section id="pipeline">
+          <h2>The pipeline</h2>
+          <p>Indexing DUST-20 means indexing state transitions, not page loads. Each stage below has a job it must finish before the next one can be correct.</p>
+          <div class="timeline" data-indexer-stages></div>
+
+          <h3>What you need to read from</h3>
+          <p>Two sources are required, and they must be cross-checked against each other:</p>
+          <ul>
+            <li><strong>Complete blocks</strong> with input values, output values and output addresses. Without input values you cannot build the satoshi range, and without it you cannot compute a single transfer.</li>
+            <li><strong>Authoritative inscription data</strong> for inscription identity, content, genesis output and genesis offset. A mint is only valid if its inscription sits at offset zero of an output holding exactly the declared satoshis.</li>
+          </ul>
+          <p>Verify the network, the genesis hash, block continuity and agreement between the two sources on every poll. Fail closed on a gap, a mismatch, a malformed response or an unavailable upstream. An empty result after a timeout is <em>unavailable</em>, never a verified zero balance.</p>
+        </section>
+
+        <section id="allocation">
+          <h2>The allocation record</h2>
+          <p>A balance is the sum of allocation records. Each record must answer which output, which rule, which source, and what chain state produced its interpretation.</p>
+          <div class="table-wrap" data-allocation-record></div>
+
+          <div class="packet">
+            <div class="packet-header">
+              <span>Illustrative allocation record</span>
+              <button class="copy-button" type="button" data-copy-target="[data-allocation-json]">Copy JSON</button>
+            </div>
+            <pre><code data-allocation-json>{
+  "outpoint": "&lt;txid&gt;:0",
+  "tick": "dust",
+  "amount": "91",
+  "unit_sats": "546",
+  "offset_sats": "0",
+  "output_value_sats": "49686",
+  "origin_inscription_id": "&lt;inscription id&gt;",
+  "owner_address": "&lt;address&gt;",
+  "status": "confirmed",
+  "observed_height": 0,
+  "source": "your-indexer-id"
+}</code></pre>
+            <p>An implementation-facing shape, not a standardized public API. The requirement is traceability: a client must be able to recheck how the amount was derived.</p>
+          </div>
+        </section>
+
+        <section id="propagation">
+          <h2>Propagation algorithm</h2>
+          <p>This is the core of a DUST-20 indexer. Everything else is bookkeeping around it.</p>
+
+          <ol>
+            <li>Skip coinbase transactions.</li>
+            <li>Walk the inputs in order, accumulating a running satoshi total. For each input, look up any allocations on that outpoint. An allocation's span in the combined input range is <code>[running_total + offset, running_total + offset + amount × unit_sats)</code>.</li>
+            <li>If no input carries an allocation, there is nothing to do.</li>
+            <li>Mark every contributing outpoint spent.</li>
+            <li>Walk the outputs in order, accumulating a second running total, to give each output a span <code>[start, start + value)</code>. Resolve each output to an address; an output you cannot attribute is unsupported.</li>
+            <li>For each allocation, intersect its span with each output span. Skip unsupported outputs. Within the intersection, compute the first whole unit boundary at or after the intersection start and the last whole boundary at or before its end. The units between them survive, at a new offset inside that output.</li>
+            <li>Anything not accounted for is burned: <code>burned = amount − surviving</code>.</li>
+            <li>Emit a transfer effect only where the owning address actually changed. Same-owner movement is a split or merge, not a transfer.</li>
+          </ol>
+
+          <div class="formula">
+            <code>first = ⌈(∩start − span_start) / unit_sats⌉   last = ⌊(∩end − span_start) / unit_sats⌋</code>
+            <small>Units surviving in an output = last − first, when positive. Use exact integer division; a float here loses satoshi precision and produces wrong balances.</small>
+          </div>
+
+          <div class="notice critical">
+            <span class="notice-mark" aria-hidden="true">!</span>
+            <div>
+              <p class="notice-title">Conserve, then verify</p>
+              <p>Assert <code>surviving + burned = input_units</code> for every allocation, every time. An unexplained satoshi difference is a defect in your implementation, not a rounding artifact to be tolerated. Treat it as a failure and stop.</p>
+            </div>
+          </div>
+
+          <p>The <a href="transactions.html#visualizer">transaction visualizer</a> runs exactly this algorithm in the browser, and <a href="conformance.json">conformance.json</a> publishes the scenarios you can test against.</p>
+        </section>
+
+        <section id="chain-state">
+          <h2>Chain instability</h2>
+          <p>Reorgs and replacements are product states, not rare edge cases. They must be designed for, because they directly affect what a wallet may safely spend or list.</p>
+
+          <div class="grid two">
+            <article class="card">
+              <h3>Reorganizations</h3>
+              <p>Emit invalidations newest first. Reverse ledger mutations, restore allocations that had been marked spent, remove allocations the orphaned branch created, then replay the replacement branch. Track block association so this is possible at all.</p>
+            </article>
+            <article class="card">
+              <h3>Replacement and double-spend</h3>
+              <p>A replaced transaction can have a different output layout, so it can burn units the original preserved. Mark affected pending allocations invalid or uncertain — never retain the old interpretation as spendable.</p>
+            </article>
+            <article class="card">
+              <h3>Mempool</h3>
+              <p>Coverage of unconfirmed state is partial: there is no exhaustive feed with a stable pending lifecycle and disappearance handling. Label pending state as such and never let it back an irreversible decision.</p>
+            </article>
+            <article class="card">
+              <h3>Finality</h3>
+              <p>The protocol defines no confirmation threshold. Publish your own finality depth, expose confirmation counts, and recompute derived state when the chain moves.</p>
+            </article>
+          </div>
+        </section>
+
+        <section id="api">
+          <h2>API expectations</h2>
+          <p>No canonical DUST-20 indexer API exists. Consumers should treat any remote response as a contract that needs schema validation and an explicit source policy.</p>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Area</th><th>Expectation</th><th>Failure mode it prevents</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Reads</strong></td>
+                  <td>Return source identity, coverage level, observation height or time, pagination and a state label alongside the data.</td>
+                  <td>A bare array that cannot say whether it is complete, fresh, or from the source you think.</td>
+                </tr>
+                <tr>
+                  <td><strong>Errors</strong></td>
+                  <td>Differentiate unavailable, malformed, stale, invalid-request, not-found and contradictory-state.</td>
+                  <td>A client interpreting every failure as an empty balance, then letting a user spend against it.</td>
+                </tr>
+                <tr>
+                  <td><strong>Near signing</strong></td>
+                  <td>Revalidate selected outpoints at build time and return the height or timestamp the decision was made at.</td>
+                  <td>Building against an output that was spent while the page was open.</td>
+                </tr>
+                <tr>
+                  <td><strong>Coverage</strong></td>
+                  <td>State plainly whether coverage is complete, partial or unavailable, and for which asset classes.</td>
+                  <td>Silently presenting partial mempool coverage as a full picture.</td>
+                </tr>
+                <tr>
+                  <td><strong>Versioning</strong></td>
+                  <td>Version the response shape, or expose the uncertainty explicitly.</td>
+                  <td>A schema change breaking consumers with no signal that anything changed.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Before you ship a flow to users</h3>
+          <ul class="checklist">
+            <li>Deploy and mint conformance fixtures cover valid and invalid field combinations, exact arithmetic and real output values.</li>
+            <li>Transaction fixtures assert selected inputs, recipient outputs, colored change, cardinal fee funding and ordinary change — including the constructions that burn units.</li>
+            <li>Conservation is asserted on every allocation transition, and a mismatch fails the build.</li>
+            <li>Reorg, replacement, stale-listing and indexer-outage behaviour is tested, not assumed.</li>
+            <li>Any workflow that could expose private key material is removed or independently security-reviewed.</li>
+            <li>Operators have rehearsed the stop, diagnose, communicate and re-enable sequence with redacted evidence.</li>
+          </ul>
+        </section>
+      </div>
+    <nav class="page-nav" aria-label="Pagination">
+      <a href="conformance.html"><em>Previous</em><b>Conformance</b></a>
+      <a href="safety.html"><em>Next</em><b>Safety</b></a>
+    </nav>
+    </main>
+    <aside class="docs-toc">
+      <nav aria-label="On this page">
+        <h2>On this page</h2>
+        <ul class="toc-list">
+        <li><a href="#pipeline">The pipeline</a></li>
+        <li><a href="#allocation">The allocation record</a></li>
+        <li><a href="#propagation">Propagation algorithm</a></li>
+        <li><a href="#chain-state">Chain instability</a></li>
+        <li><a href="#api">API expectations</a></li>
+        </ul>
+      </nav>
+    </aside>
+  </div>
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <span class="footer-brand-mark" aria-hidden="true">DUST</span>
+        <h2>DUST-20</h2>
+        <p>DUST-20 binds every token unit to an exact number of satoshis. Deploy and mint are inscriptions; every later movement is an ordinary Bitcoin spend of the satoshis that carry the units.</p>
+      </div>
+      <div>
+        <h2>Documentation</h2>
+        <ul><li><a href="./">Start here</a></li><li><a href="how-it-works.html">How it works</a></li><li><a href="playground.html">Playground</a></li><li><a href="transactions.html">Transactions</a></li><li><a href="reference.html">Reference</a></li></ul>
+      </div>
+      <div>
+        <h2>More</h2>
+        <ul><li><a href="conformance.html">Conformance</a></li><li><a href="indexer.html">For builders</a></li><li><a href="safety.html">Safety</a></li><li><a href="glossary.html">Glossary</a></li></ul>
+      </div>
+      <div>
+        <h2>Machine readable</h2>
+        <ul>
+          <li><a href="llms.txt">llms.txt</a></li>
+          <li><a href="docs.json">docs.json</a></li>
+          <li><a href="conformance.json">conformance.json</a></li>
+          <li><a href="https://github.com/bitcoinuniverseio/dust-20">Source repository</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      Experimental documentation, last updated 2026-08-18. Review every Bitcoin transaction in your wallet before signing — this site never asks for a key and never signs anything.
+    </div>
+  </footer>
+</body>
+</html>

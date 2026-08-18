@@ -1,0 +1,166 @@
+      <div class="page-hero">
+        <p class="eyebrow">Playground</p>
+        <h1>Protocol playground</h1>
+        <p class="lead">Build DUST-20 payloads and watch them validate as you type. Everything runs in your browser with exact integer arithmetic — there is no wallet, no private key, no signing and no network request.</p>
+      </div>
+
+      <div class="prose">
+        <div class="notice good">
+          <span class="notice-mark" aria-hidden="true">✓</span>
+          <div>
+            <p class="notice-title">Nothing here can spend anything</p>
+            <p>These builders produce JSON payloads and arithmetic. They never ask for a key, never construct a transaction and never talk to a server. Your inputs stay in this page — the only thing that leaves is the shareable link you choose to copy.</p>
+          </div>
+        </div>
+        <noscript><p class="noscript-note">The playground needs JavaScript. Without it, the <a href="reference.html">protocol reference</a> documents every rule and <a href="conformance.json">conformance.json</a> lists every worked example.</p></noscript>
+
+        <section id="deploy">
+          <h2>Deploy builder</h2>
+          <p>A deploy fixes a ticker's supply and its satoshi backing rule permanently. <code>max_sats</code> is derived here so you can see the arithmetic, but it is a required field — a deploy that omits it is rejected rather than having it inferred.</p>
+
+          <div class="lab">
+            <div class="lab-header">
+              <div>
+                <p class="lab-title">Build a deploy</p>
+                <p>Change any value and the derived numbers, warnings and payload update immediately.</p>
+              </div>
+              <div class="lab-actions">
+                <button class="button small secondary" type="button" data-deploy-example>Load example</button>
+                <button class="button small secondary" type="button" data-deploy-reset>Reset</button>
+                <button class="button small secondary" type="button" data-share-state>Copy shareable link</button>
+              </div>
+            </div>
+            <div class="lab-body">
+              <form class="field-grid" data-deploy-form onsubmit="return false">
+                <div class="field">
+                  <label for="deploy-tick">Ticker <code>tick</code></label>
+                  <input id="deploy-tick" name="tick" type="text" autocomplete="off" spellcheck="false" value="dust">
+                  <span class="hint">1–64 UTF-8 bytes. Identity is the lower-cased NFC form, so DUST and dust are the same ticker.</span>
+                </div>
+                <div class="field">
+                  <label for="deploy-supply">Maximum supply <code>supply</code></label>
+                  <input id="deploy-supply" name="supply" type="text" inputmode="numeric" autocomplete="off" value="1000000">
+                  <span class="hint">Whole units that may ever exist. Canonical integer string — no leading zeros or decimal point.</span>
+                </div>
+                <div class="field">
+                  <label for="deploy-unit-sats">Satoshis per unit <code>unit_sats</code></label>
+                  <input id="deploy-unit-sats" name="unit_sats" type="text" inputmode="numeric" autocomplete="off" value="546">
+                  <span class="hint">Fixed forever at deploy time. 546 is a common example because it matches Bitcoin's usual dust threshold — it is not a default.</span>
+                </div>
+                <div class="field">
+                  <label for="deploy-lim-sats">Per-mint cap <code>lim_sats</code> <span class="chip muted">Optional</span></label>
+                  <input id="deploy-lim-sats" name="lim_sats" type="text" inputmode="numeric" autocomplete="off" value="54600">
+                  <span class="hint">Maximum satoshis one mint may claim. Leave blank or set 0 for no limit.</span>
+                </div>
+              </form>
+              <div class="result-stack" data-deploy-output aria-live="polite"></div>
+            </div>
+          </div>
+
+          <div class="packet">
+            <div class="packet-header">
+              <span>Generated deploy payload</span>
+              <button class="copy-button" type="button" data-copy-target="[data-deploy-json]">Copy JSON</button>
+            </div>
+            <pre><code data-deploy-json>{}</code></pre>
+            <p>This is what would be inscribed. Field order follows the canonical operation shape; every value is a string.</p>
+          </div>
+        </section>
+
+        <section id="mint">
+          <h2>Mint builder</h2>
+          <p>A mint resolves an accepted deployment and creates units. Three numbers must agree: the deployment's unit size, the <code>sats</code> in the payload, and the real value of the Bitcoin output carrying the inscription.</p>
+
+          <div class="lab">
+            <div class="lab-header">
+              <div>
+                <p class="lab-title">Build a mint</p>
+                <p data-mint-deployment>Loading the deployment…</p>
+              </div>
+              <div class="lab-actions">
+                <button class="button small secondary" type="button" data-mint-example>Load example</button>
+              </div>
+            </div>
+            <div class="lab-body">
+              <form class="field-grid" data-mint-form onsubmit="return false">
+                <div class="field">
+                  <label for="mint-amt">Units to mint <code>amt</code></label>
+                  <input id="mint-amt" name="amt" type="text" inputmode="numeric" autocomplete="off" value="100">
+                  <span class="hint">Whole units. <code>sats</code> is derived as amt × unit_sats and shown below.</span>
+                </div>
+                <div class="field">
+                  <label for="mint-match">
+                    <input id="mint-match" type="checkbox" checked style="width:auto">
+                    Output value matches the payload
+                  </label>
+                  <span class="hint">A correct builder always makes these equal. Untick it to model a real mismatch and see how it is caught.</span>
+                </div>
+                <div class="field">
+                  <label for="mint-output">Observed output value (sats)</label>
+                  <input id="mint-output" name="output" type="text" inputmode="numeric" autocomplete="off" value="54600">
+                  <span class="hint">The satoshis actually held by the output carrying the inscription. The inscription must also sit at offset 0 of that output.</span>
+                </div>
+              </form>
+              <div class="result-stack" data-mint-output-report aria-live="polite"></div>
+            </div>
+          </div>
+
+          <div class="packet">
+            <div class="packet-header">
+              <span>Generated mint payload</span>
+              <button class="copy-button" type="button" data-copy-target="[data-mint-json]">Copy JSON</button>
+            </div>
+            <pre><code data-mint-json>{}</code></pre>
+            <p>A mint carries exactly five fields. There are no optional fields — adding one invalidates the payload.</p>
+          </div>
+        </section>
+
+        <section id="inspector">
+          <h2>Payload inspector</h2>
+          <p>Paste any DUST-20 content to parse it locally against the strict reader profile. Malformed data is reported, never silently corrected: no missing field is filled in, no value is rounded, and no unknown field is quietly ignored.</p>
+
+          <div class="lab">
+            <div class="lab-header">
+              <div>
+                <p class="lab-title">Inspect a payload</p>
+                <p>Reports the operation, every field, the derived arithmetic, and each reason it would be rejected.</p>
+              </div>
+              <div class="lab-actions">
+                <button class="button small secondary" type="button" data-inspector-load="deploy-basic">Deploy example</button>
+                <button class="button small secondary" type="button" data-inspector-load="mint-basic">Mint example</button>
+                <button class="button small secondary" type="button" data-inspector-clear>Clear</button>
+              </div>
+            </div>
+            <div class="lab-body">
+              <form class="field-grid" onsubmit="return false">
+                <div class="field">
+                  <label for="inspector-input">Inscription content</label>
+                  <textarea id="inspector-input" data-inspector-input spellcheck="false" autocomplete="off" aria-describedby="inspector-help"></textarea>
+                  <span class="hint" id="inspector-help">Must be a single flat JSON object whose values are all strings. Nesting, numbers, duplicate keys and trailing content are all rejected.</span>
+                </div>
+                <div class="field">
+                  <label for="inspector-resolve">
+                    <input id="inspector-resolve" type="checkbox" checked style="width:auto">
+                    Resolve against the current deployment
+                  </label>
+                  <span class="hint">Needed to check a mint. Without a resolved deployment there is no unit size to validate against.</span>
+                </div>
+                <div class="field">
+                  <label for="inspector-output-value">Observed output value (sats) <span class="chip muted">Optional</span></label>
+                  <input id="inspector-output-value" type="text" inputmode="numeric" autocomplete="off" placeholder="leave blank to skip the output check">
+                  <span class="hint">Supply the real output value to check a mint's declared backing against Bitcoin.</span>
+                </div>
+              </form>
+              <div class="result-stack" data-inspector-output aria-live="polite"></div>
+            </div>
+          </div>
+
+          <div class="notice">
+            <span class="notice-mark" aria-hidden="true">i</span>
+            <div>
+              <p class="notice-title">Want to test the edge cases?</p>
+              <p>The <a href="conformance.html">conformance laboratory</a> holds every documented valid and invalid case, each executed live, and each loadable straight into this inspector.</p>
+            </div>
+          </div>
+        </section>
+      </div>

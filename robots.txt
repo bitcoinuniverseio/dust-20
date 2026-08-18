@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://bitcoinuniverse.github.io/dust-20/sitemap.xml
+Sitemap: https://bitcoinuniverseio.github.io/dust-20/sitemap.xml

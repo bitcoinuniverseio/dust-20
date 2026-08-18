@@ -1,0 +1,45 @@
+      <div class="page-hero">
+        <p class="eyebrow">Conformance</p>
+        <h1>Conformance laboratory</h1>
+        <p class="lead">Every documented valid and invalid case, executed live in your browser right now by the same validator that powers the playground. If a case ever stopped behaving as documented, this page would say so.</p>
+      </div>
+
+      <div class="prose">
+        <p class="filter-status" data-conformance-status role="status">Running cases…</p>
+        <noscript><p class="noscript-note">These cases are executed in your browser. With JavaScript disabled, every case — its input, expected outcome and reason — is published in <a href="conformance.json">conformance.json</a>.</p></noscript>
+
+        <div class="chip-legend" data-status-legend></div>
+
+        <section id="lab">
+          <h2>Test cases</h2>
+          <p>Expand a case to see its input, the resolved deployment where one applies, the exact validator output, and a button to load it into the playground.</p>
+
+          <div class="filter-bar">
+            <div>
+              <label class="visually-hidden" for="vector-search">Search cases</label>
+              <input id="vector-search" type="search" data-vector-search placeholder="Search cases, reasons and issue codes…" autocomplete="off">
+            </div>
+            <div class="filter-chips" data-vector-filters role="group" aria-label="Filter by expected outcome">
+              <button type="button" data-expect-filter="all" aria-pressed="true">All</button>
+              <button type="button" data-expect-filter="accept" aria-pressed="false">Accepted</button>
+              <button type="button" data-expect-filter="reject" aria-pressed="false">Rejected</button>
+            </div>
+          </div>
+
+          <div data-conformance></div>
+        </section>
+
+        <section id="codes">
+          <h2>Issue codes</h2>
+          <p>Every rejection reports a stable code. These are the codes the fixtures assert against, so a change in behaviour breaks the test suite rather than quietly changing the documentation.</p>
+          <div class="table-wrap" data-issue-codes></div>
+
+          <div class="notice info">
+            <span class="notice-mark" aria-hidden="true">i</span>
+            <div>
+              <p class="notice-title">These cases are also a test suite</p>
+              <p>The same fixtures run under <code>npm test</code> in the repository. A documentation claim and the running validator therefore cannot drift apart: if a vector says a payload is rejected with a given code, the build fails unless the validator agrees.</p>
+            </div>
+          </div>
+        </section>
+      </div>
