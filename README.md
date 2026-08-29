@@ -38,7 +38,7 @@ A **mint** creates units in an output holding exactly the declared satoshis:
 {"p":"dust-20","op":"mint","tick":"dust","amt":"100","sats":"54600"}
 ```
 
-There is **no transfer payload**. Units follow their satoshis in ordinal first-in-first-out order, and a unit survives a spend only when its whole block of `unit_sats` satoshis lands inside a single supported output. Anything else — satoshis paid as fees, sent to an unattributable output, or split across an output boundary — is burned.
+There is **no transfer payload**. Units follow their satoshis in ordinal first-in-first-out order, and a unit survives a spend only when its whole block of `unit_sats` satoshis lands inside a single supported output. Anything else, satoshis paid as fees, sent to an unattributable output, or split across an output boundary, is burned.
 
 ```
 max_sats = supply × unit_sats
@@ -61,7 +61,7 @@ Where the legacy documentation and the current implementation disagree, both pos
 
 ## Working on the docs
 
-Requires Node.js 20 or newer. There are no runtime dependencies — `node_modules` is never needed to build or serve the site.
+Requires Node.js 20 or newer. There are no runtime dependencies, `node_modules` is never needed to build or serve the site.
 
 ```bash
 npm run generate   # rebuild pages and machine-readable artifacts
@@ -92,7 +92,7 @@ the test suite cannot drift apart. **Edit the data model, not the generated
 
 ### Deployment
 
-GitHub Pages serves the repository root of `main` directly — the generated HTML
+GitHub Pages serves the repository root of `main` directly, the generated HTML
 is committed, so there is no build step on the Pages side. Push to `main` and
 the site updates.
 
@@ -108,4 +108,4 @@ or sends your input anywhere. Everything runs locally in your browser.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT, see [LICENSE](LICENSE).
