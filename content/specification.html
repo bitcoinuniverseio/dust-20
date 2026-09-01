@@ -1,0 +1,142 @@
+      <section class="section" id="scope">
+        <h2><span class="num">1</span> Scope and conventions</h2>
+        <p class="lede">This section defines what the following rules cover, how they are numbered, and how to read a provenance label. Sections 2 to 9 are normative. Sections 10 to 12 restate the same rules as tables for implementers.</p>
+
+        <h3>1.1 Scope</h3>
+        <p>DUST-20 is a fungible token protocol on Bitcoin mainnet. It defines two written messages, deploy and mint, both carried as inscription content, and it defines how token units follow satoshis through ordinary Bitcoin spends. It defines no consensus change, no script template and no new transaction field. Bitcoin nodes do not know DUST-20 exists.</p>
+
+        <h3>1.2 Rule identifiers</h3>
+        <p>Every rule has a stable identifier of the form <code>DUST-&lt;section&gt;.&lt;index&gt;</code>, for example <code>DUST-6.7</code>. Identifiers do not change between document versions. A rule that is withdrawn keeps its number and is marked withdrawn rather than being reused. Each rule links to the conformance vector that exercises it, where one exists.</p>
+
+        <h3>1.3 Requirement wording</h3>
+        <p>A rule that says a payload <em>is rejected</em> means a conforming reader must not index it, must not repair it, and must not fall back to a partial interpretation. Rejection is total: there is no warning level, and no rule degrades to "ignore what you do not understand".</p>
+
+        <h3>1.4 Provenance</h3>
+        <p>DUST-20 is not a ratified multi-party standard. Every rule carries a label saying which source supports it, so an implementer can see the difference between an agreed protocol rule and one production implementation's decision.</p>
+        {{status-legend}}
+
+        <h3>1.5 Sources</h3>
+        {{sources}}
+      </section>
+
+      <section class="section" id="carrier">
+        <h2><span class="num">2</span> Message carrier</h2>
+        {{rules:carrier}}
+      </section>
+
+      <section class="section" id="integers">
+        <h2><span class="num">3</span> Integer encoding</h2>
+        {{rules:integers}}
+        {{limits}}
+      </section>
+
+      <section class="section" id="identifiers">
+        <h2><span class="num">4</span> Identifiers</h2>
+        {{rules:identifiers}}
+      </section>
+
+      <section class="section" id="deploy">
+        <h2><span class="num">5</span> Deploy</h2>
+        {{rules:deploy}}
+
+        <h3>5.x Deploy field set</h3>
+        <pre><code>{"p":"dust-20","op":"deploy","tick":"dust","supply":"1000000","unit_sats":"546","max_sats":"546000000","lim_sats":"54600"}</code></pre>
+        <p>Required: <code>p</code>, <code>op</code>, <code>tick</code>, <code>supply</code>, <code>unit_sats</code>, <code>max_sats</code>. Optional: <code>lim_sats</code>. Nothing else is permitted.</p>
+      </section>
+
+      <section class="section" id="mint">
+        <h2><span class="num">6</span> Mint</h2>
+        {{rules:mint}}
+
+        <h3>6.x Mint field set</h3>
+        <pre><code>{"p":"dust-20","op":"mint","tick":"dust","amt":"100","sats":"54600"}</code></pre>
+        <p>Required: <code>p</code>, <code>op</code>, <code>tick</code>, <code>amt</code>, <code>sats</code>. There are no optional mint fields.</p>
+
+        <div class="note note--critical">
+          <span class="note-mark" aria-hidden="true">!</span>
+          <div class="note-body">
+            <p class="note-title">The three numbers that must agree</p>
+            <p>The deployment ratio (<code>unit_sats</code>), the declared backing (<code>sats</code>) and the real value of the Bitcoin output all have to match. A one-satoshi difference makes the mint invalid, and the transaction still confirms. Nothing can repair it afterwards.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="allocation">
+        <h2><span class="num">7</span> Allocation and movement</h2>
+        {{rules:allocation}}
+
+        <figure class="figure">
+          <div class="figure-body">
+            <svg viewBox="0 0 900 250" role="img" aria-labelledby="flow-title flow-desc">
+              <title id="flow-title">Ordinal first-in-first-out satoshi mapping through a spend</title>
+              <desc id="flow-desc">Input values are concatenated in index order into one satoshi range and output values into another. A colored allocation of 91 units at 546 satoshis each occupies a contiguous span in the input range. Ten whole units land in the receiver output, eighty-one land in the colored change output, and the satoshis past the end of the output range become the miner fee.</desc>
+              <g font-family="ui-monospace,monospace" font-size="10" fill="var(--dg-ink-3)" letter-spacing="1">
+                <text x="8" y="26">INPUT RANGE, CONCATENATED IN INPUT INDEX ORDER</text>
+                <text x="8" y="146">OUTPUT RANGE, CONCATENATED IN OUTPUT INDEX ORDER</text>
+              </g>
+              <g stroke="var(--dg-line)" stroke-width="1">
+                <rect x="8" y="36" width="620" height="46" fill="var(--dg-accent)" fill-opacity="0.14"/>
+                <rect x="628" y="36" width="264" height="46" fill="var(--dg-fill)"/>
+                <rect x="8" y="156" width="68" height="46" fill="var(--dg-accent)" fill-opacity="0.14"/>
+                <rect x="76" y="156" width="552" height="46" fill="var(--dg-accent)" fill-opacity="0.14"/>
+                <rect x="628" y="156" width="212" height="46" fill="var(--dg-fill)"/>
+                <rect x="840" y="156" width="52" height="46" fill="var(--dg-fail)" fill-opacity="0.16"/>
+              </g>
+              <g font-family="ui-monospace,monospace" font-size="11" fill="var(--dg-ink)">
+                <text x="18" y="56">in[0] colored allocation</text>
+                <text x="18" y="72">91 units x 546 = 49,686 sats</text>
+                <text x="640" y="56">in[1] cardinal</text>
+                <text x="640" y="72">20,000 sats</text>
+                <text x="14" y="176">out[0]</text>
+                <text x="14" y="192">10 u</text>
+                <text x="86" y="176">out[1] colored change</text>
+                <text x="86" y="192">81 units x 546 = 44,226 sats</text>
+                <text x="638" y="176">out[2] cardinal change</text>
+                <text x="638" y="192">18,000 sats</text>
+              </g>
+              <text x="848" y="176" font-family="ui-monospace,monospace" font-size="10" fill="var(--dg-fail)">FEE</text>
+              <text x="848" y="190" font-family="ui-monospace,monospace" font-size="10" fill="var(--dg-fail)">1,774</text>
+              <g stroke="var(--dg-accent)" stroke-width="1" stroke-dasharray="3 3">
+                <path d="M8 82v74M76 82v74M628 82v74"/>
+              </g>
+              <g font-family="system-ui,sans-serif" font-size="11" fill="var(--dg-ink-3)">
+                <text x="8" y="118">The n-th satoshi of the input range is the n-th satoshi of the output range. Nothing reorders it.</text>
+                <text x="8" y="232">Every unit is a block of 546 satoshis. A block survives only where it lands entirely inside one supported output (rule DUST-7.4).</text>
+              </g>
+            </svg>
+          </div>
+          <figcaption><b>Fig 7.1</b> A safe partial send. The colored change output at index 1 is what keeps the remaining 81 units alive; without it they fall past the colored span into cardinal change or fee and are destroyed.</figcaption>
+        </figure>
+      </section>
+
+      <section class="section" id="burn">
+        <h2><span class="num">8</span> Burn</h2>
+        {{rules:burn}}
+      </section>
+
+      <section class="section" id="indexing">
+        <h2><span class="num">9</span> Indexer semantics</h2>
+        {{rules:indexing}}
+      </section>
+
+      <section class="section" id="anatomy">
+        <h2><span class="num">10</span> Transaction anatomy</h2>
+        <p class="lede">The same rules, arranged by where they apply in a transaction. Use this when you are checking a construction rather than reading the protocol.</p>
+
+        <h3>10.1 Mint transaction</h3>
+        {{anatomy:mint}}
+
+        <h3>10.2 Transfer transaction</h3>
+        {{anatomy:transfer}}
+      </section>
+
+      <section class="section" id="transitions">
+        <h2><span class="num">11</span> State transitions</h2>
+        {{transitions}}
+      </section>
+
+      <section class="section" id="invalidity">
+        <h2><span class="num">12</span> Invalidity conditions</h2>
+        <p class="lede">Every way a payload or a construction can be rejected, with the issue code a reader emits and the rule that defines it. The <a href="playground.html">decoder</a> emits exactly these codes, and the <a href="conformance.html">test vectors</a> assert them.</p>
+        {{invalidity}}
+      </section>

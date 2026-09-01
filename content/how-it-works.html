@@ -1,184 +1,137 @@
-      <div class="page-hero">
-        <p class="eyebrow">How it works</p>
-        <h1>How DUST-20 works</h1>
-        <p class="lead">Six stages, one idea: a token unit is a fixed-size piece of bitcoin, and everything that happens to that bitcoin happens to the unit.</p>
-      </div>
+      <section class="section" id="lifecycle">
+        <h2><span class="num">G.1</span> The lifecycle</h2>
+        <p class="lede">Four things happen to a DUST-20 token, in order. Two of them are messages someone writes. Two of them are just Bitcoin.</p>
 
-      <div class="prose">
-        <section id="lifecycle">
-          <h2>The lifecycle</h2>
-          <p>Two of these stages are messages written into inscriptions. The rest are things that happen to ordinary Bitcoin outputs.</p>
+        <dl class="kv">
+          <div><dt>1. Deploy</dt><dd><p>Someone inscribes a deploy. It names a ticker, a maximum supply, and the exact satoshis that back one unit. From that moment the ratio is fixed forever, and the first valid deploy of that ticker identity is the one that counts.</p></dd></div>
+          <div><dt>2. Mint</dt><dd><p>Someone inscribes a mint into an output whose value equals the units they are creating multiplied by the fixed ratio. The units now exist, sitting in that output.</p></dd></div>
+          <div><dt>3. Hold</dt><dd><p>Holding units means controlling the unspent output whose satoshis carry them. There is no balance record anywhere on Bitcoin, only an output you can spend.</p></dd></div>
+          <div><dt>4. Spend</dt><dd><p>Sending units means spending those satoshis. The output layout of the transaction you build decides which whole units survive and which are destroyed.</p></dd></div>
+        </dl>
 
-          <div class="timeline">
-            <div class="timeline-item">
-              <div class="timeline-key">DEPLOY</div>
-              <div>
-                <h3>Fix the rule</h3>
-                <p>An inscription declares a ticker, a maximum supply, the exact satoshis backing one unit, and the total backing those two numbers imply. From this moment the satoshi ratio is permanent — no later message can change it.</p>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-key">MINT</div>
-              <div>
-                <h3>Create units</h3>
-                <p>An inscription claims an amount of units and states the satoshis backing them. It is only valid if that number equals amount × unit size <em>and</em> the Bitcoin output carrying the inscription holds exactly that many satoshis, with the inscription at offset zero.</p>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-key">HOLD</div>
-              <div>
-                <h3>Own the output</h3>
-                <p>The units now live in an unspent output you control. Your balance is the sum of the allocations across your outputs — there is no account anywhere that records it.</p>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-key">SPLIT</div>
-              <div>
-                <h3>Divide the allocation</h3>
-                <p>Spending the output lets you send some units to someone else and keep the rest. The split happens in satoshi space: each output takes a contiguous stretch of the input satoshis.</p>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-key">CHANGE</div>
-              <div>
-                <h3>Catch the remainder</h3>
-                <p>Units you did not send need an output big enough to hold them, positioned so each unit fits whole. If no such output exists, those units cease to exist.</p>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-key">INDEX</div>
-              <div>
-                <h3>Observe the result</h3>
-                <p>Indexers replay the chain, apply the rules and publish balances. Their answer is an interpretation of Bitcoin, complete with a source, a coverage level and an observation height.</p>
-              </div>
-            </div>
+        <div class="note note--info">
+          <span class="note-mark" aria-hidden="true">i</span>
+          <div class="note-body">
+            <p class="note-title">Why the satoshis matter</p>
+            <p>In most token systems the amount is a number inside a message, and you have to trust software to add it up correctly. In DUST-20 the amount is physically present in the transaction as bitcoin. If a ticker is backed at 546 satoshis per unit then 91 units occupy exactly 49,686 satoshis, and anyone can check that against the raw transaction. The same property is what makes DUST-20 dangerous: anything that happens to the satoshis happens to the units.</p>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section id="anatomy">
-          <h2>Anatomy of a DUST-20 UTXO</h2>
-          <p>A DUST-20 output is an ordinary Bitcoin output. What makes it a DUST-20 output is an <strong>allocation</strong>: a record that a specific stretch of satoshis inside it represents a number of units of a ticker.</p>
+      <section class="section" id="deploy">
+        <h2><span class="num">G.2</span> Reading a deploy</h2>
+        <pre><code>{
+  "p": "dust-20",
+  "op": "deploy",
+  "tick": "dust",
+  "supply": "1000000",
+  "unit_sats": "546",
+  "max_sats": "546000000",
+  "lim_sats": "54600"
+}</code></pre>
 
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr><th>Part</th><th>What it is</th><th>Why it matters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><code>txid:vout</code></td>
-                  <td>The outpoint — which output this is.</td>
-                  <td>The unit of ownership. Spend it and every unit inside moves.</td>
-                </tr>
-                <tr>
-                  <td><code>value</code></td>
-                  <td>The output's satoshi amount.</td>
-                  <td>Must be large enough to hold the allocation. For a mint it must equal the declared <code>sats</code> exactly.</td>
-                </tr>
-                <tr>
-                  <td><code>offset</code></td>
-                  <td>Where the allocation starts inside the output, in satoshis.</td>
-                  <td>Usually zero, but after a split it may not be. Without it the next spend cannot be computed.</td>
-                </tr>
-                <tr>
-                  <td><code>tick</code> + <code>unit_sats</code></td>
-                  <td>Which deployment the allocation follows.</td>
-                  <td>Fixes how many satoshis one unit occupies, and therefore where unit boundaries fall.</td>
-                </tr>
-                <tr>
-                  <td><code>amount</code></td>
-                  <td>How many whole units the allocation represents.</td>
-                  <td>Always a whole number. DUST-20 balances have zero decimal places.</td>
-                </tr>
-              </tbody>
-            </table>
+        <dl class="kv">
+          <div><dt>tick</dt><dd>The ticker as written. Its identity is this text in Unicode NFC form, folded to lower case, so <code>DUST</code> and <code>dust</code> are the same ticker and cannot both be deployed.</dd></div>
+          <div><dt>supply</dt><dd>One million whole units may ever exist. There are no decimals, so a unit is never divided.</dd></div>
+          <div><dt>unit_sats</dt><dd>Each unit is backed by 546 satoshis, forever. 546 is a common example because it matches the usual Bitcoin dust threshold for a P2WPKH output. It is not a default, and a deploy that omits the field is rejected.</dd></div>
+          <div><dt>max_sats</dt><dd>1,000,000 x 546 = 546,000,000 satoshis, about 5.46 BTC. This is a redundancy check: if it does not match the exact product the deploy is rejected rather than corrected.</dd></div>
+          <div><dt>lim_sats</dt><dd>54,600 satoshis per mint, which is 100 units. Optional. Omitting it, or writing "0", means one mint could take the whole supply.</dd></div>
+        </dl>
+
+        <p>Note what that <code>max_sats</code> figure means in practice. If this ticker is ever fully minted, 5.46 BTC is immobilised inside DUST-20 outputs for as long as people hold the units. Sizing a deployment is a decision about how much bitcoin every future holder has to lock up.</p>
+      </section>
+
+      <section class="section" id="mint">
+        <h2><span class="num">G.3</span> Reading a mint</h2>
+        <pre><code>{
+  "p": "dust-20",
+  "op": "mint",
+  "tick": "dust",
+  "amt": "100",
+  "sats": "54600"
+}</code></pre>
+
+        <p>The mint says: create 100 units of <code>dust</code>, backed by 54,600 satoshis. Three numbers have to agree before a reader will accept it.</p>
+
+        <div class="readout">
+          <div class="readout-row"><span>Deployment ratio</span><span>546 sats per unit<small>From the resolved deploy, never from the mint payload.</small></span></div>
+          <div class="readout-row"><span>Declared backing</span><span>100 x 546 = 54,600 sats<small>The sats field must equal this exactly.</small></span></div>
+          <div class="readout-row"><span>Real output value</span><span>54,600 sats<small>The Bitcoin output carrying the inscription must hold exactly this.</small></span></div>
+        </div>
+
+        <div class="note note--critical">
+          <span class="note-mark" aria-hidden="true">!</span>
+          <div class="note-body">
+            <p class="note-title">One satoshi off is invalid, and permanent</p>
+            <p>If the output holds 54,599 satoshis the mint is invalid. Bitcoin confirms the transaction, the inscription exists, and the units do not. There is no correction transaction. Check the output value in the wallet prompt before you sign.</p>
           </div>
+        </div>
 
-          <div class="notice info">
-            <span class="notice-mark" aria-hidden="true">i</span>
-            <div>
-              <p class="notice-title">An output can hold more satoshis than its allocation needs</p>
-              <p>81 units at 546 satoshis occupy 44,226 satoshis. An output of 50,000 satoshis can carry them comfortably — the extra 5,774 satoshis are just ordinary bitcoin sitting in the same output. What matters is that every whole unit fits inside.</p>
-            </div>
+        {{examples}}
+      </section>
+
+      <section class="section" id="worked">
+        <h2><span class="num">G.4</span> Worked transactions</h2>
+        <p class="lede">You hold an allocation of 91 units backed at 546 satoshis each, sitting in one output worth 49,686 satoshis. You want to send 10 units to someone.</p>
+
+        <h3>The safe construction</h3>
+        <div class="scroll">
+          <table class="tbl">
+            <caption>Partial send with colored change, no units lost</caption>
+            <thead><tr><th>Part</th><th>Role</th><th>Value</th><th>Units</th><th>Why</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">in[0]</td><td>Colored</td><td class="num">49,686</td><td class="num">91</td><td><p>Your allocation.</p></td></tr>
+              <tr><td class="mono">in[1]</td><td>Cardinal</td><td class="num">20,000</td><td class="num">0</td><td><p>Ordinary bitcoin, added so the fee never touches colored satoshis.</p></td></tr>
+              <tr><td class="mono">out[0]</td><td>Colored</td><td class="num">5,460</td><td class="num">10</td><td><p>The receiver. 10 x 546.</p></td></tr>
+              <tr><td class="mono">out[1]</td><td>Colored</td><td class="num">44,226</td><td class="num">81</td><td><p>Your colored change. This output is what keeps the remaining units alive.</p></td></tr>
+              <tr><td class="mono">out[2]</td><td>Cardinal</td><td class="num">18,000</td><td class="num">0</td><td><p>Ordinary change.</p></td></tr>
+              <tr><td class="mono">fee</td><td>Miner</td><td class="num">2,000</td><td class="num">0</td><td><p>Taken entirely from cardinal value.</p></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>All 91 units survive: 10 whole blocks of 546 satoshis land inside <code>out[0]</code>, and 81 whole blocks land inside <code>out[1]</code>.</p>
+
+        <h3>The construction that destroys 49 units</h3>
+        <p>Same transaction, same intent, one output missing. There is no colored change output, so the 81 units you meant to keep have nowhere to be placed on purpose. Ordinal flow places them anyway, wherever the satoshis happen to land.</p>
+        <div class="scroll">
+          <table class="tbl">
+            <caption>The same send with no colored change output</caption>
+            <thead><tr><th>Part</th><th>Role</th><th>Value</th><th>Units landing</th><th>Result</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">in[0]</td><td>Colored</td><td class="num">49,686</td><td class="num">91</td><td><p>Your allocation.</p></td></tr>
+              <tr><td class="mono">in[1]</td><td>Cardinal</td><td class="num">20,000</td><td class="num">0</td><td><p>Fee funding.</p></td></tr>
+              <tr><td class="mono">out[0]</td><td>Colored</td><td class="num">5,460</td><td class="num">10</td><td><span class="verdict verdict--pass">SURVIVES</span></td></tr>
+              <tr><td class="mono">out[1]</td><td>Cardinal</td><td class="num">18,000</td><td class="num">32</td><td><p>32 whole units land in the output you built as ordinary change. They survive, in the wrong place, and your wallet has no idea they are there.</p></td></tr>
+              <tr><td class="mono">fee</td><td>Miner</td><td class="num">46,226</td><td class="num">49</td><td><span class="verdict verdict--fail">BURNED</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>49 of 91 units are destroyed, and 32 more end up somewhere you did not plan. Bitcoin confirms this transaction normally. Your wallet shows a successful send. No node, explorer or fee estimator flags anything. Only a DUST-20 reader knows the balance moved. <a href="transactions.html#simulator">Run both constructions in the allocation simulator</a> to see exactly where the satoshis land.</p>
+
+        <div class="note note--critical">
+          <span class="note-mark" aria-hidden="true">!</span>
+          <div class="note-body">
+            <p class="note-title">The one thing to remember</p>
+            <p>If you are sending part of an allocation and the transaction has no explicit colored change output, the remainder does not stay yours in any predictable way. Whole units land in whatever supported output the satoshis reach next, and everything past the end of the output range is destroyed. Do not approve it.</p>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section id="arithmetic">
-          <h2>The arithmetic</h2>
-          <p>There are only two formulas to learn, and both must hold exactly. Implementations use exact integer arithmetic throughout: satoshi values routinely exceed the range a 64-bit float can represent without loss.</p>
+      <section class="section" id="support">
+        <h2><span class="num">G.5</span> Support matrix</h2>
+        <p class="lede">What Bitcoin Universe products actually do with DUST-20 today, taken from the capability registry rather than from intent.</p>
 
-          <div class="formula">
-            <code>max_sats = supply × unit_sats</code>
-            <small>A deploy's total backing is its supply multiplied by the satoshis behind one unit. Example: 1,000,000 units × 546 sats = 546,000,000 sats.</small>
+        {{universe-surfaces}}
+
+        <div class="note note--critical">
+          <span class="note-mark" aria-hidden="true">!</span>
+          <div class="note-body">
+            <p class="note-title">Marketplace is read-only</p>
+            <p>DUST-20 marketplace availability is <code>read-only</code>. You can view, browse collections and read activity. You cannot list, buy, sell, make or accept offers, or settle. The recorded reason is that DUST-20 mutations are unavailable until a typed authoritative ownership resolver replaces the retired address-only legacy flow. <a href="universe.html">See the full recorded state</a>.</p>
           </div>
-          <div class="formula">
-            <code>sats = amt × unit_sats</code>
-            <small>A mint's declared backing is the units it creates multiplied by the unit size — and the Bitcoin output must hold exactly that. Example: 100 units × 546 sats = 54,600 sats.</small>
-          </div>
+        </div>
 
-          <p>Both are redundancy checks. The value could be computed rather than declared, but stating it lets a reader catch a builder that used the wrong unit size or lost precision to floating point. A payload that is off by a single satoshi is rejected, not corrected.</p>
+        {{universe-actions}}
 
-          <p><a href="playground.html#deploy">Try it in the playground</a> — change the supply or unit size and watch the derived values update with exact integer arithmetic.</p>
-        </section>
-
-        <section id="two-kinds">
-          <h2>Two kinds of satoshi</h2>
-          <p>Every DUST-20 transaction involves two categories of bitcoin that must never be confused.</p>
-
-          <div class="grid two">
-            <article class="card">
-              <h3>Colored satoshis</h3>
-              <p>The satoshis carrying token units. They are conserved: every one that reaches a supported output keeps carrying its unit. They must never be used to pay a fee, because a satoshi paid to a miner takes its unit with it.</p>
-            </article>
-            <article class="card">
-              <h3>Cardinal satoshis</h3>
-              <p>Ordinary bitcoin carrying no units. This is what pays the miner fee and provides ordinary change. A correctly built DUST-20 transaction always includes a cardinal input for exactly this purpose.</p>
-            </article>
-          </div>
-
-          <div class="notice critical">
-            <span class="notice-mark" aria-hidden="true">!</span>
-            <div>
-              <p class="notice-title">The fee is not part of the token arithmetic</p>
-              <p>The miner fee is whatever the transaction does not pay out. If you shrink a colored output to make room for a fee, you have not paid the fee out of "spare" value — you have moved the boundary of the colored range and probably destroyed units at the end of it.</p>
-            </div>
-          </div>
-        </section>
-
-        <section id="flow">
-          <h2>How units follow satoshis</h2>
-          <p>This is the rule that decides everything about a transfer. It is worth reading twice.</p>
-
-          <ol>
-            <li>Lay every <strong>input</strong> value end to end to form one long satoshi range.</li>
-            <li>Lay every <strong>output</strong> value end to end to form a second range, in output order.</li>
-            <li>An allocation occupies a contiguous span in the input range. Each unit is a block of <code>unit_sats</code> satoshis inside that span.</li>
-            <li>A unit survives only if its <strong>whole block</strong> lands inside a <strong>single supported output</strong>.</li>
-            <li>Everything else is burned.</li>
-          </ol>
-
-          <p>Three consequences follow directly, and each one has burned real balances:</p>
-
-          <div class="grid three">
-            <article class="card">
-              <h3>Output order matters</h3>
-              <p>Moving an output changes which satoshis land where. Reordering outputs is never cosmetic — it can move your entire allocation into the wrong place.</p>
-            </article>
-            <article class="card">
-              <h3>Fees eat the tail</h3>
-              <p>The fee is the satoshis past the last output. Units sitting in that region are destroyed, which is why the fee must be funded by a cardinal input.</p>
-            </article>
-            <article class="card">
-              <h3>Partial units vanish</h3>
-              <p>A unit straddling an output boundary does not round up or split. It simply does not survive.</p>
-            </article>
-          </div>
-
-          <h3>Worked scenarios</h3>
-          <p>These are computed live in your browser by the same validator that powers the playground. The bars show the output satoshi range and where units actually land.</p>
-          <noscript><p class="noscript-note">These scenarios are computed in your browser. With JavaScript disabled, see <a href="transactions.html">Transactions</a> for the same cases written out, or read <a href="conformance.json">conformance.json</a>.</p></noscript>
-          <div data-scenarios></div>
-
-          <p>Adjust the amounts yourself in the <a href="transactions.html#visualizer">transaction visualizer</a>.</p>
-        </section>
-      </div>
+        <p>Support outside Bitcoin Universe is not claimed here. If a wallet or marketplace says it supports DUST-20, test it against the <a href="conformance.html">published vectors</a> before trusting it with a balance, because most of the transfer and burn behaviour on this site is settled by one implementation rather than by an agreed standard.</p>
+      </section>

@@ -1,5 +1,5 @@
 /**
- * DUST-20 — examples, conformance vectors, glossary and FAQ.
+ * DUST-20 examples, conformance vectors, glossary and FAQ.
  *
  * These vectors are the fixtures the site's conformance laboratory renders,
  * the cases the Node test suite asserts against, and the content exported to
@@ -94,7 +94,7 @@ export const VECTORS = [
       max_sats: '546000000',
       lim_sats: '54600',
     },
-    reason: 'Every field is a canonical integer string and max_sats equals supply × unit_sats.',
+    reason: 'Every field is a strict decimal integer string and max_sats equals supply × unit_sats.',
   },
   {
     id: 'deploy-no-limit',
@@ -202,7 +202,7 @@ export const VECTORS = [
       unit_sats: '546',
       max_sats: '298116',
     },
-    reason: 'Integers are canonical decimal strings. "0546" is not canonical even though it parses.',
+    reason: 'Integers are strict decimal strings. "0546" is not in strict form even though it parses.',
   },
   {
     id: 'deploy-float',
@@ -253,7 +253,7 @@ export const VECTORS = [
       unit_sats: '-546',
       max_sats: '546000',
     },
-    reason: 'A minus sign is not part of a canonical DUST-20 integer.',
+    reason: 'A minus sign is not part of a strict DUST-20 integer.',
   },
   {
     id: 'deploy-exceeds-money',
@@ -455,7 +455,7 @@ export const VECTORS = [
     status: 'universe',
     payload: { p: 'dust-20', op: 'transfer', tick: 'dust', amt: '10' },
     reason:
-      'No transfer inscription is valid. Movement happens by spending the satoshis that carry the units. Earlier documentation listed a canonical transfer payload as an open question; the current implementation answers it by accepting none.',
+      'No transfer inscription is valid. Movement happens by spending the satoshis that carry the units. Earlier documentation listed an official transfer payload as an open question; the current implementation answers it by accepting none.',
   },
   {
     id: 'wrong-protocol',
@@ -529,7 +529,7 @@ export const SCENARIOS = [
   {
     id: 'partial-send',
     title: 'Partial send with colored change',
-    summary: 'Send 10 of 91 units and keep the rest. The canonical safe construction.',
+    summary: 'Send 10 of 91 units and keep the rest. The reference safe construction.',
     unitSats: '546',
     tick: 'dust',
     inputs: [
@@ -589,6 +589,23 @@ export const SCENARIOS = [
     expect: 'burn',
   },
   {
+    id: 'unsupported-output',
+    title: 'An output the reader cannot attribute',
+    summary: 'Units landing in an output with no supported address are destroyed.',
+    unitSats: '546',
+    tick: 'dust',
+    inputs: [
+      { kind: 'colored', units: '91', valueSats: '49686', label: 'Your DUST allocation' },
+      { kind: 'cardinal', valueSats: '20000', label: 'Ordinary bitcoin for the fee' },
+    ],
+    outputs: [
+      { kind: 'unsupported', valueSats: '5460', label: 'Unattributable output' },
+      { kind: 'colored', units: '81', label: 'Your DUST change' },
+      { kind: 'cardinal', valueSats: '18000', label: 'Ordinary bitcoin change' },
+    ],
+    expect: 'burn',
+  },
+  {
     id: 'merge',
     title: 'Merging two allocations',
     summary: 'Two colored inputs of the same ticker combine into one output.',
@@ -615,7 +632,7 @@ export const GLOSSARY = [
   {
     term: 'Satoshi',
     definition:
-      'The smallest unit of Bitcoin — one hundred-millionth of a bitcoin. Satoshis are indivisible, which is why every DUST-20 amount is a whole number.',
+      'The smallest unit of Bitcoin, one hundred-millionth of a bitcoin. Satoshis are indivisible, which is why every DUST-20 amount is a whole number.',
   },
   {
     term: 'Dust',
@@ -625,7 +642,7 @@ export const GLOSSARY = [
   {
     term: 'UTXO',
     definition:
-      'An unspent transaction output — a discrete piece of bitcoin with an amount and an owner. Bitcoin has no account balances; a wallet balance is the sum of its UTXOs.',
+      'An unspent transaction output: a discrete piece of bitcoin with an amount and an owner. Bitcoin has no account balances; a wallet balance is the sum of its UTXOs.',
   },
   {
     term: 'Outpoint',
@@ -645,7 +662,7 @@ export const GLOSSARY = [
   {
     term: 'Backing',
     definition:
-      'The satoshis that stand behind a quantity of units, equal to units × unit_sats. Backing is not a price — it is the physical space the units occupy in a transaction.',
+      'The satoshis that stand behind a quantity of units, equal to units × unit_sats. Backing is not a price, it is the physical space the units occupy in a transaction.',
   },
   {
     term: 'unit_sats',
@@ -665,7 +682,7 @@ export const GLOSSARY = [
   {
     term: 'Colored change',
     definition:
-      'The output that receives the units you did not send. Omitting it does not keep those units — it burns them.',
+      'The output that receives the units you did not send. Omitting it does not keep those units, it burns them.',
   },
   {
     term: 'Allocation',
@@ -695,7 +712,7 @@ export const GLOSSARY = [
   {
     term: 'RBF',
     definition:
-      'Replace-by-fee — resubmitting a transaction with a higher fee. Because the replacement can have a different output layout, it can burn units the original would have preserved.',
+      'Replace-by-fee: resubmitting a transaction with a higher fee. Because the replacement can have a different output layout, it can burn units the original would have preserved.',
   },
   {
     term: 'Reorg',
@@ -705,14 +722,14 @@ export const GLOSSARY = [
   {
     term: 'PSBT',
     definition:
-      'A partially signed Bitcoin transaction — the unsigned transaction your wallet shows you before you approve it. It is your last chance to check every output role.',
+      'A partially signed Bitcoin transaction: the unsigned transaction your wallet shows you before you approve it. It is your last chance to check every output role.',
   },
 ]
 
 export const FAQ = [
   {
     q: 'Do I need 546 satoshis per unit?',
-    a: 'No. 546 is the most common example because it matches Bitcoin’s usual dust threshold, but unit_sats is whatever the deploy declares. Never assume 546 when a payload omits the field — omitting it makes the deploy invalid.',
+    a: 'No. 546 is the most common example because it matches Bitcoin’s usual dust threshold, but unit_sats is whatever the deploy declares. Never assume 546 when a payload omits the field, because omitting it makes the deploy invalid.',
   },
   {
     q: 'Why is there no transfer inscription?',
@@ -720,7 +737,7 @@ export const FAQ = [
   },
   {
     q: 'What happens if I forget the colored change output?',
-    a: 'The units you meant to keep are burned. Bitcoin will confirm the transaction normally — nothing warns you. This is the single most expensive mistake in DUST-20.',
+    a: 'The units you meant to keep are burned. Bitcoin will confirm the transaction normally and nothing warns you. This is the single most expensive mistake in DUST-20.',
   },
   {
     q: 'Can I pay the miner fee from my token backing?',
@@ -742,4 +759,71 @@ export const FAQ = [
     q: 'Is this documentation a specification?',
     a: 'No. It documents the legacy DUST-20 specification and the behaviour of the Bitcoin Universe production indexer, labelling every statement with which of the two supports it. Where they disagree or nothing settles a question, that is stated rather than resolved by guesswork.',
   },
+]
+
+/* ------------------------------------------------------------------ *
+ * Vector to normative rule map
+ *
+ * Each conformance case names the numbered rule in the specification that
+ * it exercises, so a failing case points at the paragraph that defines the
+ * behaviour rather than at an opaque issue code.
+ * ------------------------------------------------------------------ */
+
+export const VECTOR_RULES = {
+  'deploy-valid': 'DUST-5.1',
+  'deploy-no-limit': 'DUST-5.6',
+  'deploy-zero-limit': 'DUST-3.2',
+  'deploy-arithmetic-mismatch': 'DUST-5.4',
+  'deploy-missing-max-sats': 'DUST-5.1',
+  'deploy-unknown-field': 'DUST-5.1',
+  'deploy-leading-zero': 'DUST-3.1',
+  'deploy-float': 'DUST-3.1',
+  'deploy-zero-supply': 'DUST-3.1',
+  'deploy-negative': 'DUST-3.1',
+  'deploy-exceeds-money': 'DUST-5.5',
+  'deploy-limit-above-max': 'DUST-5.6',
+  'deploy-tick-whitespace': 'DUST-4.4',
+  'deploy-duplicate-ticker': 'DUST-5.7',
+  'mint-valid': 'DUST-6.7',
+  'mint-case-insensitive-tick': 'DUST-4.5',
+  'mint-sats-mismatch': 'DUST-6.4',
+  'mint-output-mismatch': 'DUST-6.7',
+  'mint-limit-violation': 'DUST-6.5',
+  'mint-exceeds-supply': 'DUST-6.6',
+  'mint-no-deployment': 'DUST-6.2',
+  'mint-missing-field': 'DUST-6.1',
+  'mint-zero-amount': 'DUST-6.3',
+  'unknown-operation': 'DUST-4.2',
+  'transfer-inscription': 'DUST-7.1',
+  'wrong-protocol': 'DUST-4.1',
+  'non-string-value': 'DUST-2.5',
+  'duplicate-key': 'DUST-2.6',
+  'trailing-content': 'DUST-2.4',
+  'nested-object': 'DUST-2.5',
+  'not-json': 'DUST-2.4',
+}
+
+export const SCENARIO_RULES = {
+  'partial-send': 'DUST-7.7',
+  'full-send': 'DUST-7.4',
+  'missing-change': 'DUST-8.3',
+  'fee-from-backing': 'DUST-8.1',
+  merge: 'DUST-7.6',
+  'unsupported-output': 'DUST-8.2',
+}
+
+/** Search aliases: tickers, misspellings and the words people actually type. */
+export const SEARCH_ALIASES = [
+  { term: 'dust-20', aliases: ['dust20', 'dust 20', 'DUST', 'dust-2.0', 'dust twenty'] },
+  { term: 'unit_sats', aliases: ['unit sats', 'unitsats', 'backing ratio', 'sats per unit'] },
+  { term: 'max_sats', aliases: ['max sats', 'maxsats', 'total backing'] },
+  { term: 'lim_sats', aliases: ['lim sats', 'limsats', 'mint limit', 'per-mint cap'] },
+  { term: 'tick', aliases: ['ticker', 'symbol', 'token name'] },
+  { term: 'amt', aliases: ['amount', 'quantity', 'units'] },
+  { term: 'colored change', aliases: ['coloured change', 'token change', 'change output'] },
+  { term: 'cardinal', aliases: ['ordinary bitcoin', 'plain sats', 'uncoloured'] },
+  { term: 'burn', aliases: ['burnt', 'burned', 'destroyed', 'lost tokens'] },
+  { term: 'reorg', aliases: ['reorganization', 'reorganisation', 'chain rollback'] },
+  { term: 'ordinal flow', aliases: ['fifo', 'first in first out', 'sat flow', 'sat tracking'] },
+  { term: 'marketplace', aliases: ['trade', 'trading', 'buy', 'sell', 'list', 'listing', 'offer'] },
 ]

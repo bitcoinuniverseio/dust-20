@@ -1,5 +1,5 @@
 /**
- * DUST-20 documentation — local preview server.
+ * DUST-20 documentation local preview server.
  *
  * Serves the repository under /dust-20/ so the local preview exercises the
  * same base path as GitHub Pages, including the custom 404.

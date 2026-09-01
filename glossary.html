@@ -4,139 +4,154 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>DUST-20 glossary and FAQ | DUST-20</title>
-  <meta name="description" content="Plain definitions of satoshi, dust, UTXO, colored output, cardinal input, backing, outpoint, mempool, RBF, reorg and every other DUST-20 term, plus common questions.">
+  <meta name="description" content="Plain definitions of satoshi, dust, UTXO, colored output, cardinal input, backing, outpoint, allocation, offset, ordinal flow, burn, mempool, RBF, reorg and PSBT, plus common DUST-20 questions.">
   <link rel="canonical" href="https://bitcoinuniverseio.github.io/dust-20/glossary.html">
-  <meta name="theme-color" content="#3b2d19">
-  <meta name="color-scheme" content="light">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f4f4f1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0c0e11" media="(prefers-color-scheme: dark)">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="DUST-20 documentation">
   <meta property="og:title" content="DUST-20 glossary and FAQ | DUST-20">
-  <meta property="og:description" content="Plain definitions of satoshi, dust, UTXO, colored output, cardinal input, backing, outpoint, mempool, RBF, reorg and every other DUST-20 term, plus common questions.">
+  <meta property="og:description" content="Plain definitions of satoshi, dust, UTXO, colored output, cardinal input, backing, outpoint, allocation, offset, ordinal flow, burn, mempool, RBF, reorg and PSBT, plus common DUST-20 questions.">
   <meta property="og:url" content="https://bitcoinuniverseio.github.io/dust-20/glossary.html">
   <meta property="og:image" content="https://bitcoinuniverseio.github.io/dust-20/assets/og.svg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="DUST-20 glossary and FAQ | DUST-20">
-  <meta name="twitter:description" content="Plain definitions of satoshi, dust, UTXO, colored output, cardinal input, backing, outpoint, mempool, RBF, reorg and every other DUST-20 term, plus common questions.">
+  <meta name="twitter:description" content="Plain definitions of satoshi, dust, UTXO, colored output, cardinal input, backing, outpoint, allocation, offset, ordinal flow, burn, mempool, RBF, reorg and PSBT, plus common DUST-20 questions.">
   <meta name="twitter:image" content="https://bitcoinuniverseio.github.io/dust-20/assets/og.svg">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/site.css">
-  <script type="module" src="assets/site.js"></script>
-  <script type="module" src="assets/app.js"></script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","name":"DUST-20 glossary and FAQ | DUST-20","headline":"Glossary and FAQ","description":"Plain definitions of satoshi, dust, UTXO, colored output, cardinal input, backing, outpoint, mempool, RBF, reorg and every other DUST-20 term, plus common questions.","url":"https://bitcoinuniverseio.github.io/dust-20/glossary.html","inLanguage":"en","dateModified":"2026-08-18","isPartOf":{"@type":"WebSite","name":"DUST-20 documentation","url":"https://bitcoinuniverseio.github.io/dust-20/"},"publisher":{"@type":"Organization","name":"Bitcoin Universe","url":"https://github.com/bitcoinuniverseio"},"mainEntity":[{"@type":"Question","name":"Do I need 546 satoshis per unit?","acceptedAnswer":{"@type":"Answer","text":"No. 546 is the most common example because it matches Bitcoin’s usual dust threshold, but unit_sats is whatever the deploy declares. Never assume 546 when a payload omits the field — omitting it makes the deploy invalid."}},{"@type":"Question","name":"Why is there no transfer inscription?","acceptedAnswer":{"@type":"Answer","text":"Because the satoshis themselves carry the units. Spending them moves the units, so a separate message would be redundant and could disagree with the transaction that actually happened. The current implementation rejects any op: \"transfer\" inscription."}},{"@type":"Question","name":"What happens if I forget the colored change output?","acceptedAnswer":{"@type":"Answer","text":"The units you meant to keep are burned. Bitcoin will confirm the transaction normally — nothing warns you. This is the single most expensive mistake in DUST-20."}},{"@type":"Question","name":"Can I pay the miner fee from my token backing?","acceptedAnswer":{"@type":"Answer","text":"No. Satoshis that go to the fee are gone, and any units they carried are burned. Always add a separate ordinary bitcoin input to fund the fee."}},{"@type":"Question","name":"Are DUST-20 amounts divisible?","acceptedAnswer":{"@type":"Answer","text":"No. Balances have zero decimal places, and a unit only survives a spend if its whole block of unit_sats satoshis lands inside one output."}},{"@type":"Question","name":"What if two people deploy the same ticker?","acceptedAnswer":{"@type":"Answer","text":"The first valid deployment wins. Tickers are compared after Unicode NFC normalization and lower-case folding, so \"DUST\" and \"dust\" are the same ticker."}},{"@type":"Question","name":"Is a balance from an indexer authoritative?","acceptedAnswer":{"@type":"Answer","text":"It is one service’s interpretation of Bitcoin, not consensus. Check its source, coverage and observation height, and treat disagreement between two indexers as a blocking error rather than a choice."}},{"@type":"Question","name":"Is this documentation a specification?","acceptedAnswer":{"@type":"Answer","text":"No. It documents the legacy DUST-20 specification and the behaviour of the Bitcoin Universe production indexer, labelling every statement with which of the two supports it. Where they disagree or nothing settles a question, that is stated rather than resolved by guesswork."}}]}</script>
+  <script>try{var t=localStorage.getItem('dust20-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+  <script type="module" src="assets/site.js" defer></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","name":"DUST-20 glossary and FAQ | DUST-20","headline":"Glossary and FAQ","description":"Plain definitions of satoshi, dust, UTXO, colored output, cardinal input, backing, outpoint, allocation, offset, ordinal flow, burn, mempool, RBF, reorg and PSBT, plus common DUST-20 questions.","url":"https://bitcoinuniverseio.github.io/dust-20/glossary.html","inLanguage":"en","version":"1.1.0","dateModified":"2026-09-01","isPartOf":{"@type":"WebSite","name":"DUST-20 documentation","url":"https://bitcoinuniverseio.github.io/dust-20/"},"publisher":{"@type":"Organization","name":"Bitcoin Universe","url":"https://github.com/bitcoinuniverseio"},"mainEntity":[{"@type":"Question","name":"Do I need 546 satoshis per unit?","acceptedAnswer":{"@type":"Answer","text":"No. 546 is the most common example because it matches Bitcoin’s usual dust threshold, but unit_sats is whatever the deploy declares. Never assume 546 when a payload omits the field, because omitting it makes the deploy invalid."}},{"@type":"Question","name":"Why is there no transfer inscription?","acceptedAnswer":{"@type":"Answer","text":"Because the satoshis themselves carry the units. Spending them moves the units, so a separate message would be redundant and could disagree with the transaction that actually happened. The current implementation rejects any op: \"transfer\" inscription."}},{"@type":"Question","name":"What happens if I forget the colored change output?","acceptedAnswer":{"@type":"Answer","text":"The units you meant to keep are burned. Bitcoin will confirm the transaction normally and nothing warns you. This is the single most expensive mistake in DUST-20."}},{"@type":"Question","name":"Can I pay the miner fee from my token backing?","acceptedAnswer":{"@type":"Answer","text":"No. Satoshis that go to the fee are gone, and any units they carried are burned. Always add a separate ordinary bitcoin input to fund the fee."}},{"@type":"Question","name":"Are DUST-20 amounts divisible?","acceptedAnswer":{"@type":"Answer","text":"No. Balances have zero decimal places, and a unit only survives a spend if its whole block of unit_sats satoshis lands inside one output."}},{"@type":"Question","name":"What if two people deploy the same ticker?","acceptedAnswer":{"@type":"Answer","text":"The first valid deployment wins. Tickers are compared after Unicode NFC normalization and lower-case folding, so \"DUST\" and \"dust\" are the same ticker."}},{"@type":"Question","name":"Is a balance from an indexer authoritative?","acceptedAnswer":{"@type":"Answer","text":"It is one service’s interpretation of Bitcoin, not consensus. Check its source, coverage and observation height, and treat disagreement between two indexers as a blocking error rather than a choice."}},{"@type":"Question","name":"Is this documentation a specification?","acceptedAnswer":{"@type":"Answer","text":"No. It documents the legacy DUST-20 specification and the behaviour of the Bitcoin Universe production indexer, labelling every statement with which of the two supports it. Where they disagree or nothing settles a question, that is stated rather than resolved by guesswork."}}]}</script>
 </head>
-<body data-page="glossary">
+<body data-page="glossary" data-base="./">
   <a class="skip-link" href="#main">Skip to content</a>
-  <header class="site-header">
-    <div class="header-inner">
-      <a class="brand" href="./"><span class="brand-mark" aria-hidden="true">DUST</span><span>DUST-20</span></a>
-      <nav class="site-nav" data-site-nav aria-label="Primary"><a href="./">Start here</a><a href="how-it-works.html">How it works</a><a href="playground.html">Playground</a><a href="transactions.html">Transactions</a><a href="reference.html">Reference</a><a href="conformance.html">Conformance</a><a href="indexer.html">For builders</a><a href="safety.html">Safety</a><a href="glossary.html" aria-current="page">Glossary</a></nav>
-      <div class="header-tools">
-        <button class="search-trigger" type="button" data-search-trigger aria-label="Search the documentation">
-          <span aria-hidden="true">Search</span><kbd>/</kbd>
+  <header class="masthead">
+    <div class="masthead-inner">
+      <a class="brand" href="./">
+        <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="1.5" y="1.5" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="6" y="6" width="5" height="5" fill="currentColor"/><rect x="13" y="13" width="5" height="5" fill="currentColor"/><path d="M11 8.5h2M8.5 11v2" stroke="currentColor" stroke-width="1.2"/></svg>
+        <span class="brand-text">DUST-20</span>
+        <span class="brand-rev">REV 1.1.0</span>
+      </a>
+      <nav class="masthead-nav" data-nav aria-label="Documentation"><a href="./">Overview</a><a href="specification.html">Specification</a><a href="reference.html">Reference</a><a href="how-it-works.html">Guide</a><a href="transactions.html">Transactions</a><a href="playground.html">Decoder</a><a href="conformance.html">Test vectors</a><a href="indexer.html">Indexing</a><a href="universe.html">Universe support</a><a href="safety.html">Security</a><a href="glossary.html" aria-current="page">Glossary</a><a href="changelog.html">Changelog</a></nav>
+      <div class="masthead-tools">
+        <button class="tool-button" type="button" data-search-open aria-label="Search the documentation">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg>
+          <span class="label">Search</span><kbd>/</kbd>
         </button>
-        <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-navigation">Menu</button>
+        <button class="tool-button" type="button" data-theme-toggle aria-pressed="false" aria-label="Switch between light and dark theme">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M19.4 4.6l-2.1 2.1M6.7 17.3l-2.1 2.1"/></svg>
+          <span class="label">Light</span>
+        </button>
+        <button class="tool-button menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-nav" aria-label="Show the documentation menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          <span class="label">Menu</span>
+        </button>
       </div>
     </div>
   </header>
-  <dialog class="search-dialog" data-search-dialog aria-label="Search the documentation">
-    <form method="dialog" role="search">
-      <input type="search" placeholder="Search pages, fields, rules, terms…" aria-label="Search query" autocomplete="off">
-      <button class="button small secondary" type="button" onclick="this.closest('dialog').close()">Close</button>
+  <dialog class="search" data-search aria-label="Search the documentation">
+    <form class="search-form" method="dialog" role="search">
+      <input type="search" placeholder="Search rules, fields, terms, vectors" aria-label="Search query" autocomplete="off" spellcheck="false">
+      <button class="btn" type="button" data-search-close>Close</button>
     </form>
-    <ul class="search-results" data-search-results></ul>
+    <ul class="search-results"></ul>
   </dialog>
-  <div class="docs-layout">
-    <aside class="docs-sidebar">
-      <nav aria-label="Documentation">
-        <h2>Documentation</h2>
-        <ul class="sidebar-list">
-        <li><a href="./">Start here</a></li>
-        <li><a href="how-it-works.html">How it works</a></li>
-        <li><a href="playground.html">Playground</a></li>
-        <li><a href="transactions.html">Transactions</a></li>
-        <li><a href="reference.html">Reference</a></li>
-        <li><a href="conformance.html">Conformance</a></li>
-        <li><a href="indexer.html">For builders</a></li>
-        <li><a href="safety.html">Safety</a></li>
-        <li><a href="glossary.html" aria-current="page">Glossary</a></li>
-        </ul>
+  <div class="layout">
+    <aside class="sidebar" id="primary-nav">
+      <nav aria-label="Documentation index">
+        <h2>Index</h2>
+<div class="sidebar-group"><span>0 Orientation</span><ul><li><a href="./">Overview</a></li></ul></div><div class="sidebar-group"><span>1 Normative</span><ul><li><a href="specification.html">Specification</a></li><li><a href="reference.html">Reference</a></li></ul></div><div class="sidebar-group"><span>2 Applied</span><ul><li><a href="how-it-works.html">Guide</a></li><li><a href="transactions.html">Transactions</a></li><li><a href="playground.html">Decoder</a></li><li><a href="conformance.html">Test vectors</a></li></ul></div><div class="sidebar-group"><span>3 Operating</span><ul><li><a href="indexer.html">Indexing</a></li><li><a href="universe.html">Universe support</a></li><li><a href="safety.html">Security</a></li></ul></div><div class="sidebar-group"><span>4 Appendix</span><ul><li><a href="glossary.html" aria-current="page">Glossary</a></li><li><a href="changelog.html">Changelog</a></li></ul></div>
       </nav>
+      <div class="sidebar-meta">
+        <div><b>Document</b><span>1.1.0</span></div>
+        <div><b>Revised</b><span>2026-09-01</span></div>
+        <div><b>Chain</b><span>Bitcoin</span></div>
+        <div><b>Network</b><span>mainnet</span></div>
+        <div><b>Lifecycle</b><span>experimental</span></div>
+      </div>
     </aside>
-    <main class="docs-main" id="main">
-      <div class="page-hero">
-        <p class="eyebrow">Glossary</p>
+    <main class="main" id="main">
+      <div class="pagehead">
+        <p class="eyebrow">DUST-20 documentation</p>
         <h1>Glossary and FAQ</h1>
-        <p class="lead">Plain definitions for every term this documentation uses, and direct answers to the questions people ask most often.</p>
+        <p class="tagline">Terminology, and the questions people actually ask.</p>
+        <dl class="dsheet"><div><dt>Protocol</dt><dd>DUST-20<small>Registry id dust20, alias dust-20</small></dd></div><div><dt>Chain</dt><dd>Bitcoin<small>Network: mainnet</small></dd></div><div><dt>Ownership model</dt><dd>UTXO<small>Units are carried by satoshis in unspent outputs</small></dd></div><div><dt>Carrier</dt><dd>Inscription + spend<small>Deploy and mint are inscribed; movement is a spend</small></dd></div><div><dt>Decimals</dt><dd>0<small>Balances are whole units only</small></dd></div><div><dt>Document version</dt><dd>1.1.0<small>Revised 2026-09-01</small></dd></div><div><dt>Lifecycle</dt><dd>Experimental<small>Not a ratified multi-party standard</small></dd></div><div><dt>Owning repository</dt><dd>bitcoinuniverseio/dust-20<small>Documentation source of truth</small></dd></div></dl>
       </div>
+      <section class="section" id="glossary">
+        <h2><span class="num">A.1</span> Glossary</h2>
+        <p class="lede">Plain definitions of every term this documentation uses in a specific way. Where a term has a numbered rule behind it, the rule is the authority and this entry is the explanation.</p>
+        <dl class="kv"><div id="term-satoshi"><dt>Satoshi</dt><dd><p>The smallest unit of Bitcoin, one hundred-millionth of a bitcoin. Satoshis are indivisible, which is why every DUST-20 amount is a whole number.</p></dd></div><div id="term-dust"><dt>Dust</dt><dd><p>A Bitcoin output so small that nodes will not relay it, because spending it would cost more in fees than it is worth. The usual threshold for a common output type is 546 satoshis, which is why that number appears throughout DUST-20 examples.</p></dd></div><div id="term-utxo"><dt>UTXO</dt><dd><p>An unspent transaction output: a discrete piece of bitcoin with an amount and an owner. Bitcoin has no account balances; a wallet balance is the sum of its UTXOs.</p></dd></div><div id="term-outpoint"><dt>Outpoint</dt><dd><p>The address of a specific output, written as a transaction id and an output index, such as txid:0. It is how an allocation is identified.</p></dd></div><div id="term-colored-output"><dt>Colored output</dt><dd><p>An output whose satoshis an indexer interprets as carrying token units. Bitcoin itself sees an ordinary output; the colour exists only in the interpretation.</p></dd></div><div id="term-cardinal-input"><dt>Cardinal input</dt><dd><p>An ordinary bitcoin input carrying no token allocation. Cardinal inputs are what you use to pay miner fees without disturbing colored satoshis.</p></dd></div><div id="term-backing"><dt>Backing</dt><dd><p>The satoshis that stand behind a quantity of units, equal to units × unit_sats. Backing is not a price, it is the physical space the units occupy in a transaction.</p></dd></div><div id="term-unit-sats"><dt>unit_sats</dt><dd><p>The number of satoshis that back one unit, fixed at deploy time and unchangeable afterwards. Every later calculation depends on it.</p></dd></div><div id="term-deploy"><dt>Deploy</dt><dd><p>The inscription that creates a ticker and fixes its supply and satoshi backing rule.</p></dd></div><div id="term-mint"><dt>Mint</dt><dd><p>The inscription that creates units, in an output whose value equals the declared satoshi backing exactly.</p></dd></div><div id="term-colored-change"><dt>Colored change</dt><dd><p>The output that receives the units you did not send. Omitting it does not keep those units, it burns them.</p></dd></div><div id="term-allocation"><dt>Allocation</dt><dd><p>An indexer’s record that a specific span of satoshis inside a specific output represents a number of units of a ticker.</p></dd></div><div id="term-offset"><dt>Offset</dt><dd><p>Where an allocation begins inside its output, measured in satoshis from the start of that output. Without the offset, the next spend cannot be computed.</p></dd></div><div id="term-ordinal-flow"><dt>Ordinal flow</dt><dd><p>The first-in-first-out rule that decides which satoshis in the outputs correspond to which satoshis in the inputs. DUST-20 uses it to follow units through a spend.</p></dd></div><div id="term-burn"><dt>Burn</dt><dd><p>The destruction of units, caused by their satoshis being paid as fees, sent somewhere unattributable, or split so that no whole unit fits in an output. There is no burn message.</p></dd></div><div id="term-mempool"><dt>Mempool</dt><dd><p>The waiting area for broadcast but unconfirmed transactions. DUST-20 mempool coverage is partial, so unconfirmed state is not a safe basis for an irreversible decision.</p></dd></div><div id="term-rbf"><dt>RBF</dt><dd><p>Replace-by-fee: resubmitting a transaction with a higher fee. Because the replacement can have a different output layout, it can burn units the original would have preserved.</p></dd></div><div id="term-reorg"><dt>Reorg</dt><dd><p>A chain reorganization, where confirmed blocks are replaced by a different branch. An indexer must roll allocations back and replay the new branch.</p></dd></div><div id="term-psbt"><dt>PSBT</dt><dd><p>A partially signed Bitcoin transaction: the unsigned transaction your wallet shows you before you approve it. It is your last chance to check every output role.</p></dd></div></dl>
+      </section>
 
-      <div class="prose">
-        <section id="glossary">
-          <h2>Glossary</h2>
-          <div class="filter-bar">
-            <div>
-              <label class="visually-hidden" for="glossary-search">Search terms</label>
-              <input id="glossary-search" type="search" data-glossary-search placeholder="Search terms and definitions…" autocomplete="off">
-            </div>
+      <section class="section" id="faq">
+        <h2><span class="num">A.2</span> Frequently asked questions</h2>
+        <p class="lede">The questions people actually ask, answered from the rules rather than from intuition.</p>
+        <dl class="kv"><div><dt>Do I need 546 satoshis per unit?</dt><dd><p>No. 546 is the most common example because it matches Bitcoin’s usual dust threshold, but unit_sats is whatever the deploy declares. Never assume 546 when a payload omits the field, because omitting it makes the deploy invalid.</p></dd></div><div><dt>Why is there no transfer inscription?</dt><dd><p>Because the satoshis themselves carry the units. Spending them moves the units, so a separate message would be redundant and could disagree with the transaction that actually happened. The current implementation rejects any op: &quot;transfer&quot; inscription.</p></dd></div><div><dt>What happens if I forget the colored change output?</dt><dd><p>The units you meant to keep are burned. Bitcoin will confirm the transaction normally and nothing warns you. This is the single most expensive mistake in DUST-20.</p></dd></div><div><dt>Can I pay the miner fee from my token backing?</dt><dd><p>No. Satoshis that go to the fee are gone, and any units they carried are burned. Always add a separate ordinary bitcoin input to fund the fee.</p></dd></div><div><dt>Are DUST-20 amounts divisible?</dt><dd><p>No. Balances have zero decimal places, and a unit only survives a spend if its whole block of unit_sats satoshis lands inside one output.</p></dd></div><div><dt>What if two people deploy the same ticker?</dt><dd><p>The first valid deployment wins. Tickers are compared after Unicode NFC normalization and lower-case folding, so &quot;DUST&quot; and &quot;dust&quot; are the same ticker.</p></dd></div><div><dt>Is a balance from an indexer authoritative?</dt><dd><p>It is one service’s interpretation of Bitcoin, not consensus. Check its source, coverage and observation height, and treat disagreement between two indexers as a blocking error rather than a choice.</p></dd></div><div><dt>Is this documentation a specification?</dt><dd><p>No. It documents the legacy DUST-20 specification and the behaviour of the Bitcoin Universe production indexer, labelling every statement with which of the two supports it. Where they disagree or nothing settles a question, that is stated rather than resolved by guesswork.</p></dd></div></dl>
+
+        <div class="note note--info">
+          <span class="note-mark" aria-hidden="true">i</span>
+          <div class="note-body">
+            <p class="note-title">Can I trade DUST-20 in Bitcoin Universe?</p>
+            <p>No. Marketplace availability is read-only: viewing, collections and activity are supported, and listing, buying, selling, offers and settlement are not. The recorded reason is that DUST-20 mutations are unavailable until a typed authoritative ownership resolver replaces the retired address-only legacy flow. The <a href="universe.html">Universe support page</a> publishes the full recorded state.</p>
           </div>
-          <p class="filter-status" data-glossary-count role="status"></p>
-          <noscript><p class="noscript-note">Search needs JavaScript, but every term is rendered below and published in <a href="docs.json">docs.json</a>.</p></noscript>
-          <dl class="glossary-list" data-glossary></dl>
-        </section>
-
-        <section id="faq">
-          <h2>Frequently asked questions</h2>
-          <div data-faq></div>
-
-          <div class="notice info">
-            <span class="notice-mark" aria-hidden="true">i</span>
-            <div>
-              <p class="notice-title">Still have a question?</p>
-              <p>The <a href="reference.html">protocol reference</a> documents every field and rule with its provenance, and the <a href="reference.html#open">open questions</a> section lists what genuinely has no authoritative answer yet. Issues and corrections are welcome on the <a href="https://github.com/bitcoinuniverseio/dust-20">documentation repository</a>.</p>
-            </div>
-          </div>
-        </section>
-      </div>
-    <nav class="page-nav" aria-label="Pagination">
-      <a href="safety.html"><em>Previous</em><b>Safety</b></a>
-    </nav>
+        </div>
+      </section>
+      <nav class="pagenav" aria-label="Page">
+      <a href="safety.html"><em>Previous</em><b>Security</b></a>
+      <a href="changelog.html"><em>Next</em><b>Changelog</b></a>
+      </nav>
     </main>
-    <aside class="docs-toc">
+    <aside class="contents">
       <nav aria-label="On this page">
         <h2>On this page</h2>
-        <ul class="toc-list">
-        <li><a href="#glossary">Glossary</a></li>
-        <li><a href="#faq">Frequently asked questions</a></li>
+        <ul>
+          <li><a href="#glossary">Glossary</a></li>
+          <li><a href="#faq">Frequently asked questions</a></li>
         </ul>
       </nav>
     </aside>
   </div>
-  <footer class="footer">
-    <div class="footer-inner">
-      <div>
-        <span class="footer-brand-mark" aria-hidden="true">DUST</span>
-        <h2>DUST-20</h2>
-        <p>DUST-20 binds every token unit to an exact number of satoshis. Deploy and mint are inscriptions; every later movement is an ordinary Bitcoin spend of the satoshis that carry the units.</p>
+  <footer class="colophon">
+    <div class="colophon-inner">
+      <div class="colophon-grid">
+        <dl>
+          <dt>Owning repository</dt>
+          <dd><a href="https://github.com/bitcoinuniverseio/dust-20">bitcoinuniverseio/dust-20</a></dd>
+          <dt>Source path</dt>
+          <dd>content/glossary.html</dd>
+          <dt>Last verified</dt>
+          <dd>2026-09-01</dd>
+        </dl>
+        <dl>
+          <dt>Document version</dt>
+          <dd>1.1.0</dd>
+          <dt>Lifecycle</dt>
+          <dd>experimental</dd>
+          <dt>Chain and network</dt>
+          <dd>Bitcoin mainnet</dd>
+        </dl>
+        <div>
+          <h2>Documentation</h2>
+          <ul>
+            <li><a href="https://github.com/bitcoinuniverseio/dust-20/tree/main/content/glossary.html">Edit this page on GitHub</a></li>
+            <li><a href="https://docs.bitcoinuniverse.io">docs.bitcoinuniverse.io</a></li>
+            <li><a href="https://github.com/bitcoinuniverseio/dust-20/security/advisories/new">Report a vulnerability</a></li>
+            <li><a href="https://inscribe.bitcoinuniverse.io">Bitcoin Universe Inscribe</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Machine readable</h2>
+          <ul>
+            <li><a href="llms.txt">llms.txt</a></li>
+            <li><a href="docs.json">docs.json</a></li>
+            <li><a href="conformance.json">conformance.json</a></li>
+            <li><a href="search-index.json">search-index.json</a></li>
+          </ul>
+        </div>
       </div>
-      <div>
-        <h2>Documentation</h2>
-        <ul><li><a href="./">Start here</a></li><li><a href="how-it-works.html">How it works</a></li><li><a href="playground.html">Playground</a></li><li><a href="transactions.html">Transactions</a></li><li><a href="reference.html">Reference</a></li></ul>
-      </div>
-      <div>
-        <h2>More</h2>
-        <ul><li><a href="conformance.html">Conformance</a></li><li><a href="indexer.html">For builders</a></li><li><a href="safety.html">Safety</a></li><li><a href="glossary.html">Glossary</a></li></ul>
-      </div>
-      <div>
-        <h2>Machine readable</h2>
-        <ul>
-          <li><a href="llms.txt">llms.txt</a></li>
-          <li><a href="docs.json">docs.json</a></li>
-          <li><a href="conformance.json">conformance.json</a></li>
-          <li><a href="https://github.com/bitcoinuniverseio/dust-20">Source repository</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      Experimental documentation, last updated 2026-08-18. Review every Bitcoin transaction in your wallet before signing — this site never asks for a key and never signs anything.
+      <p class="colophon-note">Experimental documentation of an experimental protocol. Every statement carries a provenance label, and where the legacy specification and the current implementation disagree, both positions are published rather than silently resolved. No page on this site asks for a key, builds a transaction, or sends anything you type anywhere.</p>
     </div>
   </footer>
 </body>

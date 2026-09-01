@@ -1,8 +1,8 @@
 /**
- * DUST-20 — deterministic client-side validator and transaction simulator.
+ * DUST-20 deterministic client-side validator and transaction simulator.
  *
  * Mirrors the reader profile enforced by the Bitcoin Universe production
- * indexer. Every quantity is handled as a BigInt or a canonical decimal
+ * indexer. Every quantity is handled as a BigInt or a strict decimal
  * string. There is no floating-point arithmetic anywhere in this module:
  * a satoshi value can exceed Number.MAX_SAFE_INTEGER, and a double would
  * lose precision silently.
@@ -10,10 +10,10 @@
  * Pure ESM, no dependencies. Runs identically in a browser and in Node.
  */
 
-import { LIMITS, FIELDS_BY_OP, operationById } from './protocol-data.js'
+import { LIMITS, FIELDS_BY_OP, operationById } from './protocol-schema.js'
 
-const CANONICAL_POSITIVE = /^[1-9][0-9]*$/
-const CANONICAL_NON_NEGATIVE = /^(?:0|[1-9][0-9]*)$/
+const STRICT_POSITIVE = /^[1-9][0-9]*$/
+const STRICT_NON_NEGATIVE = /^(?:0|[1-9][0-9]*)$/
 const TICK_FORBIDDEN = /[\u0000-\u001f\u007f\s/?#\\]/u
 
 /** A single validation failure. Codes are stable and referenced by fixtures. */
@@ -38,7 +38,7 @@ const fail = (code, message, field, status) => {
 }
 
 /* ------------------------------------------------------------------ *
- * Reader — flat JSON object of strings
+ * Reader: flat JSON object of strings
  * ------------------------------------------------------------------ */
 
 /**
@@ -145,15 +145,15 @@ export function parseFlatStringObject(source) {
 }
 
 /* ------------------------------------------------------------------ *
- * Canonical integers
+ * Strict decimal integers
  * ------------------------------------------------------------------ */
 
-/** Parse a canonical positive integer string into a BigInt. */
+/** Parse a strict positive decimal integer string into a BigInt. */
 export function positiveInteger(value, field, ceiling = LIMITS.MAX_ATOMIC) {
-  if (typeof value !== 'string' || !CANONICAL_POSITIVE.test(value)) {
+  if (typeof value !== 'string' || !STRICT_POSITIVE.test(value)) {
     fail(
       'bad_integer',
-      `${field} must be a canonical positive integer string: digits only, no leading zero, sign, decimal point or whitespace.`,
+      `${field} must be a strict positive decimal string: digits only, no leading zero, sign, decimal point or whitespace.`,
       field,
     )
   }
@@ -164,12 +164,12 @@ export function positiveInteger(value, field, ceiling = LIMITS.MAX_ATOMIC) {
   return parsed
 }
 
-/** Parse a canonical non-negative integer string into a BigInt. */
+/** Parse a strict non-negative decimal integer string into a BigInt. */
 export function nonNegativeInteger(value, field, ceiling = LIMITS.MAX_ATOMIC) {
-  if (typeof value !== 'string' || !CANONICAL_NON_NEGATIVE.test(value)) {
+  if (typeof value !== 'string' || !STRICT_NON_NEGATIVE.test(value)) {
     fail(
       'bad_integer',
-      `${field} must be a canonical non-negative integer string: digits only, no leading zero, sign, decimal point or whitespace.`,
+      `${field} must be a strict non-negative decimal string: digits only, no leading zero, sign, decimal point or whitespace.`,
       field,
     )
   }
@@ -189,7 +189,7 @@ const nonNegativeSats = (value, field) => nonNegativeInteger(value, field, LIMIT
  * ------------------------------------------------------------------ */
 
 /**
- * Fold a ticker to its canonical identity.
+ * Fold a ticker to its comparison identity.
  * Identity is the NFC form case-folded to lower case; the original spelling
  * is preserved for display.
  */
@@ -198,7 +198,7 @@ export function normalizeTicker(value) {
   const display = value.normalize('NFC')
   const bytes = new TextEncoder().encode(display).length
   if (display !== value) {
-    fail('bad_tick', 'tick must already be in Unicode NFC form.', 'tick')
+    fail('bad_tick', 'tick must already be in Unicode NFC form (rule DUST-4.3).', 'tick')
   }
   if (bytes < LIMITS.MIN_TICK_BYTES || bytes > LIMITS.MAX_TICK_BYTES) {
     fail(
@@ -499,7 +499,7 @@ function mintWarnings({ sats, unitSats, remaining }) {
 }
 
 /* ------------------------------------------------------------------ *
- * Inspector — the single entry point used by the site
+ * Inspector: the single entry point used by the site
  * ------------------------------------------------------------------ */
 
 /**
@@ -633,7 +633,7 @@ function describeFields(payload, op, issues) {
 }
 
 /* ------------------------------------------------------------------ *
- * Transaction simulator — ordinal first-in-first-out sat flow
+ * Transaction simulator: ordinal first-in-first-out sat flow
  * ------------------------------------------------------------------ */
 
 /**
@@ -841,7 +841,7 @@ export function satsToBtc(value) {
   return negative ? `-${text}` : text
 }
 
-/** Canonical JSON rendering: schema key order, string values only. */
+/** Schema-ordered JSON rendering: key order from the operation, string values only. */
 export function renderPayload(payload, op) {
   const operation = op ? operationById(op) : null
   const order = operation ? [...operation.required, ...operation.optional] : []

@@ -1,0 +1,89 @@
+      <section class="section" id="state">
+        <h2><span class="num">U.1</span> Recorded state</h2>
+        <p class="lede">You can view DUST-20 in Bitcoin Universe products. You cannot trade it there. This page publishes the exact recorded reason rather than leaving it implicit, because knowing why a thing is unavailable is more useful than discovering it at the moment you try.</p>
+
+        <div class="note note--critical">
+          <span class="note-mark" aria-hidden="true">!</span>
+          <div class="note-body">
+            <p class="note-title">Marketplace availability: read-only</p>
+            <p>DUST-20 is registered in the Bitcoin Universe capability registry with marketplace availability <code>read-only</code> and mode <code>read-only</code>. Every mutating marketplace action is unavailable. This is a deliberate closed gate, not a missing feature or a temporary outage.</p>
+          </div>
+        </div>
+
+        {{universe-state}}
+
+        <p>Each row above is the recorded value, reproduced word for word. The mutation gate, the ownership statement and the settlement statement are the three that matter: together they say that no configured source can prove who owns a DUST-20 output well enough to move money against it, so nothing that would move money is enabled.</p>
+      </section>
+
+      <section class="section" id="actions">
+        <h2><span class="num">U.2</span> Marketplace actions</h2>
+        <p class="lede">The full action matrix. Three read actions are available. Ten mutating actions are not, all for the same recorded reason.</p>
+        {{universe-actions}}
+
+        <div class="note note--warn">
+          <span class="note-mark" aria-hidden="true">!</span>
+          <div class="note-body">
+            <p class="note-title">What a read-only listing surface actually is</p>
+            <p>The order book source is recorded as a read-only legacy Universe catalog. If you see a DUST-20 listing inside a Bitcoin Universe product, it is catalog data: a record that someone once published an offer. It is not proof that the output is still unspent, not proof of who controls it, and not something the product will let you act on. Freshness policy is recorded as <b>Discovery is non-authoritative for mutations</b>, which is exactly what that means.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="surfaces">
+        <h2><span class="num">U.3</span> Product surfaces</h2>
+        <p class="lede">What each Bitcoin Universe surface does with DUST-20, from the registry entry rather than from intent.</p>
+        {{universe-surfaces}}
+
+        <dl class="kv">
+          <div><dt>Chain and network</dt><dd>Bitcoin mainnet.</dd></div>
+          <div><dt>Ownership model</dt><dd>UTXO. Units are carried by satoshis in unspent outputs, so a wallet send of the carrying output is a DUST-20 movement whether or not the wallet knows it.</dd></div>
+          <div><dt>Address roles</dt><dd>Payment and ordinals. A DUST-20 allocation can sit under either role, which is why a wallet must treat colored outputs as distinct from spendable change.</dd></div>
+          <div><dt>Decimals</dt><dd>None. Balances are whole units.</dd></div>
+          <div><dt>Protocol state source</dt><dd>DUST-20 indexer discovery and portfolio data, served by the first-party <code>index-dust20</code> service.</dd></div>
+        </dl>
+
+        <div class="note note--warn">
+          <span class="note-mark" aria-hidden="true">!</span>
+          <div class="note-body">
+            <p class="note-title">A wallet send is not automatically a safe DUST-20 send</p>
+            <p>Wallet support is recorded as view, send and receive: it can display balances and move the outputs. It does not follow that an arbitrary wallet transaction preserves your units. The output layout still decides the outcome, and a wallet that subtracts a fee from the largest output, or omits a colored change output, will destroy units while reporting success. Read the <a href="safety.html">security considerations</a> before sending.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="why">
+        <h2><span class="num">U.4</span> Why it is read-only</h2>
+        <p class="lede">Three things explain the gate: where the data comes from, what the retired path could and could not prove, and what would have to exist before the gate could open.</p>
+        {{universe-why}}
+
+        <h3>The shape of the argument</h3>
+        <div class="scroll">
+          <table class="tbl">
+            <caption>What a settlement decision needs, and what a boolean availability check provides</caption>
+            <thead><tr><th>Required to move money</th><th>Provided by a boolean output check</th></tr></thead>
+            <tbody>
+              <tr><td>The ticker identity of the allocation</td><td><span class="verdict verdict--fail">NO</span></td></tr>
+              <tr><td>The exact unit amount</td><td><span class="verdict verdict--fail">NO</span></td></tr>
+              <tr><td>The owning address</td><td><span class="verdict verdict--fail">NO</span></td></tr>
+              <tr><td>The outpoint and its unspent status at a known height</td><td><span class="verdict verdict--fail">NO</span></td></tr>
+              <tr><td>A typed response schema the caller validated</td><td><span class="verdict verdict--fail">NO</span></td></tr>
+              <tr><td>Observation freshness bound to a checkpoint</td><td><span class="verdict verdict--fail">NO</span></td></tr>
+              <tr><td>Authority to settle</td><td><span class="verdict verdict--fail">NO</span></td></tr>
+              <tr><td>Whether one listing id is currently marked good</td><td><span class="verdict verdict--pass">YES</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>A single boolean answers the last row and nothing above it. Building a purchase on it would mean signing away buyer funds on the strength of a yes that cannot say what was bought, from whom, or when the answer was true. The gate is closed for that reason, and it stays closed until a resolver exists that answers every row.</p>
+
+        <div class="note note--info">
+          <span class="note-mark" aria-hidden="true">i</span>
+          <div class="note-body">
+            <p class="note-title">This is also the general lesson</p>
+            <p>If you are integrating DUST-20 anywhere, the same test applies to whatever source you plan to trust. Ask what it proves, not what it returns. A source that cannot state identity, amount, owner, outpoint, height and coverage is a discovery source, and discovery sources are for showing people things, not for settling value. That distinction is the one recorded in <a href="specification.html#DUST-9.7">DUST-9.7</a>.</p>
+          </div>
+        </div>
+
+        <h3>What would change this</h3>
+        <p>A typed authoritative ownership resolver, first-party, returning identity, exact amount, owning address, outpoint, observation height and coverage label, bound to a stable checkpoint. When one is configured, the capability registry entry changes and marketplace mutations can be reconsidered against it. Until then, treat every DUST-20 listing surface in Bitcoin Universe products as catalog data only. This is tracked as an <a href="reference.html#typed-ownership">open question</a> on the reference page rather than as a roadmap promise.</p>
+      </section>

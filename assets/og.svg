@@ -1,28 +1,47 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="DUST-20 — tokens with Bitcoin at their core">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#f7eedb"/>
-      <stop offset="100%" stop-color="#efe0c2"/>
-    </linearGradient>
-    <linearGradient id="mark" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#7b2f17"/>
-      <stop offset="55%" stop-color="#b76c25"/>
-      <stop offset="100%" stop-color="#d89a25"/>
-    </linearGradient>
-  </defs>
-  <rect width="1200" height="630" fill="url(#bg)"/>
-  <circle cx="1080" cy="70" r="220" fill="#d89a25" opacity=".16"/>
-  <circle cx="60" cy="560" r="180" fill="#b99252" opacity=".14"/>
-  <rect x="80" y="86" width="150" height="52" rx="26" fill="url(#mark)"/>
-  <text x="155" y="121" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="22" font-weight="800" fill="#fff9ee" letter-spacing="2">DUST-20</text>
-  <text x="80" y="270" font-family="Georgia, serif" font-size="82" font-weight="700" fill="#3b2d19" letter-spacing="-3">Tokens with</text>
-  <text x="80" y="356" font-family="Georgia, serif" font-size="82" font-weight="700" fill="#7b2f17" letter-spacing="-3">Bitcoin at their core.</text>
-  <text x="80" y="432" font-family="Inter, system-ui, sans-serif" font-size="27" fill="#5a4630">Every unit tied to an exact number of satoshis.</text>
-  <g font-family="ui-monospace, monospace" font-size="24" fill="#5a4630">
-    <rect x="80" y="474" width="330" height="52" rx="12" fill="#fff9ee" stroke="#d7bf91"/>
-    <text x="102" y="507">sats = amt × unit_sats</text>
-    <rect x="432" y="474" width="404" height="52" rx="12" fill="#fff9ee" stroke="#d7bf91"/>
-    <text x="454" y="507">max_sats = supply × unit_sats</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="DUST-20 protocol datasheet: a token unit is an exact number of satoshis">
+  <rect width="1200" height="630" fill="#f4f4f1"/>
+  <g stroke="#e3e5e8" stroke-width="1">
+    <path d="M40.5 0v630M80.5 0v630M120.5 0v630M160.5 0v630M200.5 0v630M240.5 0v630M280.5 0v630M320.5 0v630M360.5 0v630M400.5 0v630M440.5 0v630M480.5 0v630M520.5 0v630M560.5 0v630M600.5 0v630M640.5 0v630M680.5 0v630M720.5 0v630M760.5 0v630M800.5 0v630M840.5 0v630M880.5 0v630M920.5 0v630M960.5 0v630M1000.5 0v630M1040.5 0v630M1080.5 0v630M1120.5 0v630M1160.5 0v630"/>
+    <path d="M0 40.5h1200M0 80.5h1200M0 120.5h1200M0 160.5h1200M0 200.5h1200M0 240.5h1200M0 280.5h1200M0 320.5h1200M0 360.5h1200M0 400.5h1200M0 440.5h1200M0 480.5h1200M0 520.5h1200M0 560.5h1200M0 600.5h1200"/>
   </g>
-  <text x="80" y="586" font-family="Inter, system-ui, sans-serif" font-size="20" fill="#7a6444">bitcoinuniverseio.github.io/dust-20</text>
+
+  <g stroke="#c4c9cf" stroke-width="1" fill="none">
+    <path d="M72 88h1056M72 200h1056M72 470h1056"/>
+  </g>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20" fill="#565e68" letter-spacing="3">
+    <text x="72" y="72">DUST-20 PROTOCOL DATASHEET</text>
+    <text x="960" y="72">REV 1.1.0</text>
+  </g>
+
+  <rect x="72" y="118" width="46" height="46" fill="none" stroke="#0a6a78" stroke-width="3"/>
+  <rect x="82" y="128" width="12" height="12" fill="#0a6a78"/>
+  <rect x="98" y="144" width="12" height="12" fill="#14161a"/>
+
+  <text x="140" y="160" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="62" font-weight="600" fill="#14161a" letter-spacing="-1">DUST-20</text>
+
+  <text x="72" y="270" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="46" font-weight="600" fill="#14161a">A token unit is an exact</text>
+  <text x="72" y="326" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="46" font-weight="600" fill="#14161a">number of satoshis.</text>
+  <text x="72" y="384" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="25" fill="#565e68">Deploy and mint are inscriptions. Movement is an ordinary Bitcoin spend.</text>
+  <text x="72" y="420" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="25" fill="#565e68">Normative specification, decoder, conformance vectors.</text>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="21">
+    <rect x="72" y="498" width="252" height="62" fill="#ffffff" stroke="#c4c9cf"/>
+    <text x="88" y="522" font-size="14" fill="#565e68" letter-spacing="2">CHAIN</text>
+    <text x="88" y="548" fill="#14161a">Bitcoin mainnet</text>
+
+    <rect x="324" y="498" width="252" height="62" fill="#ffffff" stroke="#c4c9cf"/>
+    <text x="340" y="522" font-size="14" fill="#565e68" letter-spacing="2">DECIMALS</text>
+    <text x="340" y="548" fill="#14161a">0, whole units</text>
+
+    <rect x="576" y="498" width="300" height="62" fill="#ffffff" stroke="#c4c9cf"/>
+    <text x="592" y="522" font-size="14" fill="#565e68" letter-spacing="2">FORMULA</text>
+    <text x="592" y="548" fill="#14161a">sats = amt x unit_sats</text>
+
+    <rect x="876" y="498" width="252" height="62" fill="#f7e3e3" stroke="#a02020"/>
+    <text x="892" y="522" font-size="14" fill="#a02020" letter-spacing="2">UNIVERSE MARKET</text>
+    <text x="892" y="548" fill="#a02020">read-only</text>
+  </g>
+
+  <text x="72" y="600" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" fill="#565e68">bitcoinuniverseio.github.io/dust-20</text>
 </svg>
