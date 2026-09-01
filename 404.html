@@ -4,39 +4,160 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Page not found | DUST-20</title>
-  <meta name="description" content="That DUST-20 documentation page does not exist. Find the page you were looking for here.">
+  <meta name="description" content="That DUST-20 documentation page does not exist. Every page of the specification, reference, decoder and test vectors is listed here so you can find the one you wanted.">
+  <link rel="canonical" href="https://bitcoinuniverseio.github.io/dust-20/404.html">
   <meta name="robots" content="noindex">
-  <meta name="theme-color" content="#3b2d19">
-  <meta name="color-scheme" content="light">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f4f4f1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0c0e11" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="DUST-20 documentation">
+  <meta property="og:title" content="Page not found | DUST-20">
+  <meta property="og:description" content="That DUST-20 documentation page does not exist. Here is the full index.">
+  <meta property="og:url" content="https://bitcoinuniverseio.github.io/dust-20/404.html">
+  <meta property="og:image" content="https://bitcoinuniverseio.github.io/dust-20/assets/og.svg">
   <link rel="icon" href="/dust-20/assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/dust-20/assets/site.css">
+  <script>try{var t=localStorage.getItem('dust20-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+  <script type="module" src="/dust-20/assets/site.js" defer></script>
 </head>
-<body data-page="404">
+<body data-page="not-found" data-base="/dust-20/">
   <a class="skip-link" href="#main">Skip to content</a>
-  <header class="site-header">
-    <div class="header-inner">
-      <a class="brand" href="/dust-20/"><span class="brand-mark" aria-hidden="true">DUST</span><span>DUST-20</span></a>
+  <header class="masthead">
+    <div class="masthead-inner">
+      <a class="brand" href="/dust-20/">
+        <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="1.5" y="1.5" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="6" y="6" width="5" height="5" fill="currentColor"/><rect x="13" y="13" width="5" height="5" fill="currentColor"/><path d="M11 8.5h2M8.5 11v2" stroke="currentColor" stroke-width="1.2"/></svg>
+        <span class="brand-text">DUST-20</span>
+        <span class="brand-rev">REV 1.1.0</span>
+      </a>
+      <nav class="masthead-nav" data-nav aria-label="Documentation"><a href="/dust-20/">Overview</a><a href="/dust-20/specification.html">Specification</a><a href="/dust-20/reference.html">Reference</a><a href="/dust-20/how-it-works.html">Guide</a><a href="/dust-20/transactions.html">Transactions</a><a href="/dust-20/playground.html">Decoder</a><a href="/dust-20/conformance.html">Test vectors</a><a href="/dust-20/indexer.html">Indexing</a><a href="/dust-20/universe.html">Universe support</a><a href="/dust-20/safety.html">Security</a><a href="/dust-20/glossary.html">Glossary</a><a href="/dust-20/changelog.html">Changelog</a></nav>
+      <div class="masthead-tools">
+        <button class="tool-button" type="button" data-search-open aria-label="Search the documentation">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg>
+          <span class="label">Search</span><kbd>/</kbd>
+        </button>
+        <button class="tool-button" type="button" data-theme-toggle aria-pressed="false" aria-label="Switch between light and dark theme">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M19.4 4.6l-2.1 2.1M6.7 17.3l-2.1 2.1"/></svg>
+          <span class="label">Light</span>
+        </button>
+        <button class="tool-button menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-nav" aria-label="Show the documentation menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          <span class="label">Menu</span>
+        </button>
+      </div>
     </div>
   </header>
-  <main class="shell" id="main" style="padding:4rem 0 5rem">
-    <p class="eyebrow">404</p>
-    <h1 style="font:700 clamp(2.4rem,6vw,4.4rem)/1.02 var(--serif);letter-spacing:-.05em;max-width:16ch">This trail faded into the <span style="color:var(--pink)">dust.</span></h1>
-    <p class="lead">That page does not exist. It may have been renamed while this documentation was rebuilt — everything below is current.</p>
+  <dialog class="search" data-search aria-label="Search the documentation">
+    <form class="search-form" method="dialog" role="search">
+      <input type="search" placeholder="Search rules, fields, terms, vectors" aria-label="Search query" autocomplete="off" spellcheck="false">
+      <button class="btn" type="button" data-search-close>Close</button>
+    </form>
+    <ul class="search-results"></ul>
+  </dialog>
 
-    <div class="path-grid" style="margin-top:2rem">
-      <a class="path-card" href="/dust-20/"><em>START</em><b>Start here</b><span>What DUST-20 is, why satoshis matter, and where to go next.</span></a>
-      <a class="path-card" href="/dust-20/how-it-works.html"><em>UNDERSTAND</em><b>How it works</b><span>The lifecycle from deploy through mint, transfer and indexing.</span></a>
-      <a class="path-card" href="/dust-20/playground.html"><em>BUILD</em><b>Playground</b><span>Build and validate payloads with exact integer arithmetic.</span></a>
-      <a class="path-card" href="/dust-20/transactions.html"><em>VISUALIZE</em><b>Transactions</b><span>See how units follow satoshis through a Bitcoin spend.</span></a>
-      <a class="path-card" href="/dust-20/reference.html"><em>REFERENCE</em><b>Protocol reference</b><span>Every field, rule and formula, with its provenance.</span></a>
-      <a class="path-card" href="/dust-20/indexer.html"><em>INTEGRATE</em><b>For builders</b><span>Indexing, allocation records, reorgs and API expectations.</span></a>
-      <a class="path-card" href="/dust-20/safety.html"><em>SAFETY</em><b>Stay safe</b><span>What to check before approving a DUST-20 transaction.</span></a>
-      <a class="path-card" href="/dust-20/glossary.html"><em>TERMS</em><b>Glossary and FAQ</b><span>Plain definitions and answers to common questions.</span></a>
-    </div>
-  </main>
-  <footer class="footer">
-    <div class="footer-bottom" style="border-top:0;padding-top:2rem">
-      DUST-20 documentation — <a href="https://github.com/bitcoinuniverseio/dust-20">source repository</a>. Review every Bitcoin transaction in your wallet before signing.
+  <div class="layout">
+    <aside class="sidebar" id="primary-nav">
+      <nav aria-label="Documentation index">
+        <h2>Index</h2>
+        <div class="sidebar-group"><span>0 Orientation</span><ul><li><a href="/dust-20/">Overview</a></li></ul></div>
+        <div class="sidebar-group"><span>1 Normative</span><ul><li><a href="/dust-20/specification.html">Specification</a></li><li><a href="/dust-20/reference.html">Reference</a></li></ul></div>
+        <div class="sidebar-group"><span>2 Applied</span><ul><li><a href="/dust-20/how-it-works.html">Guide</a></li><li><a href="/dust-20/transactions.html">Transactions</a></li><li><a href="/dust-20/playground.html">Decoder</a></li><li><a href="/dust-20/conformance.html">Test vectors</a></li></ul></div>
+        <div class="sidebar-group"><span>3 Operating</span><ul><li><a href="/dust-20/indexer.html">Indexing</a></li><li><a href="/dust-20/universe.html">Universe support</a></li><li><a href="/dust-20/safety.html">Security</a></li></ul></div>
+        <div class="sidebar-group"><span>4 Appendix</span><ul><li><a href="/dust-20/glossary.html">Glossary</a></li><li><a href="/dust-20/changelog.html">Changelog</a></li></ul></div>
+      </nav>
+      <div class="sidebar-meta">
+        <div><b>Document</b><span>1.1.0</span></div>
+        <div><b>Revised</b><span>2026-09-01</span></div>
+        <div><b>Chain</b><span>Bitcoin</span></div>
+        <div><b>Network</b><span>mainnet</span></div>
+        <div><b>Lifecycle</b><span>experimental</span></div>
+      </div>
+    </aside>
+
+    <main class="main" id="main">
+      <div class="pagehead">
+        <p class="eyebrow">HTTP 404</p>
+        <h1>Page not found</h1>
+        <p class="tagline">The address you asked for is not part of this documentation set.</p>
+      </div>
+
+      <section class="section" id="what-happened">
+        <h2><span class="num">404.1</span> What probably happened</h2>
+        <div class="scroll">
+          <table class="tbl">
+            <caption>Common causes and where to go instead</caption>
+            <thead><tr><th>Cause</th><th>Where to go</th></tr></thead>
+            <tbody>
+              <tr><td><p>You followed a link to a page that was renamed in document version 1.1.0.</p></td><td><p>The <a href="/dust-20/specification.html">specification</a> now holds the numbered rules, and the <a href="/dust-20/reference.html">reference</a> holds the field ledger and formulas.</p></td></tr>
+              <tr><td><p>You were looking for a rule identifier such as <code>DUST-6.7</code>.</p></td><td><p>Every rule is an anchor on the specification page, for example <a href="/dust-20/specification.html#DUST-6.7">specification.html#DUST-6.7</a>.</p></td></tr>
+              <tr><td><p>You were looking for a conformance case.</p></td><td><p>Every vector is an anchor on the <a href="/dust-20/conformance.html">test vectors</a> page, and the full set is at <a href="/dust-20/conformance.json">conformance.json</a>.</p></td></tr>
+              <tr><td><p>You wanted to know whether DUST-20 can be traded in Bitcoin Universe.</p></td><td><p>It cannot. Marketplace availability is read-only, and the <a href="/dust-20/universe.html">Universe support</a> page publishes the recorded reason.</p></td></tr>
+              <tr><td><p>You typed the address by hand.</p></td><td><p>Press <kbd>/</kbd> to search the whole site, or use the index in the sidebar.</p></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section" id="everything">
+        <h2><span class="num">404.2</span> Everything that does exist</h2>
+        <div class="cards">
+          <a class="card" href="/dust-20/"><span class="card-index">START</span><h3>Overview</h3><p>What DUST-20 is, its lifecycle state, and its availability in Bitcoin Universe products.</p></a>
+          <a class="card" href="/dust-20/specification.html"><span class="card-index">NORMATIVE</span><h3>Specification</h3><p>Numbered rules DUST-2.1 to DUST-9.8, transaction anatomy, state transitions and invalidity conditions.</p></a>
+          <a class="card" href="/dust-20/reference.html"><span class="card-index">NORMATIVE</span><h3>Reference</h3><p>Field ledger, formulas, fee and size, limitations and the implementation checklist.</p></a>
+          <a class="card" href="/dust-20/how-it-works.html"><span class="card-index">APPLIED</span><h3>Guide</h3><p>The lifecycle in plain language with worked transactions and the support matrix.</p></a>
+          <a class="card" href="/dust-20/transactions.html"><span class="card-index">APPLIED</span><h3>Transactions</h3><p>Ordinal sat flow and an allocation simulator that shows exactly where every unit lands.</p></a>
+          <a class="card" href="/dust-20/playground.html"><span class="card-index">APPLIED</span><h3>Decoder</h3><p>Paste a payload, read the byte map, and run the published conformance vectors.</p></a>
+          <a class="card" href="/dust-20/conformance.html"><span class="card-index">APPLIED</span><h3>Test vectors</h3><p>Valid and invalid cases with expected outcomes and the rule each one exercises.</p></a>
+          <a class="card" href="/dust-20/indexer.html"><span class="card-index">OPERATING</span><h3>Indexing</h3><p>Pipeline, allocation records, confirmation, mempool coverage and reorganizations.</p></a>
+          <a class="card" href="/dust-20/universe.html"><span class="card-index">OPERATING</span><h3>Universe support</h3><p>The recorded capability state, the action matrix and why the marketplace is read-only.</p></a>
+          <a class="card" href="/dust-20/safety.html"><span class="card-index">OPERATING</span><h3>Security</h3><p>What destroys a balance, what stops it, and how to report a vulnerability.</p></a>
+          <a class="card" href="/dust-20/glossary.html"><span class="card-index">APPENDIX</span><h3>Glossary and FAQ</h3><p>Terminology and the questions people actually ask.</p></a>
+          <a class="card" href="/dust-20/changelog.html"><span class="card-index">APPENDIX</span><h3>Changelog</h3><p>Document version history and which statements changed provenance.</p></a>
+        </div>
+      </section>
+    </main>
+
+    <div class="contents"></div>
+  </div>
+
+  <footer class="colophon">
+    <div class="colophon-inner">
+      <div class="colophon-grid">
+        <dl>
+          <dt>Owning repository</dt>
+          <dd><a href="https://github.com/bitcoinuniverseio/dust-20">bitcoinuniverseio/dust-20</a></dd>
+          <dt>Source path</dt>
+          <dd>404.html</dd>
+          <dt>Last verified</dt>
+          <dd>2026-09-01</dd>
+        </dl>
+        <dl>
+          <dt>Document version</dt>
+          <dd>1.1.0</dd>
+          <dt>Lifecycle</dt>
+          <dd>experimental</dd>
+          <dt>Chain and network</dt>
+          <dd>Bitcoin mainnet</dd>
+        </dl>
+        <div>
+          <h2>Documentation</h2>
+          <ul>
+            <li><a href="https://github.com/bitcoinuniverseio/dust-20/tree/main/404.html">Edit this page on GitHub</a></li>
+            <li><a href="https://docs.bitcoinuniverse.io">docs.bitcoinuniverse.io</a></li>
+            <li><a href="https://github.com/bitcoinuniverseio/dust-20/security/advisories/new">Report a vulnerability</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Machine readable</h2>
+          <ul>
+            <li><a href="/dust-20/llms.txt">llms.txt</a></li>
+            <li><a href="/dust-20/docs.json">docs.json</a></li>
+            <li><a href="/dust-20/conformance.json">conformance.json</a></li>
+            <li><a href="/dust-20/search-index.json">search-index.json</a></li>
+          </ul>
+        </div>
+      </div>
+      <p class="colophon-note">Experimental documentation of an experimental protocol. No page on this site asks for a key, builds a transaction, or sends anything you type anywhere.</p>
     </div>
   </footer>
 </body>

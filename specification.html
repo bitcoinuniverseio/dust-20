@@ -1,0 +1,857 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DUST-20 specification | DUST-20</title>
+  <meta name="description" content="The normative DUST-20 specification: numbered rules DUST-2.1 to DUST-9.8 covering carrier, integer encoding, identifiers, deploy, mint, allocation, burn and indexer semantics.">
+  <link rel="canonical" href="https://bitcoinuniverseio.github.io/dust-20/specification.html">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f4f4f1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0c0e11" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="DUST-20 documentation">
+  <meta property="og:title" content="DUST-20 specification | DUST-20">
+  <meta property="og:description" content="The normative DUST-20 specification: numbered rules DUST-2.1 to DUST-9.8 covering carrier, integer encoding, identifiers, deploy, mint, allocation, burn and indexer semantics.">
+  <meta property="og:url" content="https://bitcoinuniverseio.github.io/dust-20/specification.html">
+  <meta property="og:image" content="https://bitcoinuniverseio.github.io/dust-20/assets/og.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DUST-20 specification | DUST-20">
+  <meta name="twitter:description" content="The normative DUST-20 specification: numbered rules DUST-2.1 to DUST-9.8 covering carrier, integer encoding, identifiers, deploy, mint, allocation, burn and indexer semantics.">
+  <meta name="twitter:image" content="https://bitcoinuniverseio.github.io/dust-20/assets/og.svg">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/site.css">
+  <script>try{var t=localStorage.getItem('dust20-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+  <script type="module" src="assets/site.js" defer></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","name":"DUST-20 specification | DUST-20","headline":"Normative specification","description":"The normative DUST-20 specification: numbered rules DUST-2.1 to DUST-9.8 covering carrier, integer encoding, identifiers, deploy, mint, allocation, burn and indexer semantics.","url":"https://bitcoinuniverseio.github.io/dust-20/specification.html","inLanguage":"en","version":"1.1.0","dateModified":"2026-09-01","isPartOf":{"@type":"WebSite","name":"DUST-20 documentation","url":"https://bitcoinuniverseio.github.io/dust-20/"},"publisher":{"@type":"Organization","name":"Bitcoin Universe","url":"https://github.com/bitcoinuniverseio"}}</script>
+</head>
+<body data-page="specification" data-base="./">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="masthead">
+    <div class="masthead-inner">
+      <a class="brand" href="./">
+        <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="1.5" y="1.5" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="6" y="6" width="5" height="5" fill="currentColor"/><rect x="13" y="13" width="5" height="5" fill="currentColor"/><path d="M11 8.5h2M8.5 11v2" stroke="currentColor" stroke-width="1.2"/></svg>
+        <span class="brand-text">DUST-20</span>
+        <span class="brand-rev">REV 1.1.0</span>
+      </a>
+      <nav class="masthead-nav" data-nav aria-label="Documentation"><a href="./">Overview</a><a href="specification.html" aria-current="page">Specification</a><a href="reference.html">Reference</a><a href="how-it-works.html">Guide</a><a href="transactions.html">Transactions</a><a href="playground.html">Decoder</a><a href="conformance.html">Test vectors</a><a href="indexer.html">Indexing</a><a href="universe.html">Universe support</a><a href="safety.html">Security</a><a href="glossary.html">Glossary</a><a href="changelog.html">Changelog</a></nav>
+      <div class="masthead-tools">
+        <button class="tool-button" type="button" data-search-open aria-label="Search the documentation">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg>
+          <span class="label">Search</span><kbd>/</kbd>
+        </button>
+        <button class="tool-button" type="button" data-theme-toggle aria-pressed="false" aria-label="Switch between light and dark theme">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M19.4 4.6l-2.1 2.1M6.7 17.3l-2.1 2.1"/></svg>
+          <span class="label">Light</span>
+        </button>
+        <button class="tool-button menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-nav" aria-label="Show the documentation menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          <span class="label">Menu</span>
+        </button>
+      </div>
+    </div>
+  </header>
+  <dialog class="search" data-search aria-label="Search the documentation">
+    <form class="search-form" method="dialog" role="search">
+      <input type="search" placeholder="Search rules, fields, terms, vectors" aria-label="Search query" autocomplete="off" spellcheck="false">
+      <button class="btn" type="button" data-search-close>Close</button>
+    </form>
+    <ul class="search-results"></ul>
+  </dialog>
+  <div class="layout">
+    <aside class="sidebar" id="primary-nav">
+      <nav aria-label="Documentation index">
+        <h2>Index</h2>
+<div class="sidebar-group"><span>0 Orientation</span><ul><li><a href="./">Overview</a></li></ul></div><div class="sidebar-group"><span>1 Normative</span><ul><li><a href="specification.html" aria-current="page">Specification</a></li><li><a href="reference.html">Reference</a></li></ul></div><div class="sidebar-group"><span>2 Applied</span><ul><li><a href="how-it-works.html">Guide</a></li><li><a href="transactions.html">Transactions</a></li><li><a href="playground.html">Decoder</a></li><li><a href="conformance.html">Test vectors</a></li></ul></div><div class="sidebar-group"><span>3 Operating</span><ul><li><a href="indexer.html">Indexing</a></li><li><a href="universe.html">Universe support</a></li><li><a href="safety.html">Security</a></li></ul></div><div class="sidebar-group"><span>4 Appendix</span><ul><li><a href="glossary.html">Glossary</a></li><li><a href="changelog.html">Changelog</a></li></ul></div>
+      </nav>
+      <div class="sidebar-meta">
+        <div><b>Document</b><span>1.1.0</span></div>
+        <div><b>Revised</b><span>2026-09-01</span></div>
+        <div><b>Chain</b><span>Bitcoin</span></div>
+        <div><b>Network</b><span>mainnet</span></div>
+        <div><b>Lifecycle</b><span>experimental</span></div>
+      </div>
+    </aside>
+    <main class="main" id="main">
+      <div class="pagehead">
+        <p class="eyebrow">Normative</p>
+        <h1>Normative specification</h1>
+        <p class="tagline">Numbered rules, encoding, identifiers, operations and state transitions.</p>
+        <dl class="dsheet"><div><dt>Protocol</dt><dd>DUST-20<small>Registry id dust20, alias dust-20</small></dd></div><div><dt>Chain</dt><dd>Bitcoin<small>Network: mainnet</small></dd></div><div><dt>Ownership model</dt><dd>UTXO<small>Units are carried by satoshis in unspent outputs</small></dd></div><div><dt>Carrier</dt><dd>Inscription + spend<small>Deploy and mint are inscribed; movement is a spend</small></dd></div><div><dt>Decimals</dt><dd>0<small>Balances are whole units only</small></dd></div><div><dt>Document version</dt><dd>1.1.0<small>Revised 2026-09-01</small></dd></div><div><dt>Lifecycle</dt><dd>Experimental<small>Not a ratified multi-party standard</small></dd></div><div><dt>Owning repository</dt><dd>bitcoinuniverseio/dust-20<small>Documentation source of truth</small></dd></div></dl>
+      </div>
+      <section class="section" id="scope">
+        <h2><span class="num">1</span> Scope and conventions</h2>
+        <p class="lede">This section defines what the following rules cover, how they are numbered, and how to read a provenance label. Sections 2 to 9 are normative. Sections 10 to 12 restate the same rules as tables for implementers.</p>
+
+        <h3>1.1 Scope</h3>
+        <p>DUST-20 is a fungible token protocol on Bitcoin mainnet. It defines two written messages, deploy and mint, both carried as inscription content, and it defines how token units follow satoshis through ordinary Bitcoin spends. It defines no consensus change, no script template and no new transaction field. Bitcoin nodes do not know DUST-20 exists.</p>
+
+        <h3>1.2 Rule identifiers</h3>
+        <p>Every rule has a stable identifier of the form <code>DUST-&lt;section&gt;.&lt;index&gt;</code>, for example <code>DUST-6.7</code>. Identifiers do not change between document versions. A rule that is withdrawn keeps its number and is marked withdrawn rather than being reused. Each rule links to the conformance vector that exercises it, where one exists.</p>
+
+        <h3>1.3 Requirement wording</h3>
+        <p>A rule that says a payload <em>is rejected</em> means a conforming reader must not index it, must not repair it, and must not fall back to a partial interpretation. Rejection is total: there is no warning level, and no rule degrades to "ignore what you do not understand".</p>
+
+        <h3>1.4 Provenance</h3>
+        <p>DUST-20 is not a ratified multi-party standard. Every rule carries a label saying which source supports it, so an implementer can see the difference between an agreed protocol rule and one production implementation's decision.</p>
+        <div class="scroll"><table class="tbl"><caption>Provenance labels used throughout this document</caption><thead><tr><th>Label</th><th>Meaning</th></tr></thead><tbody><tr><td><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span></td><td><p>Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.</p></td></tr><tr><td><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></td><td><p>Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.</p></td></tr><tr><td><span class="tag tag--legacy" title="Stated by legacy DUST-20 documentation. Superseded, narrowed, or not enforced identically by the current implementation.">LEGACY</span></td><td><p>Stated by legacy DUST-20 documentation. Superseded, narrowed, or not enforced identically by the current implementation.</p></td></tr><tr><td><span class="tag tag--implementation" title="The behaviour of one application or service. Useful evidence, but not a protocol rule. Do not rely on it across implementations.">IMPL</span></td><td><p>The behaviour of one application or service. Useful evidence, but not a protocol rule. Do not rely on it across implementations.</p></td></tr><tr><td><span class="tag tag--unresolved" title="No authoritative answer exists. Documented as an open question rather than invented. Stop before an irreversible step.">UNRESOLVED</span></td><td><p>No authoritative answer exists. Documented as an open question rather than invented. Stop before an irreversible step.</p></td></tr></tbody></table></div>
+
+        <h3>1.5 Sources</h3>
+        <div class="scroll"><table class="tbl"><caption>Sources this document is built from</caption><thead><tr><th>Source</th><th>What it provides</th></tr></thead><tbody><tr><td><a href="https://dust-20.gitbook.io/dust20/readme.md">Legacy DUST-20 specification</a></td><td><p>Documents the deploy and mint payloads and a colored-UTXO transfer example.</p></td></tr><tr><td><a href="https://github.com/bitcoinuniverseio">Bitcoin Universe production indexer</a></td><td><p>index-dust20 reconstructs colored UTXO ownership from Bitcoin Core and a shared Ord 0.29 instance.</p></td></tr><tr><td><a href="https://docs.bitcoinuniverse.io">Bitcoin Universe capability registry</a></td><td><p>Records, per protocol, which product surfaces and marketplace actions are actually available.</p></td></tr><tr><td><a href="https://github.com/bitcoinuniverseio/dust-20">This documentation repository</a></td><td><p>Source of the published documentation and its conformance fixtures.</p></td></tr></tbody></table></div>
+      </section>
+
+      <section class="section" id="carrier">
+        <h2><span class="num">2</span> Message carrier</h2>
+        <p class="lede">DUST-20 defines two written messages, deploy and mint. Both are carried as inscription content on Bitcoin. Movement is not a written message at all: it is the shape of an ordinary spend, covered in section 7.</p><div class="rules"><div class="rule" id="DUST-2.1">
+        <div class="rule-id"><a href="#DUST-2.1">DUST-2.1</a></div>
+        <div class="rule-body">
+          <h3>Deploy and mint are inscription content</h3>
+          <p>A DUST-20 deploy or mint is the content of a Bitcoin inscription. There is no OP_RETURN carrier, no separate script template, and no auxiliary transaction field. A reader obtains authoritative inscription identity, content and location from an inscription index and obtains transaction values and addresses from a Bitcoin node.</p>
+          <div class="rule-foot"><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span></div>
+        </div>
+      </div><div class="rule" id="DUST-2.2">
+        <div class="rule-id"><a href="#DUST-2.2">DUST-2.2</a></div>
+        <div class="rule-body">
+          <h3>Content is UTF-8</h3>
+          <p>Inscription content is decoded as UTF-8. Content that is not well-formed UTF-8 is not a DUST-20 message.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div><div class="rule" id="DUST-2.3">
+        <div class="rule-id"><a href="#DUST-2.3">DUST-2.3</a></div>
+        <div class="rule-body">
+          <h3>Content larger than 4096 bytes is not a candidate</h3>
+          <p>A reader considers content of at most 4096 bytes. Larger content is not evaluated as DUST-20.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div><div class="rule" id="DUST-2.4">
+        <div class="rule-id"><a href="#DUST-2.4">DUST-2.4</a></div>
+        <div class="rule-body">
+          <h3>Content is exactly one JSON object</h3>
+          <p>Content must parse as a single JSON object. Nothing may follow the closing brace except insignificant whitespace. Trailing content makes the message ambiguous and is rejected.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span><a class="tag tag--ref" href="conformance.html#trailing-content">VECTOR trailing-content</a></div>
+        </div>
+      </div><div class="rule" id="DUST-2.5">
+        <div class="rule-id"><a href="#DUST-2.5">DUST-2.5</a></div>
+        <div class="rule-body">
+          <h3>Every value is a JSON string</h3>
+          <p>The object is flat and every value is a JSON string. Nested objects, arrays, numbers, booleans and null are rejected. JSON numbers cannot carry values above 2^53 exactly, so a bare number is never accepted for a quantity.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span><a class="tag tag--ref" href="conformance.html#non-string-value">VECTOR non-string-value</a></div>
+        </div>
+      </div><div class="rule" id="DUST-2.6">
+        <div class="rule-id"><a href="#DUST-2.6">DUST-2.6</a></div>
+        <div class="rule-body">
+          <h3>Duplicate keys are rejected</h3>
+          <p>A key that appears more than once is rejected rather than resolved last-wins or first-wins. Two readers must never be able to disagree about which value applied.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span><a class="tag tag--ref" href="conformance.html#duplicate-key">VECTOR duplicate-key</a></div>
+        </div>
+      </div><div class="rule" id="DUST-2.7">
+        <div class="rule-id"><a href="#DUST-2.7">DUST-2.7</a></div>
+        <div class="rule-body">
+          <h3>Raw control characters are rejected</h3>
+          <p>A raw character below U+0020 inside a JSON string makes the content invalid. Escaped sequences that decode to control characters are still subject to the ticker rules in section 4.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div></div>
+      </section>
+
+      <section class="section" id="integers">
+        <h2><span class="num">3</span> Integer encoding</h2>
+        <p class="lede">Every quantity in DUST-20 is a decimal string in strict form. This exists so that two implementations reading the same bytes compute the same number, and so that a reader cannot silently accept a value produced by floating-point arithmetic.</p><div class="rules"><div class="rule" id="DUST-3.1">
+        <div class="rule-id"><a href="#DUST-3.1">DUST-3.1</a></div>
+        <div class="rule-body">
+          <h3>Positive quantities match /^[1-9][0-9]*$/</h3>
+          <p>supply, unit_sats, max_sats, amt and sats are strict positive decimal strings. A leading zero, a leading plus or minus, whitespace, a decimal point, a thousands separator and exponent notation are all rejected.</p>
+          <div class="rule-foot"><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span><a class="tag tag--ref" href="conformance.html#deploy-leading-zero">VECTOR deploy-leading-zero</a></div>
+        </div>
+      </div><div class="rule" id="DUST-3.2">
+        <div class="rule-id"><a href="#DUST-3.2">DUST-3.2</a></div>
+        <div class="rule-body">
+          <h3>Optional caps match /^(0|[1-9][0-9]*)$/</h3>
+          <p>lim_sats is a strict non-negative decimal string. The single character &quot;0&quot; is valid and means no per-mint limit.</p>
+          <div class="rule-foot"><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span><a class="tag tag--ref" href="conformance.html#deploy-zero-limit">VECTOR deploy-zero-limit</a></div>
+        </div>
+      </div><div class="rule" id="DUST-3.3">
+        <div class="rule-id"><a href="#DUST-3.3">DUST-3.3</a></div>
+        <div class="rule-body">
+          <h3>Satoshi fields are bounded by the money supply</h3>
+          <p>unit_sats, max_sats, lim_sats and sats may not exceed 2,100,000,000,000,000 satoshis, the total that will ever exist. A payload can be internally consistent and still exceed this bound, in which case it is rejected.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span><a class="tag tag--ref" href="conformance.html#deploy-exceeds-money">VECTOR deploy-exceeds-money</a></div>
+        </div>
+      </div><div class="rule" id="DUST-3.4">
+        <div class="rule-id"><a href="#DUST-3.4">DUST-3.4</a></div>
+        <div class="rule-body">
+          <h3>Unit quantities are bounded by 2^128 - 1</h3>
+          <p>supply and amt may not exceed 340,282,366,920,938,463,463,374,607,431,768,211,455. This is the atomic ceiling the production indexer enforces on token quantities.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div><div class="rule" id="DUST-3.5">
+        <div class="rule-id"><a href="#DUST-3.5">DUST-3.5</a></div>
+        <div class="rule-body">
+          <h3>Arithmetic is exact integer arithmetic</h3>
+          <p>An implementation must evaluate supply × unit_sats and amt × unit_sats with exact integers. A 64-bit float loses precision above 2^53, which is well inside the satoshi range, and a rounded product produces a rejected payload that looks correct on screen.</p>
+          <div class="rule-foot"><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span><a class="tag tag--ref" href="conformance.html#deploy-arithmetic-mismatch">VECTOR deploy-arithmetic-mismatch</a></div>
+        </div>
+      </div></div>
+        <div class="scroll"><table class="tbl"><caption>Numeric ceilings a reader enforces</caption><thead><tr><th>Quantity</th><th>Ceiling</th><th>Rule</th></tr></thead><tbody><tr><td>Satoshi fields</td><td class="num">2,100,000,000,000,000</td><td><a class="tag tag--ref" href="specification.html#DUST-3.3">DUST-3.3</a></td></tr><tr><td>Unit quantities</td><td class="num">340282366920938463463374607431768211455</td><td><a class="tag tag--ref" href="specification.html#DUST-3.4">DUST-3.4</a></td></tr><tr><td>Content size</td><td class="num">4096 bytes</td><td><a class="tag tag--ref" href="specification.html#DUST-2.3">DUST-2.3</a></td></tr><tr><td>Ticker length</td><td class="num">1 to 64 bytes</td><td><a class="tag tag--ref" href="specification.html#DUST-4.3">DUST-4.3</a></td></tr><tr><td>Decimal places</td><td class="num">0</td><td><a class="tag tag--ref" href="specification.html#DUST-5.8">DUST-5.8</a></td></tr></tbody></table></div>
+      </section>
+
+      <section class="section" id="identifiers">
+        <h2><span class="num">4</span> Identifiers</h2>
+        <p class="lede">Three fields identify a message: the protocol tag, the operation, and the ticker. The ticker is the only one with a normalization step, and getting that step wrong is the most common source of disagreement between implementations.</p><div class="rules"><div class="rule" id="DUST-4.1">
+        <div class="rule-id"><a href="#DUST-4.1">DUST-4.1</a></div>
+        <div class="rule-body">
+          <h3>p is the literal string dust-20</h3>
+          <p>Content whose p field is absent or is anything other than the seven bytes dust-20 is not a DUST-20 message. There is no case tolerance, no alias, and no versioned variant of the tag.</p>
+          <div class="rule-foot"><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span><a class="tag tag--ref" href="conformance.html#wrong-protocol">VECTOR wrong-protocol</a></div>
+        </div>
+      </div><div class="rule" id="DUST-4.2">
+        <div class="rule-id"><a href="#DUST-4.2">DUST-4.2</a></div>
+        <div class="rule-body">
+          <h3>op is deploy or mint</h3>
+          <p>Exactly two operation values exist. Any other value, including transfer, is rejected.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span><a class="tag tag--ref" href="conformance.html#unknown-operation">VECTOR unknown-operation</a></div>
+        </div>
+      </div><div class="rule" id="DUST-4.3">
+        <div class="rule-id"><a href="#DUST-4.3">DUST-4.3</a></div>
+        <div class="rule-body">
+          <h3>tick is 1 to 64 UTF-8 bytes in NFC form</h3>
+          <p>The ticker must already be in Unicode Normalization Form C, and its UTF-8 encoding must be between 1 and 64 bytes. Length is measured in bytes, not code points, so a multi-byte ticker is shorter in characters than the bound suggests.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div><div class="rule" id="DUST-4.4">
+        <div class="rule-id"><a href="#DUST-4.4">DUST-4.4</a></div>
+        <div class="rule-body">
+          <h3>tick excludes control characters, whitespace and / ? # \</h3>
+          <p>These characters are excluded so a ticker identity is always safe to place in a path or query without escaping, and so two tickers cannot look identical in a log line.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span><a class="tag tag--ref" href="conformance.html#deploy-tick-whitespace">VECTOR deploy-tick-whitespace</a></div>
+        </div>
+      </div><div class="rule" id="DUST-4.5">
+        <div class="rule-id"><a href="#DUST-4.5">DUST-4.5</a></div>
+        <div class="rule-body">
+          <h3>Identity is the NFC form folded to lower case</h3>
+          <p>Two tickers are the same ticker when their NFC forms are equal after lower-case folding. DUST, dust and Dust are one identity. Comparison must happen on the folded identity, never on raw bytes.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span><a class="tag tag--ref" href="conformance.html#mint-case-insensitive-tick">VECTOR mint-case-insensitive-tick</a></div>
+        </div>
+      </div><div class="rule" id="DUST-4.6">
+        <div class="rule-id"><a href="#DUST-4.6">DUST-4.6</a></div>
+        <div class="rule-body">
+          <h3>The original spelling is preserved for display</h3>
+          <p>An implementation stores the folded identity for comparison and the spelling as written for display. Replacing the display form with the folded form loses information a deployer chose deliberately.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div></div>
+      </section>
+
+      <section class="section" id="deploy">
+        <h2><span class="num">5</span> Deploy</h2>
+        <p class="lede">A deploy creates a ticker and fixes, permanently, how many satoshis stand behind one of its units. Everything a mint or a transfer later computes depends on the numbers written here.</p><div class="rules"><div class="rule" id="DUST-5.1">
+        <div class="rule-id"><a href="#DUST-5.1">DUST-5.1</a></div>
+        <div class="rule-body">
+          <h3>The key set is exact</h3>
+          <p>A deploy contains exactly p, op, tick, supply, unit_sats and max_sats, and may contain lim_sats. A missing required key and an unrecognised extra key both reject the whole payload. Unknown fields are not ignored.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span><a class="tag tag--ref" href="conformance.html#deploy-unknown-field">VECTOR deploy-unknown-field</a></div>
+        </div>
+      </div><div class="rule" id="DUST-5.2">
+        <div class="rule-id"><a href="#DUST-5.2">DUST-5.2</a></div>
+        <div class="rule-body">
+          <h3>supply is the permanent unit ceiling</h3>
+          <p>supply is the total whole units that may ever be minted for this ticker. It cannot be raised, lowered or reissued by any later message.</p>
+          <div class="rule-foot"><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span></div>
+        </div>
+      </div><div class="rule" id="DUST-5.3">
+        <div class="rule-id"><a href="#DUST-5.3">DUST-5.3</a></div>
+        <div class="rule-body">
+          <h3>unit_sats is the permanent backing ratio</h3>
+          <p>unit_sats is the exact number of satoshis that back one unit, for the entire life of the ticker. There is no default: a deploy that omits unit_sats is rejected, and 546 is an example, not a fallback.</p>
+          <div class="rule-foot"><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span></div>
+        </div>
+      </div><div class="rule" id="DUST-5.4">
+        <div class="rule-id"><a href="#DUST-5.4">DUST-5.4</a></div>
+        <div class="rule-body">
+          <h3>max_sats equals supply × unit_sats</h3>
+          <p>max_sats is a redundancy check, not an independent quantity. A deploy whose max_sats differs from the exact product by even one satoshi is rejected rather than corrected.</p>
+          <div class="rule-foot"><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span><a class="tag tag--ref" href="conformance.html#deploy-arithmetic-mismatch">VECTOR deploy-arithmetic-mismatch</a></div>
+        </div>
+      </div><div class="rule" id="DUST-5.5">
+        <div class="rule-id"><a href="#DUST-5.5">DUST-5.5</a></div>
+        <div class="rule-body">
+          <h3>max_sats may not exceed the money supply</h3>
+          <p>A deployment whose total backing exceeds 2,100,000,000,000,000 satoshis can never be fully minted, so it is rejected at deploy time rather than at the mint that would cross the line.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span><a class="tag tag--ref" href="conformance.html#deploy-exceeds-money">VECTOR deploy-exceeds-money</a></div>
+        </div>
+      </div><div class="rule" id="DUST-5.6">
+        <div class="rule-id"><a href="#DUST-5.6">DUST-5.6</a></div>
+        <div class="rule-body">
+          <h3>lim_sats is an optional per-mint satoshi cap</h3>
+          <p>When absent or &quot;0&quot;, one mint may take the entire supply. When present and positive it may not exceed max_sats, and every mint must satisfy sats ≤ lim_sats. The equivalent unit cap is the floor of lim_sats ÷ unit_sats.</p>
+          <div class="rule-foot"><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span><a class="tag tag--ref" href="conformance.html#deploy-limit-above-max">VECTOR deploy-limit-above-max</a></div>
+        </div>
+      </div><div class="rule" id="DUST-5.7">
+        <div class="rule-id"><a href="#DUST-5.7">DUST-5.7</a></div>
+        <div class="rule-body">
+          <h3>The first valid deployment of an identity wins</h3>
+          <p>Once a valid deployment exists for a folded ticker identity, every later deployment of that identity is rejected. Ordering is by block height, then transaction index within the block, then inscription order within the transaction.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span><a class="tag tag--ref" href="conformance.html#deploy-duplicate-ticker">VECTOR deploy-duplicate-ticker</a></div>
+        </div>
+      </div><div class="rule" id="DUST-5.8">
+        <div class="rule-id"><a href="#DUST-5.8">DUST-5.8</a></div>
+        <div class="rule-body">
+          <h3>There are no decimals</h3>
+          <p>DUST-20 balances have zero decimal places. No decimals field exists, and supplying one rejects the payload under DUST-5.1.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div></div>
+
+        <h3>5.x Deploy field set</h3>
+        <pre><code>{"p":"dust-20","op":"deploy","tick":"dust","supply":"1000000","unit_sats":"546","max_sats":"546000000","lim_sats":"54600"}</code></pre>
+        <p>Required: <code>p</code>, <code>op</code>, <code>tick</code>, <code>supply</code>, <code>unit_sats</code>, <code>max_sats</code>. Optional: <code>lim_sats</code>. Nothing else is permitted.</p>
+      </section>
+
+      <section class="section" id="mint">
+        <h2><span class="num">6</span> Mint</h2>
+        <p class="lede">A mint creates units. It is the only point where a written message and the physical shape of a Bitcoin output have to agree exactly, and the only place where an error cannot be repaired after broadcast.</p><div class="rules"><div class="rule" id="DUST-6.1">
+        <div class="rule-id"><a href="#DUST-6.1">DUST-6.1</a></div>
+        <div class="rule-body">
+          <h3>The key set is exact</h3>
+          <p>A mint contains exactly p, op, tick, amt and sats. There are no optional mint fields.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span><a class="tag tag--ref" href="conformance.html#mint-missing-field">VECTOR mint-missing-field</a></div>
+        </div>
+      </div><div class="rule" id="DUST-6.2">
+        <div class="rule-id"><a href="#DUST-6.2">DUST-6.2</a></div>
+        <div class="rule-body">
+          <h3>A mint resolves exactly one accepted deployment</h3>
+          <p>The mint names a ticker; the reader folds it to its identity and finds the accepted deployment for that identity. A mint for an identity with no accepted deployment is rejected. Every ratio used to check the mint comes from the resolved deployment, never from the mint payload.</p>
+          <div class="rule-foot"><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span><a class="tag tag--ref" href="conformance.html#mint-no-deployment">VECTOR mint-no-deployment</a></div>
+        </div>
+      </div><div class="rule" id="DUST-6.3">
+        <div class="rule-id"><a href="#DUST-6.3">DUST-6.3</a></div>
+        <div class="rule-body">
+          <h3>amt is a positive whole number of units</h3>
+          <p>amt is a strict positive decimal string. A mint of zero units does not exist, and neither does a fractional one: there are no decimals, so the smallest possible mint is one whole unit backed by unit_sats satoshis.</p>
+          <div class="rule-foot"><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span><a class="tag tag--ref" href="conformance.html#mint-zero-amount">VECTOR mint-zero-amount</a></div>
+        </div>
+      </div><div class="rule" id="DUST-6.4">
+        <div class="rule-id"><a href="#DUST-6.4">DUST-6.4</a></div>
+        <div class="rule-body">
+          <h3>sats equals amt × unit_sats</h3>
+          <p>The satoshis a mint declares are the units it creates multiplied by the resolved deployment ratio. sats is never inferred from amt: omitting it rejects the payload.</p>
+          <div class="rule-foot"><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span><a class="tag tag--ref" href="conformance.html#mint-sats-mismatch">VECTOR mint-sats-mismatch</a></div>
+        </div>
+      </div><div class="rule" id="DUST-6.5">
+        <div class="rule-id"><a href="#DUST-6.5">DUST-6.5</a></div>
+        <div class="rule-body">
+          <h3>sats respects the deployment per-mint cap</h3>
+          <p>When the resolved deployment declares a positive lim_sats, a mint whose sats exceeds it is rejected in full.</p>
+          <div class="rule-foot"><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span><a class="tag tag--ref" href="conformance.html#mint-limit-violation">VECTOR mint-limit-violation</a></div>
+        </div>
+      </div><div class="rule" id="DUST-6.6">
+        <div class="rule-id"><a href="#DUST-6.6">DUST-6.6</a></div>
+        <div class="rule-body">
+          <h3>Mints stop at the declared supply</h3>
+          <p>Previously minted units plus amt must not exceed supply. There is no partial fill: a mint that would cross the ceiling is rejected in full rather than trimmed to the remainder.</p>
+          <div class="rule-foot"><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span><a class="tag tag--ref" href="conformance.html#mint-exceeds-supply">VECTOR mint-exceeds-supply</a></div>
+        </div>
+      </div><div class="rule" id="DUST-6.7">
+        <div class="rule-id"><a href="#DUST-6.7">DUST-6.7</a></div>
+        <div class="rule-body">
+          <h3>The carrying output holds exactly sats satoshis</h3>
+          <p>Three numbers must agree: the deployment ratio, the sats field in the JSON, and the real value of the Bitcoin output carrying the inscription. A one-satoshi difference invalidates the mint, and the transaction still confirms normally.</p>
+          <div class="rule-foot"><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span><a class="tag tag--ref" href="conformance.html#mint-output-mismatch">VECTOR mint-output-mismatch</a></div>
+        </div>
+      </div><div class="rule" id="DUST-6.8">
+        <div class="rule-id"><a href="#DUST-6.8">DUST-6.8</a></div>
+        <div class="rule-body">
+          <h3>The inscription sits at satoshi offset 0 of that output</h3>
+          <p>The mint inscription must begin at the first satoshi of the output that carries it. Padding that shifts the inscription away from offset 0 invalidates the mint.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div><div class="rule" id="DUST-6.9">
+        <div class="rule-id"><a href="#DUST-6.9">DUST-6.9</a></div>
+        <div class="rule-body">
+          <h3>The carrying output must not already hold an allocation</h3>
+          <p>A mint cannot be layered on top of an output that already carries a DUST-20 allocation. Two allocations claiming the same satoshis would make ownership undecidable.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div></div>
+
+        <h3>6.x Mint field set</h3>
+        <pre><code>{"p":"dust-20","op":"mint","tick":"dust","amt":"100","sats":"54600"}</code></pre>
+        <p>Required: <code>p</code>, <code>op</code>, <code>tick</code>, <code>amt</code>, <code>sats</code>. There are no optional mint fields.</p>
+
+        <div class="note note--critical">
+          <span class="note-mark" aria-hidden="true">!</span>
+          <div class="note-body">
+            <p class="note-title">The three numbers that must agree</p>
+            <p>The deployment ratio (<code>unit_sats</code>), the declared backing (<code>sats</code>) and the real value of the Bitcoin output all have to match. A one-satoshi difference makes the mint invalid, and the transaction still confirms. Nothing can repair it afterwards.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="allocation">
+        <h2><span class="num">7</span> Allocation and movement</h2>
+        <p class="lede">After a mint, DUST-20 stops using messages. An allocation is a span of satoshis inside an output, and moving units means spending those satoshis. Everything in this section is derived from transaction shape, which is why output order and output size are protocol-significant.</p><div class="rules"><div class="rule" id="DUST-7.1">
+        <div class="rule-id"><a href="#DUST-7.1">DUST-7.1</a></div>
+        <div class="rule-body">
+          <h3>No transfer message exists</h3>
+          <p>DUST-20 uses inscriptions only for deploy and mint. An inscription whose op is transfer is invalid, moves nothing, and must not be treated as a transfer by any implementation.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span><a class="tag tag--ref" href="conformance.html#transfer-inscription">VECTOR transfer-inscription</a></div>
+        </div>
+      </div><div class="rule" id="DUST-7.2">
+        <div class="rule-id"><a href="#DUST-7.2">DUST-7.2</a></div>
+        <div class="rule-body">
+          <h3>An allocation is an outpoint, an identity, a ratio, an amount and an offset</h3>
+          <p>The offset is the satoshi position at which the allocation begins inside its output. Without it the next spend cannot be computed, so an implementation that stores only an amount per outpoint is incomplete.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div><div class="rule" id="DUST-7.3">
+        <div class="rule-id"><a href="#DUST-7.3">DUST-7.3</a></div>
+        <div class="rule-body">
+          <h3>Satoshis map input to output in ordinal first-in-first-out order</h3>
+          <p>Lay every input value end to end in input index order to form one satoshi range, and every output value end to end in output index order to form another. The n-th satoshi of the input range is the n-th satoshi of the output range. Satoshis past the end of the output range are the miner fee.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div><div class="rule" id="DUST-7.4">
+        <div class="rule-id"><a href="#DUST-7.4">DUST-7.4</a></div>
+        <div class="rule-body">
+          <h3>A unit survives only when its whole block lands in one supported output</h3>
+          <p>Each unit is a contiguous block of unit_sats satoshis inside the allocation span. It survives where that entire block falls inside a single output the reader can attribute to a supported address. A block split across an output boundary survives nowhere.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div><div class="rule" id="DUST-7.5">
+        <div class="rule-id"><a href="#DUST-7.5">DUST-7.5</a></div>
+        <div class="rule-body">
+          <h3>Output order is protocol-significant</h3>
+          <p>Allocation is positional. Moving an output, changing its value, or inserting one changes which satoshis land where and therefore which units survive. Reordering outputs is never cosmetic.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div><div class="rule" id="DUST-7.6">
+        <div class="rule-id"><a href="#DUST-7.6">DUST-7.6</a></div>
+        <div class="rule-body">
+          <h3>Allocations merge when identity and ratio match</h3>
+          <p>Several allocations of the same ticker identity can be combined into one output, provided every contributing unit lands whole inside it. Allocations of different identities keep separate records even inside one output, tracked by their own offsets.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div><div class="rule" id="DUST-7.7">
+        <div class="rule-id"><a href="#DUST-7.7">DUST-7.7</a></div>
+        <div class="rule-body">
+          <h3>A partial send requires an explicit colored change output</h3>
+          <p>Spending an allocation of 91 units and sending 10 requires a second output holding at least 81 × unit_sats satoshis, positioned so each unit fits whole. Omitting that output does not keep the remainder: whole units land in whatever supported output the satoshis reach next, and the rest fall into the fee and are burned.</p>
+          <div class="rule-foot"><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span></div>
+        </div>
+      </div><div class="rule" id="DUST-7.8">
+        <div class="rule-id"><a href="#DUST-7.8">DUST-7.8</a></div>
+        <div class="rule-body">
+          <h3>Miner fees are funded from cardinal inputs</h3>
+          <p>Satoshis that become the fee are past the end of the output range, so any units they carried are destroyed. A builder adds an ordinary bitcoin input to pay the fee and never shaves satoshis off a colored output.</p>
+          <div class="rule-foot"><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span></div>
+        </div>
+      </div></div>
+
+        <figure class="figure">
+          <div class="figure-body">
+            <svg viewBox="0 0 900 250" role="img" aria-labelledby="flow-title flow-desc">
+              <title id="flow-title">Ordinal first-in-first-out satoshi mapping through a spend</title>
+              <desc id="flow-desc">Input values are concatenated in index order into one satoshi range and output values into another. A colored allocation of 91 units at 546 satoshis each occupies a contiguous span in the input range. Ten whole units land in the receiver output, eighty-one land in the colored change output, and the satoshis past the end of the output range become the miner fee.</desc>
+              <g font-family="ui-monospace,monospace" font-size="10" fill="var(--dg-ink-3)" letter-spacing="1">
+                <text x="8" y="26">INPUT RANGE, CONCATENATED IN INPUT INDEX ORDER</text>
+                <text x="8" y="146">OUTPUT RANGE, CONCATENATED IN OUTPUT INDEX ORDER</text>
+              </g>
+              <g stroke="var(--dg-line)" stroke-width="1">
+                <rect x="8" y="36" width="620" height="46" fill="var(--dg-accent)" fill-opacity="0.14"/>
+                <rect x="628" y="36" width="264" height="46" fill="var(--dg-fill)"/>
+                <rect x="8" y="156" width="68" height="46" fill="var(--dg-accent)" fill-opacity="0.14"/>
+                <rect x="76" y="156" width="552" height="46" fill="var(--dg-accent)" fill-opacity="0.14"/>
+                <rect x="628" y="156" width="212" height="46" fill="var(--dg-fill)"/>
+                <rect x="840" y="156" width="52" height="46" fill="var(--dg-fail)" fill-opacity="0.16"/>
+              </g>
+              <g font-family="ui-monospace,monospace" font-size="11" fill="var(--dg-ink)">
+                <text x="18" y="56">in[0] colored allocation</text>
+                <text x="18" y="72">91 units x 546 = 49,686 sats</text>
+                <text x="640" y="56">in[1] cardinal</text>
+                <text x="640" y="72">20,000 sats</text>
+                <text x="14" y="176">out[0]</text>
+                <text x="14" y="192">10 u</text>
+                <text x="86" y="176">out[1] colored change</text>
+                <text x="86" y="192">81 units x 546 = 44,226 sats</text>
+                <text x="638" y="176">out[2] cardinal change</text>
+                <text x="638" y="192">18,000 sats</text>
+              </g>
+              <text x="848" y="176" font-family="ui-monospace,monospace" font-size="10" fill="var(--dg-fail)">FEE</text>
+              <text x="848" y="190" font-family="ui-monospace,monospace" font-size="10" fill="var(--dg-fail)">1,774</text>
+              <g stroke="var(--dg-accent)" stroke-width="1" stroke-dasharray="3 3">
+                <path d="M8 82v74M76 82v74M628 82v74"/>
+              </g>
+              <g font-family="system-ui,sans-serif" font-size="11" fill="var(--dg-ink-3)">
+                <text x="8" y="118">The n-th satoshi of the input range is the n-th satoshi of the output range. Nothing reorders it.</text>
+                <text x="8" y="232">Every unit is a block of 546 satoshis. A block survives only where it lands entirely inside one supported output (rule DUST-7.4).</text>
+              </g>
+            </svg>
+          </div>
+          <figcaption><b>Fig 7.1</b> A safe partial send. The colored change output at index 1 is what keeps the remaining 81 units alive; without it they fall past the colored span into cardinal change or fee and are destroyed.</figcaption>
+        </figure>
+      </section>
+
+      <section class="section" id="burn">
+        <h2><span class="num">8</span> Burn</h2>
+        <p class="lede">Burning is a consequence of transaction shape, not an instruction. There is no way to write &quot;burn this&quot;, and there is no way to undo it once the transaction confirms.</p><div class="rules"><div class="rule" id="DUST-8.1">
+        <div class="rule-id"><a href="#DUST-8.1">DUST-8.1</a></div>
+        <div class="rule-body">
+          <h3>Units paid as fees are burned</h3>
+          <p>Satoshis that fall past the last output become the miner fee. Any whole unit inside that range is destroyed.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div><div class="rule" id="DUST-8.2">
+        <div class="rule-id"><a href="#DUST-8.2">DUST-8.2</a></div>
+        <div class="rule-body">
+          <h3>Units sent to an unattributable output are burned</h3>
+          <p>When a reader cannot attribute an output to a supported address, units landing in it are destroyed rather than held in an unknown state.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div><div class="rule" id="DUST-8.3">
+        <div class="rule-id"><a href="#DUST-8.3">DUST-8.3</a></div>
+        <div class="rule-body">
+          <h3>Units split across an output boundary are burned</h3>
+          <p>A unit is atomic. If its block of unit_sats satoshis straddles two outputs, no fraction survives in either.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div><div class="rule" id="DUST-8.4">
+        <div class="rule-id"><a href="#DUST-8.4">DUST-8.4</a></div>
+        <div class="rule-body">
+          <h3>Burns are recorded in supply accounting</h3>
+          <p>A burn decreases total and circulating supply by the burned amount and increases burned supply by the same amount. Minted supply is unchanged: a burn does not free supply for reminting.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div><div class="rule" id="DUST-8.5">
+        <div class="rule-id"><a href="#DUST-8.5">DUST-8.5</a></div>
+        <div class="rule-body">
+          <h3>A burn is silent on Bitcoin</h3>
+          <p>The transaction confirms normally. No node, no wallet and no block explorer flags it. Only a DUST-20 reader knows anything was destroyed.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div></div>
+      </section>
+
+      <section class="section" id="indexing">
+        <h2><span class="num">9</span> Indexer semantics</h2>
+        <p class="lede">These rules govern what a reader publishes rather than what the chain contains. They are drawn from the event contract the Bitcoin Universe production indexer enforces on every accepted batch.</p><div class="rules"><div class="rule" id="DUST-9.1">
+        <div class="rule-id"><a href="#DUST-9.1">DUST-9.1</a></div>
+        <div class="rule-body">
+          <h3>Every event carries a stable source event id</h3>
+          <p>An event is identified by an id that does not change between observations of the same chain fact. Downstream consumers deduplicate on it.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div><div class="rule" id="DUST-9.2">
+        <div class="rule-id"><a href="#DUST-9.2">DUST-9.2</a></div>
+        <div class="rule-body">
+          <h3>A confirmed event carries complete block placement</h3>
+          <p>An event marked confirmed must carry block height, block hash, transaction index and event index. Partial placement is rejected: an event either has a full position in the chain or it is pending.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div><div class="rule" id="DUST-9.3">
+        <div class="rule-id"><a href="#DUST-9.3">DUST-9.3</a></div>
+        <div class="rule-body">
+          <h3>A pending event carries no block placement</h3>
+          <p>An event marked pending must not carry a height, hash, transaction index, event index or a non-zero confirmation count. Mixing the two states hides whether a balance is settled.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div><div class="rule" id="DUST-9.4">
+        <div class="rule-id"><a href="#DUST-9.4">DUST-9.4</a></div>
+        <div class="rule-body">
+          <h3>Wallet deltas balance per operation</h3>
+          <p>For a transfer the wallet deltas sum to zero. For a mint they sum to the minted amount, and for a burn to the negative of the burned amount. Each delta must equal its own received minus sent, and an address may appear only once per event.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div><div class="rule" id="DUST-9.5">
+        <div class="rule-id"><a href="#DUST-9.5">DUST-9.5</a></div>
+        <div class="rule-body">
+          <h3>A deploy carries no economic effect</h3>
+          <p>A deploy event states metadata only. It carries no amount, no sender, no receiver, no wallet deltas and no supply movement. Supply appears when units are minted, not when a ticker is created.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div><div class="rule" id="DUST-9.6">
+        <div class="rule-id"><a href="#DUST-9.6">DUST-9.6</a></div>
+        <div class="rule-body">
+          <h3>Reorganizations are replayed, not patched</h3>
+          <p>On a reorganization a reader emits invalidations newest first, reverses ledger mutations, restores allocations that had been marked spent, removes allocations the orphaned branch created, and replays the replacement branch from the fork point.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div><div class="rule" id="DUST-9.7">
+        <div class="rule-id"><a href="#DUST-9.7">DUST-9.7</a></div>
+        <div class="rule-body">
+          <h3>Coverage is declared, not assumed</h3>
+          <p>A reader publishes its coverage as complete, partial or unavailable alongside a checkpoint of network, height, hash, finalized height and observation time. A consumer that ignores the coverage label cannot tell a quiet ticker from a stalled indexer.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div><div class="rule" id="DUST-9.8">
+        <div class="rule-id"><a href="#DUST-9.8">DUST-9.8</a></div>
+        <div class="rule-body">
+          <h3>Mempool coverage is partial</h3>
+          <p>The production indexer reports partial coverage precisely because it has no exhaustive mempool feed with a stable pending lifecycle and disappearance handling. Unconfirmed DUST-20 state is not a reliable input to an irreversible decision.</p>
+          <div class="rule-foot"><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></div>
+        </div>
+      </div></div>
+      </section>
+
+      <section class="section" id="anatomy">
+        <h2><span class="num">10</span> Transaction anatomy</h2>
+        <p class="lede">The same rules, arranged by where they apply in a transaction. Use this when you are checking a construction rather than reading the protocol.</p>
+
+        <h3>10.1 Mint transaction</h3>
+        <div class="scroll"><table class="tbl"><caption>A mint is a reveal transaction. The payload lives in the witness; the value that matters lives in the output.</caption><thead><tr><th>Part</th><th>Role</th><th>Requirement</th><th>Verified against</th></tr></thead><tbody><tr>
+            <td class="mono">Input 0</td>
+            <td class="mono">Commit outpoint</td>
+            <td><p>Spends the commit output that carries the inscription envelope.</p></td>
+            <td><small>Inscription index</small></td>
+          </tr><tr>
+            <td class="mono">Witness</td>
+            <td class="mono">Inscription envelope</td>
+            <td><p>Holds the content type and the JSON payload. Content is UTF-8, at most 4096 bytes for a DUST-20 candidate.</p></td>
+            <td><small>Inscription index</small></td>
+          </tr><tr>
+            <td class="mono">Output 0</td>
+            <td class="mono">Carrying output</td>
+            <td><p>Value must equal the sats field exactly. The inscription must sit at satoshi offset 0. The output must not already carry an allocation.</p></td>
+            <td><small>Bitcoin node + inscription index</small></td>
+          </tr><tr>
+            <td class="mono">Output 1..n</td>
+            <td class="mono">Cardinal change</td>
+            <td><p>Ordinary bitcoin. Carries no units and is not evaluated.</p></td>
+            <td><small>Bitcoin node</small></td>
+          </tr><tr>
+            <td class="mono">Fee</td>
+            <td class="mono">Miner payment</td>
+            <td><p>Funded from cardinal value. Satoshis that reach the fee are past the output range and carry nothing.</p></td>
+            <td><small>Derived</small></td>
+          </tr></tbody></table></div>
+
+        <h3>10.2 Transfer transaction</h3>
+        <div class="scroll"><table class="tbl"><caption>A transfer is an ordinary spend. Nothing marks it as DUST-20; the units follow the satoshis.</caption><thead><tr><th>Part</th><th>Role</th><th>Requirement</th><th>Verified against</th></tr></thead><tbody><tr>
+            <td class="mono">Input 0..i</td>
+            <td class="mono">Colored inputs</td>
+            <td><p>Outputs that carry allocations. Each contributes a span at a known offset into the concatenated input range.</p></td>
+            <td><small>Reader allocation ledger</small></td>
+          </tr><tr>
+            <td class="mono">Input i+1..n</td>
+            <td class="mono">Cardinal inputs</td>
+            <td><p>Ordinary bitcoin added to fund the fee without disturbing colored spans.</p></td>
+            <td><small>Bitcoin node</small></td>
+          </tr><tr>
+            <td class="mono">Output 0..j</td>
+            <td class="mono">Colored outputs</td>
+            <td><p>Sized and ordered so each surviving unit lands whole inside one of them. A partial send needs an explicit colored change output.</p></td>
+            <td><small>Derived from ordinal flow</small></td>
+          </tr><tr>
+            <td class="mono">Output j+1..m</td>
+            <td class="mono">Cardinal outputs</td>
+            <td><p>Ordinary change. Units landing here are still tracked if the address is supported, which is usually a construction error.</p></td>
+            <td><small>Derived from ordinal flow</small></td>
+          </tr><tr>
+            <td class="mono">Fee</td>
+            <td class="mono">Miner payment</td>
+            <td><p>Any colored satoshi that falls into the fee gap is burned.</p></td>
+            <td><small>Derived</small></td>
+          </tr></tbody></table></div>
+      </section>
+
+      <section class="section" id="transitions">
+        <h2><span class="num">11</span> State transitions</h2>
+        <div class="scroll"><table class="tbl"><caption>Every state transition DUST-20 defines</caption><thead><tr><th>From</th><th>Event</th><th>To</th><th>Rule</th><th>Accounting</th></tr></thead><tbody><tr>
+          <td class="mono">No ticker</td>
+          <td><p>Valid deploy inscription</p></td>
+          <td class="mono">Ticker deployed, 0 minted</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-5.1">DUST-5.1</a> to <a class="tag tag--ref" href="specification.html#DUST-5.7">DUST-5.7</a></td>
+          <td><small>The identity is claimed permanently. A second deploy of the same identity changes nothing.</small></td>
+        </tr><tr>
+          <td class="mono">Ticker deployed</td>
+          <td><p>Valid mint inscription in an output of exactly sats satoshis</p></td>
+          <td class="mono">Allocation live at that outpoint, offset 0</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-6.1">DUST-6.1</a> to <a class="tag tag--ref" href="specification.html#DUST-6.9">DUST-6.9</a></td>
+          <td><small>Minted supply increases by amt. Total and circulating supply increase by amt.</small></td>
+        </tr><tr>
+          <td class="mono">Allocation live</td>
+          <td><p>The carrying output is spent, whole units land in supported outputs</p></td>
+          <td class="mono">Allocation spent, new allocations live</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-7.3">DUST-7.3</a>, <a class="tag tag--ref" href="specification.html#DUST-7.4">DUST-7.4</a></td>
+          <td><small>Wallet deltas sum to zero across the event. Supply is unchanged.</small></td>
+        </tr><tr>
+          <td class="mono">Allocation live</td>
+          <td><p>The carrying output is spent, some units land nowhere whole</p></td>
+          <td class="mono">Allocation spent, remainder burned</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-8.1">DUST-8.1</a> to <a class="tag tag--ref" href="specification.html#DUST-8.4">DUST-8.4</a></td>
+          <td><small>Total and circulating supply fall by the burned amount. Minted supply is unchanged.</small></td>
+        </tr><tr>
+          <td class="mono">Allocation live at confirmed depth</td>
+          <td><p>The confirming block is orphaned by a reorganization</p></td>
+          <td class="mono">Allocation invalidated, prior state restored, replacement branch replayed</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-9.6">DUST-9.6</a></td>
+          <td><small>Invalidations are emitted newest first. A balance is only as final as the depth it was confirmed at.</small></td>
+        </tr><tr>
+          <td class="mono">Pending event</td>
+          <td><p>The transaction is replaced or evicted from the mempool</p></td>
+          <td class="mono">No event</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-9.3">DUST-9.3</a>, <a class="tag tag--ref" href="specification.html#DUST-9.8">DUST-9.8</a></td>
+          <td><small>Coverage is partial, so a pending event may disappear without a stable notification.</small></td>
+        </tr></tbody></table></div>
+      </section>
+
+      <section class="section" id="invalidity">
+        <h2><span class="num">12</span> Invalidity conditions</h2>
+        <p class="lede">Every way a payload or a construction can be rejected, with the issue code a reader emits and the rule that defines it. The <a href="playground.html">decoder</a> emits exactly these codes, and the <a href="conformance.html">test vectors</a> assert them.</p>
+        <div class="scroll"><table class="tbl"><caption>Issue codes a reader emits, and the rule each one enforces</caption><thead><tr><th>Issue code</th><th>Rule</th><th>Condition</th></tr></thead><tbody><tr>
+          <td class="mono">not_object</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-2.4">DUST-2.4</a></td>
+          <td><p>Content is not a single JSON object.</p></td>
+        </tr><tr>
+          <td class="mono">not_flat_strings</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-2.5">DUST-2.5</a></td>
+          <td><p>A value is not a JSON string, or the object is nested.</p></td>
+        </tr><tr>
+          <td class="mono">duplicate_key</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-2.6">DUST-2.6</a></td>
+          <td><p>A field appears more than once.</p></td>
+        </tr><tr>
+          <td class="mono">trailing_content</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-2.4">DUST-2.4</a></td>
+          <td><p>Content continues after the closing brace.</p></td>
+        </tr><tr>
+          <td class="mono">content_too_large</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-2.3">DUST-2.3</a></td>
+          <td><p>Content exceeds 4096 bytes and is not evaluated.</p></td>
+        </tr><tr>
+          <td class="mono">bad_protocol</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-4.1">DUST-4.1</a></td>
+          <td><p>p is not the literal string dust-20.</p></td>
+        </tr><tr>
+          <td class="mono">bad_operation</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-4.2">DUST-4.2</a></td>
+          <td><p>op is not deploy or mint.</p></td>
+        </tr><tr>
+          <td class="mono">bad_tick</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-4.3">DUST-4.3</a>, <a class="tag tag--ref" href="specification.html#DUST-4.4">DUST-4.4</a></td>
+          <td><p>The ticker is not NFC, is outside 1 to 64 bytes, or contains an excluded character.</p></td>
+        </tr><tr>
+          <td class="mono">missing_field</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-5.1">DUST-5.1</a>, <a class="tag tag--ref" href="specification.html#DUST-6.1">DUST-6.1</a></td>
+          <td><p>A required field of the operation is absent.</p></td>
+        </tr><tr>
+          <td class="mono">unknown_field</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-5.1">DUST-5.1</a>, <a class="tag tag--ref" href="specification.html#DUST-6.1">DUST-6.1</a></td>
+          <td><p>A field outside the operation key set is present.</p></td>
+        </tr><tr>
+          <td class="mono">bad_integer</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-3.1">DUST-3.1</a>, <a class="tag tag--ref" href="specification.html#DUST-3.2">DUST-3.2</a></td>
+          <td><p>A quantity is not a strict decimal string.</p></td>
+        </tr><tr>
+          <td class="mono">exceeds_money_supply</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-3.3">DUST-3.3</a>, <a class="tag tag--ref" href="specification.html#DUST-5.5">DUST-5.5</a></td>
+          <td><p>A satoshi quantity exceeds the total that will ever exist.</p></td>
+        </tr><tr>
+          <td class="mono">max_sats_mismatch</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-5.4">DUST-5.4</a></td>
+          <td><p>max_sats does not equal supply × unit_sats.</p></td>
+        </tr><tr>
+          <td class="mono">lim_sats_above_max</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-5.6">DUST-5.6</a></td>
+          <td><p>lim_sats exceeds max_sats.</p></td>
+        </tr><tr>
+          <td class="mono">duplicate_deployment</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-5.7">DUST-5.7</a></td>
+          <td><p>The ticker identity already has an accepted deployment.</p></td>
+        </tr><tr>
+          <td class="mono">deployment_missing</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-6.2">DUST-6.2</a></td>
+          <td><p>The mint resolves no accepted deployment.</p></td>
+        </tr><tr>
+          <td class="mono">mint_sats_mismatch</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-6.4">DUST-6.4</a></td>
+          <td><p>sats does not equal amt × unit_sats for the resolved deployment.</p></td>
+        </tr><tr>
+          <td class="mono">mint_exceeds_limit</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-6.5">DUST-6.5</a></td>
+          <td><p>sats exceeds the deployment per-mint cap.</p></td>
+        </tr><tr>
+          <td class="mono">mint_exceeds_supply</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-6.6">DUST-6.6</a></td>
+          <td><p>Minted units plus amt would exceed supply.</p></td>
+        </tr><tr>
+          <td class="mono">output_value_mismatch</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-6.7">DUST-6.7</a></td>
+          <td><p>The carrying output value differs from sats.</p></td>
+        </tr><tr>
+          <td class="mono">allocation_overflows_input</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-7.2">DUST-7.2</a></td>
+          <td><p>A claimed allocation does not fit inside the output it is recorded against.</p></td>
+        </tr><tr>
+          <td class="mono">outputs_exceed_inputs</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-7.3">DUST-7.3</a></td>
+          <td><p>Outputs total more than inputs, so the transaction cannot be built.</p></td>
+        </tr></tbody></table></div>
+      </section>
+      <nav class="pagenav" aria-label="Page">
+      <a href="./"><em>Previous</em><b>Overview</b></a>
+      <a href="reference.html"><em>Next</em><b>Reference</b></a>
+      </nav>
+    </main>
+    <aside class="contents">
+      <nav aria-label="On this page">
+        <h2>On this page</h2>
+        <ul>
+          <li><a href="#scope">1 Scope and conventions</a></li>
+          <li><a href="#carrier">2 Message carrier</a></li>
+          <li><a href="#integers">3 Integer encoding</a></li>
+          <li><a href="#identifiers">4 Identifiers</a></li>
+          <li><a href="#deploy">5 Deploy</a></li>
+          <li><a href="#mint">6 Mint</a></li>
+          <li><a href="#allocation">7 Allocation and movement</a></li>
+          <li><a href="#burn">8 Burn</a></li>
+          <li><a href="#indexing">9 Indexer semantics</a></li>
+          <li><a href="#anatomy">10 Transaction anatomy</a></li>
+          <li><a href="#transitions">11 State transitions</a></li>
+          <li><a href="#invalidity">12 Invalidity conditions</a></li>
+        </ul>
+      </nav>
+    </aside>
+  </div>
+  <footer class="colophon">
+    <div class="colophon-inner">
+      <div class="colophon-grid">
+        <dl>
+          <dt>Owning repository</dt>
+          <dd><a href="https://github.com/bitcoinuniverseio/dust-20">bitcoinuniverseio/dust-20</a></dd>
+          <dt>Source path</dt>
+          <dd>content/specification.html</dd>
+          <dt>Last verified</dt>
+          <dd>2026-09-01</dd>
+        </dl>
+        <dl>
+          <dt>Document version</dt>
+          <dd>1.1.0</dd>
+          <dt>Lifecycle</dt>
+          <dd>experimental</dd>
+          <dt>Chain and network</dt>
+          <dd>Bitcoin mainnet</dd>
+        </dl>
+        <div>
+          <h2>Documentation</h2>
+          <ul>
+            <li><a href="https://github.com/bitcoinuniverseio/dust-20/tree/main/content/specification.html">Edit this page on GitHub</a></li>
+            <li><a href="https://docs.bitcoinuniverse.io">docs.bitcoinuniverse.io</a></li>
+            <li><a href="https://github.com/bitcoinuniverseio/dust-20/security/advisories/new">Report a vulnerability</a></li>
+            <li><a href="https://inscribe.bitcoinuniverse.io">Bitcoin Universe Inscribe</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Machine readable</h2>
+          <ul>
+            <li><a href="llms.txt">llms.txt</a></li>
+            <li><a href="docs.json">docs.json</a></li>
+            <li><a href="conformance.json">conformance.json</a></li>
+            <li><a href="search-index.json">search-index.json</a></li>
+          </ul>
+        </div>
+      </div>
+      <p class="colophon-note">Experimental documentation of an experimental protocol. Every statement carries a provenance label, and where the legacy specification and the current implementation disagree, both positions are published rather than silently resolved. No page on this site asks for a key, builds a transaction, or sends anything you type anywhere.</p>
+    </div>
+  </footer>
+</body>
+</html>

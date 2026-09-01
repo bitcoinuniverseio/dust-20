@@ -4,11 +4,41 @@
 
 - Site: https://bitcoinuniverseio.github.io/dust-20/
 - Source: https://github.com/bitcoinuniverseio/dust-20
-- Machine-readable protocol model: https://bitcoinuniverseio.github.io/dust-20/docs.json
-- Conformance fixtures: https://bitcoinuniverseio.github.io/dust-20/conformance.json
-- Chain: Bitcoin
+- Documentation portal: https://docs.bitcoinuniverse.io/protocols/dust-20/
+- Chain: Bitcoin mainnet
+- Document version: 1.1.0, revised 2026-09-01
+- Lifecycle: experimental
 - Classification: Satoshi-denominated colored UTXO fungibility protocol
-- Last updated: 2026-08-18
+- Machine-readable model: https://bitcoinuniverseio.github.io/dust-20/docs.json
+- Conformance fixtures: https://bitcoinuniverseio.github.io/dust-20/conformance.json
+- Search index: https://bitcoinuniverseio.github.io/dust-20/search-index.json
+
+## Availability in Bitcoin Universe products
+
+DUST-20 marketplace availability is read-only, mode read-only. You can view DUST-20 in Bitcoin Universe products and you cannot trade it there.
+
+- Mutation gate: DUST-20 mutations are unavailable until a typed authoritative ownership resolver replaces the retired address-only legacy flow.
+- Ownership source of truth: No safe typed mutation resolver is configured
+- Settlement: No supported settlement while ownership is unverifiable
+- Order book: Read-only legacy Universe catalog
+- Protocol state: DUST-20 indexer discovery and portfolio data
+- Supported marketplace actions: view, view-collection, view-activity
+- Unsupported marketplace actions: list, update-listing, unlist, buy, sell, make-offer, accept-offer, cancel-offer, settle, reconcile
+
+## Pages
+
+- [Overview](https://bitcoinuniverseio.github.io/dust-20/): DUST-20 binds every token unit to an exact number of satoshis. Deploy and mint are inscriptions, movement is an ordinary Bitcoin spend. Specification, decoder, test vectors and Bitcoin Universe availability.
+- [Specification](https://bitcoinuniverseio.github.io/dust-20/specification.html): The normative DUST-20 specification: numbered rules DUST-2.1 to DUST-9.8 covering carrier, integer encoding, identifiers, deploy, mint, allocation, burn and indexer semantics.
+- [Reference](https://bitcoinuniverseio.github.io/dust-20/reference.html): Complete DUST-20 reference: every field with type, byte length, constraint and provenance, the formula set, fee and size considerations, limitations and a five-part implementation checklist.
+- [Guide](https://bitcoinuniverseio.github.io/dust-20/how-it-works.html): A plain-language walkthrough of DUST-20: what a deploy fixes, what a mint creates, how units follow satoshis through a spend, worked examples, and which Bitcoin Universe surfaces support it.
+- [Transactions](https://bitcoinuniverseio.github.io/dust-20/transactions.html): How DUST-20 units follow satoshis through a Bitcoin spend: the ordinal first-in-first-out mapping, partial sends, colored change, merges, fee separation, and an interactive allocation simulator.
+- [Decoder](https://bitcoinuniverseio.github.io/dust-20/playground.html): Decode a DUST-20 payload field by field, validate it against the numbered specification rules with exact integer arithmetic, and run the published test vectors. Runs entirely in your browser.
+- [Test vectors](https://bitcoinuniverseio.github.io/dust-20/conformance.html): The published DUST-20 conformance vectors: valid and invalid payloads, the expected outcome of each, the issue code a reader must emit, and the numbered rule the case exercises.
+- [Indexing](https://bitcoinuniverseio.github.io/dust-20/indexer.html): Implementing a DUST-20 reader: the six-stage pipeline, the allocation record, confirmation and pending state, mempool coverage, reorganization handling and the event contract.
+- [Universe support](https://bitcoinuniverseio.github.io/dust-20/universe.html): The recorded Bitcoin Universe capability state for DUST-20: read-only marketplace availability, the exact mutation gate, ownership and settlement statements, the first-party read path, and what would change it.
+- [Security](https://bitcoinuniverseio.github.io/dust-20/safety.html): DUST-20 security considerations for holders and builders: key hygiene, output role review, colored change, fee funding, stale outpoints, reader disagreement, untyped ownership answers and reorganizations.
+- [Glossary](https://bitcoinuniverseio.github.io/dust-20/glossary.html): Plain definitions of satoshi, dust, UTXO, colored output, cardinal input, backing, outpoint, allocation, offset, ordinal flow, burn, mempool, RBF, reorg and PSBT, plus common DUST-20 questions.
+- [Changelog](https://bitcoinuniverseio.github.io/dust-20/changelog.html): Version history for the DUST-20 specification document: what was added, what was resolved, and which statements changed provenance label.
 
 ## How to read this document
 
@@ -22,26 +52,168 @@ Every statement carries a provenance label. Nothing below is asserted as a proto
 
 ## Sources
 
-- Legacy DUST-20 specification — https://dust-20.gitbook.io/dust20/readme.md
+- Legacy DUST-20 specification, https://dust-20.gitbook.io/dust20/readme.md
   Documents the deploy and mint payloads and a colored-UTXO transfer example.
-- Bitcoin Universe production indexer — https://github.com/bitcoinuniverseio
-  index-dust20 — reconstructs colored UTXO ownership from Bitcoin Core and a shared Ord 0.29 instance.
-- Bitcoin Universe Inscribe — https://inscribe.bitcoinuniverse.io
-  Application that builds DUST-20 deploy and mint inscriptions.
-- This documentation repository — https://github.com/bitcoinuniverseio/dust-20
+- Bitcoin Universe production indexer, https://github.com/bitcoinuniverseio
+  index-dust20 reconstructs colored UTXO ownership from Bitcoin Core and a shared Ord 0.29 instance.
+- Bitcoin Universe capability registry, https://docs.bitcoinuniverse.io
+  Records, per protocol, which product surfaces and marketplace actions are actually available.
+- This documentation repository, https://github.com/bitcoinuniverseio/dust-20
   Source of the published documentation and its conformance fixtures.
 
-## Pages
+## Normative rules
 
-- [Start here](https://bitcoinuniverseio.github.io/dust-20/): DUST-20 binds every token unit to an exact number of satoshis. Start here to understand deploy, mint, transfer and the UTXOs that carry them.
-- [How it works](https://bitcoinuniverseio.github.io/dust-20/how-it-works.html): The DUST-20 lifecycle from deploy through mint, hold, split, transfer, change and indexing, with the satoshi arithmetic made visible at every step.
-- [Playground](https://bitcoinuniverseio.github.io/dust-20/playground.html): Build and validate DUST-20 deploy and mint payloads in your browser with exact integer arithmetic. No wallet, no keys, no signing.
-- [Transactions](https://bitcoinuniverseio.github.io/dust-20/transactions.html): Visualize how DUST-20 units follow satoshis through a Bitcoin spend: partial sends, colored change, merges, fee separation and the constructions that burn units.
-- [Reference](https://bitcoinuniverseio.github.io/dust-20/reference.html): Complete searchable DUST-20 field reference: types, constraints, examples, validation rules, provenance and compatibility notes for every field of every operation.
-- [Conformance](https://bitcoinuniverseio.github.io/dust-20/conformance.html): Valid and invalid DUST-20 examples, each executed live in your browser, showing exactly why it passes or fails. Load any case into the playground.
-- [For builders](https://bitcoinuniverseio.github.io/dust-20/indexer.html): Implementation guidance for DUST-20: discovery, deployment resolution, mint validation, allocation records, spent and mempool state, reorgs, RBF and API expectations.
-- [Safety](https://bitcoinuniverseio.github.io/dust-20/safety.html): What to check before you sign a DUST-20 transaction: keys, output roles, colored change, fee funding, stale UTXOs, indexer disagreement and retries.
-- [Glossary](https://bitcoinuniverseio.github.io/dust-20/glossary.html): Plain definitions of satoshi, dust, UTXO, colored output, cardinal input, backing, outpoint, mempool, RBF, reorg and every other DUST-20 term, plus common questions.
+### 2 Message carrier
+
+DUST-20 defines two written messages, deploy and mint. Both are carried as inscription content on Bitcoin. Movement is not a written message at all: it is the shape of an ordinary spend, covered in section 7.
+
+- DUST-2.1 Deploy and mint are inscription content [VERIFIED]
+  A DUST-20 deploy or mint is the content of a Bitcoin inscription. There is no OP_RETURN carrier, no separate script template, and no auxiliary transaction field. A reader obtains authoritative inscription identity, content and location from an inscription index and obtains transaction values and addresses from a Bitcoin node.
+- DUST-2.2 Content is UTF-8 [UNIVERSE]
+  Inscription content is decoded as UTF-8. Content that is not well-formed UTF-8 is not a DUST-20 message.
+- DUST-2.3 Content larger than 4096 bytes is not a candidate [UNIVERSE]
+  A reader considers content of at most 4096 bytes. Larger content is not evaluated as DUST-20.
+- DUST-2.4 Content is exactly one JSON object [UNIVERSE]
+  Content must parse as a single JSON object. Nothing may follow the closing brace except insignificant whitespace. Trailing content makes the message ambiguous and is rejected.
+- DUST-2.5 Every value is a JSON string [UNIVERSE]
+  The object is flat and every value is a JSON string. Nested objects, arrays, numbers, booleans and null are rejected. JSON numbers cannot carry values above 2^53 exactly, so a bare number is never accepted for a quantity.
+- DUST-2.6 Duplicate keys are rejected [UNIVERSE]
+  A key that appears more than once is rejected rather than resolved last-wins or first-wins. Two readers must never be able to disagree about which value applied.
+- DUST-2.7 Raw control characters are rejected [UNIVERSE]
+  A raw character below U+0020 inside a JSON string makes the content invalid. Escaped sequences that decode to control characters are still subject to the ticker rules in section 4.
+
+### 3 Integer encoding
+
+Every quantity in DUST-20 is a decimal string in strict form. This exists so that two implementations reading the same bytes compute the same number, and so that a reader cannot silently accept a value produced by floating-point arithmetic.
+
+- DUST-3.1 Positive quantities match /^[1-9][0-9]*$/ [VERIFIED]
+  supply, unit_sats, max_sats, amt and sats are strict positive decimal strings. A leading zero, a leading plus or minus, whitespace, a decimal point, a thousands separator and exponent notation are all rejected.
+- DUST-3.2 Optional caps match /^(0|[1-9][0-9]*)$/ [VERIFIED]
+  lim_sats is a strict non-negative decimal string. The single character "0" is valid and means no per-mint limit.
+- DUST-3.3 Satoshi fields are bounded by the money supply [UNIVERSE]
+  unit_sats, max_sats, lim_sats and sats may not exceed 2,100,000,000,000,000 satoshis, the total that will ever exist. A payload can be internally consistent and still exceed this bound, in which case it is rejected.
+- DUST-3.4 Unit quantities are bounded by 2^128 - 1 [UNIVERSE]
+  supply and amt may not exceed 340,282,366,920,938,463,463,374,607,431,768,211,455. This is the atomic ceiling the production indexer enforces on token quantities.
+- DUST-3.5 Arithmetic is exact integer arithmetic [VERIFIED]
+  An implementation must evaluate supply × unit_sats and amt × unit_sats with exact integers. A 64-bit float loses precision above 2^53, which is well inside the satoshi range, and a rounded product produces a rejected payload that looks correct on screen.
+
+### 4 Identifiers
+
+Three fields identify a message: the protocol tag, the operation, and the ticker. The ticker is the only one with a normalization step, and getting that step wrong is the most common source of disagreement between implementations.
+
+- DUST-4.1 p is the literal string dust-20 [VERIFIED]
+  Content whose p field is absent or is anything other than the seven bytes dust-20 is not a DUST-20 message. There is no case tolerance, no alias, and no versioned variant of the tag.
+- DUST-4.2 op is deploy or mint [UNIVERSE]
+  Exactly two operation values exist. Any other value, including transfer, is rejected.
+- DUST-4.3 tick is 1 to 64 UTF-8 bytes in NFC form [UNIVERSE]
+  The ticker must already be in Unicode Normalization Form C, and its UTF-8 encoding must be between 1 and 64 bytes. Length is measured in bytes, not code points, so a multi-byte ticker is shorter in characters than the bound suggests.
+- DUST-4.4 tick excludes control characters, whitespace and / ? # \ [UNIVERSE]
+  These characters are excluded so a ticker identity is always safe to place in a path or query without escaping, and so two tickers cannot look identical in a log line.
+- DUST-4.5 Identity is the NFC form folded to lower case [UNIVERSE]
+  Two tickers are the same ticker when their NFC forms are equal after lower-case folding. DUST, dust and Dust are one identity. Comparison must happen on the folded identity, never on raw bytes.
+- DUST-4.6 The original spelling is preserved for display [UNIVERSE]
+  An implementation stores the folded identity for comparison and the spelling as written for display. Replacing the display form with the folded form loses information a deployer chose deliberately.
+
+### 5 Deploy
+
+A deploy creates a ticker and fixes, permanently, how many satoshis stand behind one of its units. Everything a mint or a transfer later computes depends on the numbers written here.
+
+- DUST-5.1 The key set is exact [UNIVERSE]
+  A deploy contains exactly p, op, tick, supply, unit_sats and max_sats, and may contain lim_sats. A missing required key and an unrecognised extra key both reject the whole payload. Unknown fields are not ignored.
+- DUST-5.2 supply is the permanent unit ceiling [VERIFIED]
+  supply is the total whole units that may ever be minted for this ticker. It cannot be raised, lowered or reissued by any later message.
+- DUST-5.3 unit_sats is the permanent backing ratio [VERIFIED]
+  unit_sats is the exact number of satoshis that back one unit, for the entire life of the ticker. There is no default: a deploy that omits unit_sats is rejected, and 546 is an example, not a fallback.
+- DUST-5.4 max_sats equals supply × unit_sats [VERIFIED]
+  max_sats is a redundancy check, not an independent quantity. A deploy whose max_sats differs from the exact product by even one satoshi is rejected rather than corrected.
+- DUST-5.5 max_sats may not exceed the money supply [UNIVERSE]
+  A deployment whose total backing exceeds 2,100,000,000,000,000 satoshis can never be fully minted, so it is rejected at deploy time rather than at the mint that would cross the line.
+- DUST-5.6 lim_sats is an optional per-mint satoshi cap [VERIFIED]
+  When absent or "0", one mint may take the entire supply. When present and positive it may not exceed max_sats, and every mint must satisfy sats ≤ lim_sats. The equivalent unit cap is the floor of lim_sats ÷ unit_sats.
+- DUST-5.7 The first valid deployment of an identity wins [UNIVERSE]
+  Once a valid deployment exists for a folded ticker identity, every later deployment of that identity is rejected. Ordering is by block height, then transaction index within the block, then inscription order within the transaction.
+- DUST-5.8 There are no decimals [UNIVERSE]
+  DUST-20 balances have zero decimal places. No decimals field exists, and supplying one rejects the payload under DUST-5.1.
+
+### 6 Mint
+
+A mint creates units. It is the only point where a written message and the physical shape of a Bitcoin output have to agree exactly, and the only place where an error cannot be repaired after broadcast.
+
+- DUST-6.1 The key set is exact [UNIVERSE]
+  A mint contains exactly p, op, tick, amt and sats. There are no optional mint fields.
+- DUST-6.2 A mint resolves exactly one accepted deployment [VERIFIED]
+  The mint names a ticker; the reader folds it to its identity and finds the accepted deployment for that identity. A mint for an identity with no accepted deployment is rejected. Every ratio used to check the mint comes from the resolved deployment, never from the mint payload.
+- DUST-6.3 amt is a positive whole number of units [VERIFIED]
+  amt is a strict positive decimal string. A mint of zero units does not exist, and neither does a fractional one: there are no decimals, so the smallest possible mint is one whole unit backed by unit_sats satoshis.
+- DUST-6.4 sats equals amt × unit_sats [VERIFIED]
+  The satoshis a mint declares are the units it creates multiplied by the resolved deployment ratio. sats is never inferred from amt: omitting it rejects the payload.
+- DUST-6.5 sats respects the deployment per-mint cap [VERIFIED]
+  When the resolved deployment declares a positive lim_sats, a mint whose sats exceeds it is rejected in full.
+- DUST-6.6 Mints stop at the declared supply [VERIFIED]
+  Previously minted units plus amt must not exceed supply. There is no partial fill: a mint that would cross the ceiling is rejected in full rather than trimmed to the remainder.
+- DUST-6.7 The carrying output holds exactly sats satoshis [VERIFIED]
+  Three numbers must agree: the deployment ratio, the sats field in the JSON, and the real value of the Bitcoin output carrying the inscription. A one-satoshi difference invalidates the mint, and the transaction still confirms normally.
+- DUST-6.8 The inscription sits at satoshi offset 0 of that output [UNIVERSE]
+  The mint inscription must begin at the first satoshi of the output that carries it. Padding that shifts the inscription away from offset 0 invalidates the mint.
+- DUST-6.9 The carrying output must not already hold an allocation [UNIVERSE]
+  A mint cannot be layered on top of an output that already carries a DUST-20 allocation. Two allocations claiming the same satoshis would make ownership undecidable.
+
+### 7 Allocation and movement
+
+After a mint, DUST-20 stops using messages. An allocation is a span of satoshis inside an output, and moving units means spending those satoshis. Everything in this section is derived from transaction shape, which is why output order and output size are protocol-significant.
+
+- DUST-7.1 No transfer message exists [UNIVERSE]
+  DUST-20 uses inscriptions only for deploy and mint. An inscription whose op is transfer is invalid, moves nothing, and must not be treated as a transfer by any implementation.
+- DUST-7.2 An allocation is an outpoint, an identity, a ratio, an amount and an offset [UNIVERSE]
+  The offset is the satoshi position at which the allocation begins inside its output. Without it the next spend cannot be computed, so an implementation that stores only an amount per outpoint is incomplete.
+- DUST-7.3 Satoshis map input to output in ordinal first-in-first-out order [UNIVERSE]
+  Lay every input value end to end in input index order to form one satoshi range, and every output value end to end in output index order to form another. The n-th satoshi of the input range is the n-th satoshi of the output range. Satoshis past the end of the output range are the miner fee.
+- DUST-7.4 A unit survives only when its whole block lands in one supported output [UNIVERSE]
+  Each unit is a contiguous block of unit_sats satoshis inside the allocation span. It survives where that entire block falls inside a single output the reader can attribute to a supported address. A block split across an output boundary survives nowhere.
+- DUST-7.5 Output order is protocol-significant [UNIVERSE]
+  Allocation is positional. Moving an output, changing its value, or inserting one changes which satoshis land where and therefore which units survive. Reordering outputs is never cosmetic.
+- DUST-7.6 Allocations merge when identity and ratio match [UNIVERSE]
+  Several allocations of the same ticker identity can be combined into one output, provided every contributing unit lands whole inside it. Allocations of different identities keep separate records even inside one output, tracked by their own offsets.
+- DUST-7.7 A partial send requires an explicit colored change output [VERIFIED]
+  Spending an allocation of 91 units and sending 10 requires a second output holding at least 81 × unit_sats satoshis, positioned so each unit fits whole. Omitting that output does not keep the remainder: whole units land in whatever supported output the satoshis reach next, and the rest fall into the fee and are burned.
+- DUST-7.8 Miner fees are funded from cardinal inputs [VERIFIED]
+  Satoshis that become the fee are past the end of the output range, so any units they carried are destroyed. A builder adds an ordinary bitcoin input to pay the fee and never shaves satoshis off a colored output.
+
+### 8 Burn
+
+Burning is a consequence of transaction shape, not an instruction. There is no way to write "burn this", and there is no way to undo it once the transaction confirms.
+
+- DUST-8.1 Units paid as fees are burned [UNIVERSE]
+  Satoshis that fall past the last output become the miner fee. Any whole unit inside that range is destroyed.
+- DUST-8.2 Units sent to an unattributable output are burned [UNIVERSE]
+  When a reader cannot attribute an output to a supported address, units landing in it are destroyed rather than held in an unknown state.
+- DUST-8.3 Units split across an output boundary are burned [UNIVERSE]
+  A unit is atomic. If its block of unit_sats satoshis straddles two outputs, no fraction survives in either.
+- DUST-8.4 Burns are recorded in supply accounting [UNIVERSE]
+  A burn decreases total and circulating supply by the burned amount and increases burned supply by the same amount. Minted supply is unchanged: a burn does not free supply for reminting.
+- DUST-8.5 A burn is silent on Bitcoin [UNIVERSE]
+  The transaction confirms normally. No node, no wallet and no block explorer flags it. Only a DUST-20 reader knows anything was destroyed.
+
+### 9 Indexer semantics
+
+These rules govern what a reader publishes rather than what the chain contains. They are drawn from the event contract the Bitcoin Universe production indexer enforces on every accepted batch.
+
+- DUST-9.1 Every event carries a stable source event id [UNIVERSE]
+  An event is identified by an id that does not change between observations of the same chain fact. Downstream consumers deduplicate on it.
+- DUST-9.2 A confirmed event carries complete block placement [UNIVERSE]
+  An event marked confirmed must carry block height, block hash, transaction index and event index. Partial placement is rejected: an event either has a full position in the chain or it is pending.
+- DUST-9.3 A pending event carries no block placement [UNIVERSE]
+  An event marked pending must not carry a height, hash, transaction index, event index or a non-zero confirmation count. Mixing the two states hides whether a balance is settled.
+- DUST-9.4 Wallet deltas balance per operation [UNIVERSE]
+  For a transfer the wallet deltas sum to zero. For a mint they sum to the minted amount, and for a burn to the negative of the burned amount. Each delta must equal its own received minus sent, and an address may appear only once per event.
+- DUST-9.5 A deploy carries no economic effect [UNIVERSE]
+  A deploy event states metadata only. It carries no amount, no sender, no receiver, no wallet deltas and no supply movement. Supply appears when units are minted, not when a ticker is created.
+- DUST-9.6 Reorganizations are replayed, not patched [UNIVERSE]
+  On a reorganization a reader emits invalidations newest first, reverses ledger mutations, restores allocations that had been marked spent, removes allocations the orphaned branch created, and replays the replacement branch from the fork point.
+- DUST-9.7 Coverage is declared, not assumed [UNIVERSE]
+  A reader publishes its coverage as complete, partial or unavailable alongside a checkpoint of network, height, hash, finalized height and observation time. A consumer that ignores the coverage label cannot tell a quiet ticker from a stalled indexer.
+- DUST-9.8 Mempool coverage is partial [UNIVERSE]
+  The production indexer reports partial coverage precisely because it has no exhaustive mempool feed with a stable pending lifecycle and disappearance handling. Unconfirmed DUST-20 state is not a reliable input to an irreversible decision.
 
 ## Operations
 
@@ -113,9 +285,9 @@ Units are burned when the satoshis carrying them are paid to miners as fees, sen
 ### supply [VERIFIED]
 
 - Operations: deploy
-- Type: integer string
+- Type: uint128 string
 - Required
-- Constraint: Canonical positive integer string matching /^[1-9][0-9]*$/, at most 2^128 - 1.
+- Constraint: Strict positive decimal string matching /^[1-9][0-9]*$/, at most 2^128 - 1.
 - Example: 1000000
 - Rule: Total whole units that may ever be minted for this ticker.
 - Provenance: Legacy DUST-20 specification + Bitcoin Universe production indexer
@@ -124,31 +296,31 @@ Units are burned when the satoshis carrying them are paid to miners as fees, sen
 ### unit_sats [VERIFIED]
 
 - Operations: deploy
-- Type: integer string
+- Type: sats string
 - Required
-- Constraint: Canonical positive integer string, at most Bitcoin’s monetary supply of 2,100,000,000,000,000 satoshis.
+- Constraint: Strict positive decimal string, at most Bitcoin’s monetary supply of 2,100,000,000,000,000 satoshis.
 - Example: 546
 - Rule: The exact number of satoshis that back one unit for the entire life of the ticker.
 - Provenance: Legacy DUST-20 specification + Bitcoin Universe production indexer
-- Notes: 546 is a common documented example because it is Bitcoin’s usual dust threshold for P2WPKH. It is not a default. A payload that omits unit_sats is rejected — never assume 546.
+- Notes: 546 is a common documented example because it is Bitcoin’s usual dust threshold for P2WPKH. It is not a default. A payload that omits unit_sats is rejected, so never assume 546.
 
 ### max_sats [VERIFIED]
 
 - Operations: deploy
-- Type: integer string
+- Type: sats string
 - Required
-- Constraint: Canonical positive integer string that equals supply × unit_sats and does not exceed 2,100,000,000,000,000.
+- Constraint: Strict positive decimal string that equals supply × unit_sats and does not exceed 2,100,000,000,000,000.
 - Example: 546000000
 - Rule: Rejected unless it equals supply × unit_sats exactly, computed with exact integer arithmetic.
 - Provenance: Legacy DUST-20 specification + Bitcoin Universe production indexer
-- Notes: This is a redundancy check, not an independent quantity. It exists so a reader can detect a builder that computed the backing with floating point or the wrong unit size. See the reconciliation note about earlier reports that this field was optional.
+- Notes: This is a redundancy check, not an independent quantity. It exists so a reader can detect a builder that computed the backing with floating point or the wrong unit size.
 
 ### lim_sats [VERIFIED]
 
 - Operations: deploy
-- Type: integer string
+- Type: sats string
 - Optional
-- Constraint: Optional canonical non-negative integer string, at most max_sats. Omitted or "0" means no per-mint limit.
+- Constraint: Optional strict non-negative decimal string, at most max_sats. Omitted or "0" means no per-mint limit.
 - Example: 54600
 - Rule: When present and greater than zero, every mint of this ticker must satisfy sats ≤ lim_sats.
 - Provenance: Legacy DUST-20 specification + Bitcoin Universe production indexer
@@ -157,9 +329,9 @@ Units are burned when the satoshis carrying them are paid to miners as fees, sen
 ### amt [VERIFIED]
 
 - Operations: mint
-- Type: integer string
+- Type: uint128 string
 - Required
-- Constraint: Canonical positive integer string matching /^[1-9][0-9]*$/, at most 2^128 - 1.
+- Constraint: Strict positive decimal string matching /^[1-9][0-9]*$/, at most 2^128 - 1.
 - Example: 100
 - Rule: Whole units to create. Rejected if previously minted units plus amt would exceed supply.
 - Provenance: Legacy DUST-20 specification + Bitcoin Universe production indexer
@@ -168,9 +340,9 @@ Units are burned when the satoshis carrying them are paid to miners as fees, sen
 ### sats [VERIFIED]
 
 - Operations: mint
-- Type: integer string
+- Type: sats string
 - Required
-- Constraint: Canonical positive integer string that equals amt × unit_sats of the resolved deployment.
+- Constraint: Strict positive decimal string that equals amt × unit_sats of the resolved deployment.
 - Example: 54600
 - Rule: Rejected unless it equals amt × unit_sats, and unless the Bitcoin output carrying the inscription holds exactly this many satoshis.
 - Provenance: Legacy DUST-20 specification + Bitcoin Universe production indexer
@@ -178,82 +350,76 @@ Units are burned when the satoshis carrying them are paid to miners as fees, sen
 
 ## Formulas
 
-- max_sats = supply × unit_sats [VERIFIED]
+- max_sats = supply × unit_sats [DUST-5.4] [VERIFIED]
   Total backing is supply multiplied by the satoshis behind one unit. Example: 1,000,000 units × 546 sats = 546,000,000 sats
-- sats = amt × unit_sats [VERIFIED]
+- sats = amt × unit_sats [DUST-6.4] [VERIFIED]
   The satoshis a mint declares are the units it creates multiplied by the unit size. Example: 100 units × 546 sats = 54,600 sats
-- output_value = sats [VERIFIED]
+- output_value = sats [DUST-6.7] [VERIFIED]
   The Bitcoin output that carries the mint inscription must hold exactly the declared satoshis. Example: A mint declaring 54,600 sats must sit in an output worth exactly 54,600 sats.
-- mint_unit_cap = ⌊ lim_sats ÷ unit_sats ⌋ [UNIVERSE]
+- mint_unit_cap = floor(lim_sats ÷ unit_sats) [DUST-5.6] [UNIVERSE]
   A satoshi cap per mint implies a whole-unit cap per mint. Example: 54,600 ÷ 546 = 100 units per mint
-- input_units = surviving_units + burned_units [UNIVERSE]
-  Units leaving an input either land whole inside a supported output or are burned. Nothing else can happen to them. Example: 91 units in → 10 to the receiver + 81 as change + 0 burned
-- output_backing = units_in_output × unit_sats [UNIVERSE]
+- input_units = surviving_units + burned_units [DUST-7.4] [UNIVERSE]
+  Units leaving an input either land whole inside a supported output or are burned. Nothing else can happen to them. Example: 91 units in produces 10 to the receiver, 81 as change, 0 burned
+- output_backing = units_in_output × unit_sats [DUST-7.4] [UNIVERSE]
   Every output carrying units must hold at least the satoshis those whole units occupy, positioned so each unit fits entirely inside it. Example: 81 units × 546 = 44,226 sats of backing
-- fee = Σ inputs − Σ outputs [UNIVERSE]
+- fee = sum(inputs) - sum(outputs) [DUST-7.8] [UNIVERSE]
   The miner fee is whatever the transaction does not pay out. Any colored satoshi that falls into that gap is burned, so fees must be funded by ordinary bitcoin. Example: Fund the fee from a separate cardinal input, never by shrinking a colored output.
 
-## Rules
+## Transaction anatomy
 
-### A payload is a flat JSON object of strings [UNIVERSE]
+### Mint transaction
 
-Inscription content must be valid UTF-8 and a single flat JSON object whose every value is a string. Nested objects, arrays, numbers, booleans and null are rejected. So are duplicate keys, trailing content after the closing brace, and content larger than 4096 bytes.
+A mint is a reveal transaction. The payload lives in the witness; the value that matters lives in the output.
 
-### Unknown fields are rejected, not ignored [UNIVERSE]
+- Input 0 (Commit outpoint): Spends the commit output that carries the inscription envelope. Verified against: Inscription index.
+- Witness (Inscription envelope): Holds the content type and the JSON payload. Content is UTF-8, at most 4096 bytes for a DUST-20 candidate. Verified against: Inscription index.
+- Output 0 (Carrying output): Value must equal the sats field exactly. The inscription must sit at satoshi offset 0. The output must not already carry an allocation. Verified against: Bitcoin node + inscription index.
+- Output 1..n (Cardinal change): Ordinary bitcoin. Carries no units and is not evaluated. Verified against: Bitcoin node.
+- Fee (Miner payment): Funded from cardinal value. Satoshis that reach the fee are past the output range and carry nothing. Verified against: Derived.
 
-Each operation declares an exact key set. A deploy carrying an extra field, or a mint missing one, does not degrade to a warning — the whole payload is rejected. This is stricter than "ignore what you do not understand" and prevents a malformed message from being read two different ways.
+### Transfer transaction
 
-### Integers are canonical decimal strings [VERIFIED]
+A transfer is an ordinary spend. Nothing marks it as DUST-20; the units follow the satoshis.
 
-Every numeric field is a string. Leading zeros, a leading plus, a minus sign, whitespace, decimal points and exponent notation are all rejected. Implementations must use exact integer arithmetic — a 64-bit float silently loses precision above 2^53, well inside the satoshi range.
+- Input 0..i (Colored inputs): Outputs that carry allocations. Each contributes a span at a known offset into the concatenated input range. Verified against: Reader allocation ledger.
+- Input i+1..n (Cardinal inputs): Ordinary bitcoin added to fund the fee without disturbing colored spans. Verified against: Bitcoin node.
+- Output 0..j (Colored outputs): Sized and ordered so each surviving unit lands whole inside one of them. A partial send needs an explicit colored change output. Verified against: Derived from ordinal flow.
+- Output j+1..m (Cardinal outputs): Ordinary change. Units landing here are still tracked if the address is supported, which is usually a construction error. Verified against: Derived from ordinal flow.
+- Fee (Miner payment): Any colored satoshi that falls into the fee gap is burned. Verified against: Derived.
 
-### The first valid deployment of a ticker wins [UNIVERSE]
+## State transitions
 
-Ticker identity is the NFC form of tick, case-folded to lower case. Once a valid deployment exists for an identity, every later deployment of that identity is rejected. "DUST", "dust" and "Dust" are the same ticker.
+- No ticker + Valid deploy inscription -> Ticker deployed, 0 minted [DUST-5.1 to DUST-5.7]. The identity is claimed permanently. A second deploy of the same identity changes nothing.
+- Ticker deployed + Valid mint inscription in an output of exactly sats satoshis -> Allocation live at that outpoint, offset 0 [DUST-6.1 to DUST-6.9]. Minted supply increases by amt. Total and circulating supply increase by amt.
+- Allocation live + The carrying output is spent, whole units land in supported outputs -> Allocation spent, new allocations live [DUST-7.3, DUST-7.4]. Wallet deltas sum to zero across the event. Supply is unchanged.
+- Allocation live + The carrying output is spent, some units land nowhere whole -> Allocation spent, remainder burned [DUST-8.1 to DUST-8.4]. Total and circulating supply fall by the burned amount. Minted supply is unchanged.
+- Allocation live at confirmed depth + The confirming block is orphaned by a reorganization -> Allocation invalidated, prior state restored, replacement branch replayed [DUST-9.6]. Invalidations are emitted newest first. A balance is only as final as the depth it was confirmed at.
+- Pending event + The transaction is replaced or evicted from the mempool -> No event [DUST-9.3, DUST-9.8]. Coverage is partial, so a pending event may disappear without a stable notification.
 
-### A mint resolves exactly one accepted deployment [VERIFIED]
+## Invalidity conditions
 
-A mint naming a ticker that has no accepted deployment is rejected. The unit size used to check the mint always comes from the resolved deployment, never from the mint payload.
-
-### Mints stop at the declared supply [VERIFIED]
-
-Previously minted units plus amt must not exceed supply. There is no partial fill: a mint that would cross the supply ceiling is rejected in full rather than trimmed.
-
-### The inscription must begin at offset zero of its output [UNIVERSE]
-
-The mint inscription must sit at satoshi offset 0 of the output that carries it, that output must hold exactly sats satoshis, and the output must not already carry a DUST-20 allocation. A mint whose padding does not match its sats field exactly is rejected.
-
-### No transfer inscription is valid [UNIVERSE]
-
-DUST-20 uses inscriptions only for deploy and mint. Movement happens by spending the satoshis that carry the units. An inscription with op: "transfer" is rejected — it does not move anything, and treating it as a transfer is a compatibility error.
-
-### Units follow satoshis in first-in-first-out order [UNIVERSE]
-
-Lay every input value end to end to form one satoshi range, and every output value end to end to form another. A colored allocation occupies a contiguous span in the input range. Each unit is a block of unit_sats satoshis inside that span, and it survives only where a whole block lands inside a single output.
-
-### Three ways units are destroyed [UNIVERSE]
-
-A unit is burned when its satoshis fall past the last output and become the miner fee, when they land in an output the indexer cannot attribute to a supported address, or when they straddle an output boundary so no whole unit fits. Burns are silent on Bitcoin: the transaction confirms normally.
-
-### A partial send needs an explicit colored change output [VERIFIED]
-
-If you spend an allocation of 91 units and send 10, the other 81 need their own output with at least 81 × unit_sats satoshis, aligned so each unit fits whole. Omitting that output does not keep the units — it burns them.
-
-### Fund miner fees with ordinary bitcoin [VERIFIED]
-
-Colored satoshis and fee funding are different concepts. Add a separate cardinal input to pay the fee. Shaving satoshis off a colored output to cover a fee moves the colored range and can burn the units it was meant to carry.
-
-### Merging works when the ticker and unit size match [UNIVERSE]
-
-Several colored inputs of the same ticker can be combined into one output, provided each contributing unit lands whole inside it. Allocations of different tickers keep separate identities even inside one output; they are tracked by their own offsets.
-
-### Reorganizations roll the ledger back [UNIVERSE]
-
-On a reorg the indexer emits invalidations newest first, reverses ledger mutations, restores allocations that had been marked spent, removes allocations the orphaned branch created, and replays the replacement branch. A balance is only as final as the depth it was confirmed at.
-
-### Mempool coverage is partial [UNIVERSE]
-
-The production indexer reports coverage as partial: confirmed history and complete holder snapshots are indexed, but there is no exhaustive mempool feed with a stable pending lifecycle. Unconfirmed DUST-20 state is therefore not a reliable input to an irreversible decision.
+- not_object [DUST-2.4]: Content is not a single JSON object.
+- not_flat_strings [DUST-2.5]: A value is not a JSON string, or the object is nested.
+- duplicate_key [DUST-2.6]: A field appears more than once.
+- trailing_content [DUST-2.4]: Content continues after the closing brace.
+- content_too_large [DUST-2.3]: Content exceeds 4096 bytes and is not evaluated.
+- bad_protocol [DUST-4.1]: p is not the literal string dust-20.
+- bad_operation [DUST-4.2]: op is not deploy or mint.
+- bad_tick [DUST-4.3, DUST-4.4]: The ticker is not NFC, is outside 1 to 64 bytes, or contains an excluded character.
+- missing_field [DUST-5.1, DUST-6.1]: A required field of the operation is absent.
+- unknown_field [DUST-5.1, DUST-6.1]: A field outside the operation key set is present.
+- bad_integer [DUST-3.1, DUST-3.2]: A quantity is not a strict decimal string.
+- exceeds_money_supply [DUST-3.3, DUST-5.5]: A satoshi quantity exceeds the total that will ever exist.
+- max_sats_mismatch [DUST-5.4]: max_sats does not equal supply × unit_sats.
+- lim_sats_above_max [DUST-5.6]: lim_sats exceeds max_sats.
+- duplicate_deployment [DUST-5.7]: The ticker identity already has an accepted deployment.
+- deployment_missing [DUST-6.2]: The mint resolves no accepted deployment.
+- mint_sats_mismatch [DUST-6.4]: sats does not equal amt × unit_sats for the resolved deployment.
+- mint_exceeds_limit [DUST-6.5]: sats exceeds the deployment per-mint cap.
+- mint_exceeds_supply [DUST-6.6]: Minted units plus amt would exceed supply.
+- output_value_mismatch [DUST-6.7]: The carrying output value differs from sats.
+- allocation_overflows_input [DUST-7.2]: A claimed allocation does not fit inside the output it is recorded against.
+- outputs_exceed_inputs [DUST-7.3]: Outputs total more than inputs, so the transaction cannot be built.
 
 ## Examples
 
@@ -320,11 +486,11 @@ The smallest valid mint for this deployment is one whole unit.
 
 ### Is max_sats required in a deploy? [VERIFIED]
 
-- Legacy: The legacy profile includes max_sats and frames it as supply × unit_sats. Earlier versions of this documentation additionally reported that the Inscribe builder emitted deploys without max_sats, and labelled the question an unreconciled compatibility split.
+- Legacy: The legacy profile includes max_sats and frames it as supply × unit_sats. Earlier versions of this documentation additionally reported that a builder emitted deploys without max_sats, and labelled the question an unreconciled compatibility split.
 - Current: The production indexer requires max_sats. Its deploy key set is exactly p, op, tick, supply, unit_sats, max_sats, with lim_sats optional, and a deploy missing max_sats is rejected rather than inferred.
 - Resolution: Resolved in favour of required. Emit max_sats and verify it equals supply × unit_sats. A deploy without it is not indexed by the current implementation.
 
-### Is there a canonical transfer payload? [UNIVERSE]
+### Is there an official transfer payload? [UNIVERSE]
 
 - Legacy: The legacy guide documents deploy and mint JSON and a colored-UTXO transfer example, but publishes no transfer schema. Earlier documentation listed a transfer inscription as an open question and noted an application emitting a transfer preview containing amt.
 - Current: The production indexer accepts no transfer inscription at all. Movement is derived purely from ordinal satoshi flow through ordinary Bitcoin spends.
@@ -338,9 +504,9 @@ The smallest valid mint for this deployment is one whole unit.
 
 ### What counts as a burn? [UNIVERSE]
 
-- Legacy: The legacy material defines no burn rule, and earlier documentation advised showing recovery actions as potentially allocation-destroying rather than canonical burns.
+- Legacy: The legacy material defines no burn rule, and earlier documentation advised showing recovery actions as potentially allocation-destroying rather than as settled burns.
 - Current: Burning is defined precisely and is a consequence of transaction shape, not an instruction: satoshis paid as fees, sent to an unsupported output, or split so no whole unit fits are burned, and the supply accounting records it.
-- Resolution: Resolved as a derived outcome. There is still no way to express "burn this" as a message — you burn by constructing a transaction that drops the satoshis.
+- Resolution: Resolved as a derived outcome. There is still no way to express "burn this" as a message. You burn by constructing a transaction that drops the satoshis.
 
 ### Does output order matter? [UNIVERSE]
 
@@ -348,7 +514,7 @@ The smallest valid mint for this deployment is one whole unit.
 - Current: Order matters completely. Allocation is positional: inputs and outputs are concatenated into satoshi ranges in index order, so moving an output changes which units land where.
 - Resolution: Resolved: build outputs deliberately and test the exact ordering your builder produces. Reordering outputs is never cosmetic.
 
-### Is there a canonical DUST-20 indexer API? [UNRESOLVED]
+### Is there one official DUST-20 indexer API? [UNRESOLVED]
 
 - Legacy: No API schema, pagination model, or response versioning is published in the legacy guide.
 - Current: The production indexer exposes its own normalized and legacy routes with bearer authentication, stable cursors and explicit coverage labels, but these are one service’s contract.
@@ -359,7 +525,7 @@ The smallest valid mint for this deployment is one whole unit.
 ### Do independent implementations agree with these rules? [UNRESOLVED]
 
 - Why it matters: Most of the transfer, burn and ticker-identity behaviour on this site is settled by one production implementation rather than by a multi-party specification.
-- Safe posture: Treat rules marked Current Universe implementation as a working profile. Before relying on them across tools, test against the specific indexer your users will see.
+- Safe posture: Treat rules marked UNIVERSE as a working profile. Before relying on them across tools, test against the specific reader your users will see.
 
 ### How many confirmations make a DUST-20 balance safe to act on? [UNRESOLVED]
 
@@ -373,84 +539,170 @@ The smallest valid mint for this deployment is one whole unit.
 
 ### What happens to DUST-20 state when a transaction is replaced? [UNRESOLVED]
 
-- Why it matters: Replace-by-fee can change the output layout, which changes where colored satoshis land — a replacement can burn units the original preserved.
+- Why it matters: Replace-by-fee can change the output layout, which changes where colored satoshis land, so a replacement can burn units the original preserved.
 - Safe posture: Re-derive allocation from the transaction that actually confirmed. Never carry forward the pre-replacement interpretation, and never blindly rebroadcast.
 
-### What if unit_sats is below Bitcoin’s relay dust threshold? [UNRESOLVED]
+### What would a typed authoritative ownership resolver look like? [UNRESOLVED]
 
-- Why it matters: DUST-20 permits any positive unit_sats, but Bitcoin nodes will not relay outputs below the standard dust limit for their script type.
-- Safe posture: A deploy with a very small unit_sats can be valid to an indexer yet unspendable in practice. Check the dust threshold for your output type before deploying.
+- Why it matters: This is the exact blocker recorded against DUST-20 marketplace mutations: a boolean "is this output still good" answer cannot prove amount, owner, schema, freshness or settlement authority.
+- Safe posture: A resolver has to return the identity, the exact amount, the owning address, the outpoint, the observation height and the coverage label, and it has to be first-party. Until one exists, DUST-20 stays read-only in Bitcoin Universe products.
 
 ## Indexer pipeline
 
-### Observe — Ingest raw chain events [UNIVERSE]
+### Observe: Ingest raw chain events [UNIVERSE]
 
 Read complete blocks with input values, output values and output addresses, plus authoritative inscription identity. Record the transaction, output, inscription association and block position before declaring anything about balances.
 
-### Normalize — Parse strictly and keep failures visible [UNIVERSE]
+### Normalize: Parse strictly and keep failures visible [UNIVERSE]
 
-Apply the flat-string-object reader, exact key sets and canonical integer parsing. Keep parse failures as recorded invalid events rather than dropping them into an unexplained empty result.
+Apply the flat-string-object reader, exact key sets and strict integer parsing. Keep parse failures as recorded invalid events rather than dropping them into an unexplained empty result.
 
-### Resolve — Resolve deployment and history [UNIVERSE]
+### Resolve: Resolve deployment and history [UNIVERSE]
 
 Fold the ticker to its identity, apply first-deploy-wins, and check the mint against the resolved unit size, the per-mint cap and remaining supply. Do not guess when two candidates conflict.
 
-### Materialize — Create allocation records with position [UNIVERSE]
+### Materialize: Create allocation records with position [UNIVERSE]
 
-An allocation is an outpoint, a ticker, an amount, a unit size and a satoshi offset inside that output. The offset is not optional bookkeeping — it is what makes the next spend computable.
+An allocation is an outpoint, a ticker identity, an amount, a unit size and a satoshi offset inside that output. The offset is not optional bookkeeping, it is what makes the next spend computable.
 
-### Propagate — Follow satoshis through each spend [UNIVERSE]
+### Propagate: Follow satoshis through each spend [UNIVERSE]
 
 Concatenate input values into one range and output values into another, intersect each allocation span with each output, keep only whole units, and record the difference as burned. Emit transfer effects only where the owning address actually changes.
 
-### Reconcile — Roll forward and roll back [UNIVERSE]
+### Reconcile: Roll forward and roll back [UNIVERSE]
 
-Track block association so a reorg can invalidate newest first, reverse mutations, restore spent allocations, remove orphaned ones and replay the replacement branch. Preserve enough history to explain every transition.
+Track block association so a reorganization can invalidate newest first, reverse mutations, restore spent allocations, remove orphaned ones and replay the replacement branch. Preserve enough history to explain every transition.
 
-## Safety requirements
+## Fee and size considerations
+
+- Payload size is small and nearly constant: A deploy payload is typically 110 to 130 bytes of JSON and a mint is 60 to 70 bytes. Both sit in the witness, so they are discounted to one weight unit per byte. Payload size is almost never what makes a DUST-20 transaction expensive.
+- Backing is locked capital, not a fee: A mint of 100 units at 546 satoshis per unit puts 54,600 satoshis into an output and keeps them there for as long as you hold the units. Sizing a deployment is a decision about how much bitcoin every holder must immobilise.
+- unit_sats below the relay dust threshold is valid but unspendable: DUST-20 permits any positive unit_sats, and a reader will accept it. Bitcoin nodes will not relay an output below the standard dust threshold for its script type, which is 546 satoshis for P2WPKH and 330 for P2TR. Check the threshold for the output type you will actually use.
+- Colored change adds an output, and outputs cost more than payload bytes: A safe partial send needs a receiver output, a colored change output, a cardinal change output and at least one cardinal input. Budget for that shape rather than for the smallest transaction that would confirm.
+- Never let the fee come out of backing: A wallet that subtracts the fee from the largest output will silently shrink a colored output, move the colored span, and burn units. Fee funding must come from cardinal inputs, and the builder must verify every colored output value after the fee is applied.
+- Consolidate deliberately, not automatically: Merging allocations of one identity into a single output is valid and reduces future fees. Automatic consolidation that treats colored outputs as ordinary change will destroy units, so consolidation must be an explicit DUST-20 aware operation.
+
+## Limitations
+
+- Validity is an interpretation, not consensus: Bitcoin does not know DUST-20 exists. Every balance is one reader’s conclusion from applying these rules to the chain. Two readers that differ on a rule will differ on a balance, and Bitcoin will not settle the argument.
+- Most transfer behaviour is settled by one implementation: The legacy specification documents deploy and mint and one colored-UTXO transfer example. Ordinal flow, burn conditions, ticker identity and output ordering are settled here by the Bitcoin Universe production indexer. Rules labelled UNIVERSE are a working profile, not a multi-party agreement.
+- Holding units immobilises bitcoin: Backing is real bitcoin sitting in an output. A large supply at a large unit_sats can require more bitcoin than the deployer expects, and DUST-5.5 rejects a deployment that would require more than exists.
+- Units are indivisible and non-fractional: There are no decimals. A holder cannot send half a unit, and a unit that cannot be placed whole in an output is destroyed rather than rounded.
+- There is no reliable unconfirmed view: The production indexer declares partial coverage: no exhaustive mempool feed, no stable pending lifecycle, no disappearance handling. Applications must not present unconfirmed DUST-20 state as settled.
+- Trading DUST-20 inside Bitcoin Universe is not available: Marketplace availability for DUST-20 is read-only. Listing, buying, offers and settlement are all unavailable until a typed authoritative ownership resolver exists. See the Universe support page for the exact recorded reason.
+- Replacement can change the outcome: Replace-by-fee can alter the output layout, which changes where colored satoshis land. A replacement can burn units the original would have preserved, so state must be derived from the transaction that actually confirmed.
+
+## Implementation checklist
+
+### Reader
+
+- [DUST-2.2, DUST-2.3] Decode content as UTF-8 and reject anything over 4096 bytes.
+- [DUST-2.4 to DUST-2.6] Reject nested values, non-string values, duplicate keys and trailing content.
+- [DUST-3.1, DUST-3.5] Parse every quantity as a strict decimal string into an exact integer type.
+- [DUST-5.1, DUST-6.1] Enforce the exact key set per operation; never ignore an unknown field.
+- [DUST-9.7] Record rejected payloads as invalid events rather than discarding them.
+
+### Identity and state
+
+- [DUST-4.5, DUST-4.6] Fold tickers with NFC plus lower case, and keep the written spelling for display.
+- [DUST-5.7] Apply first-deploy-wins by height, then transaction index, then inscription order.
+- [DUST-6.2] Check every mint against the resolved deployment, not against its own payload.
+- [DUST-6.7] Compare the declared sats against the real output value before accepting a mint.
+- [DUST-6.9] Reject a mint into an output that already carries an allocation.
+
+### Allocation
+
+- [DUST-7.2] Store a satoshi offset with every allocation.
+- [DUST-7.3] Compute movement by concatenating input and output ranges in index order.
+- [DUST-7.4, DUST-8.3] Keep only whole units, and record the difference as burned.
+- [DUST-7.5] Treat output order as significant and never normalize it away.
+- [DUST-8.1, DUST-8.2, DUST-8.4] Account for fee burns and unattributable-output burns in supply.
+
+### Publication
+
+- [DUST-9.1] Give every event a stable source event id.
+- [DUST-9.2, DUST-9.3] Require complete block placement on confirmed events and none on pending events.
+- [DUST-9.4] Balance wallet deltas per operation, and reject an address appearing twice.
+- [DUST-9.5] Emit deploys with no economic effect.
+- [DUST-9.7] Publish a coverage label and a checkpoint with every answer.
+- [DUST-9.6] Invalidate newest first on a reorganization and replay the replacement branch.
+
+### Wallet and application
+
+- [DUST-7.7] Show the receiver, colored change, cardinal funding and fee as distinct roles before signing.
+- [DUST-7.7] Block a partial send that has no colored change output.
+- [DUST-7.8] Fund fees from cardinal inputs and re-verify colored output values after fee application.
+- [DUST-9.7] Revalidate outpoints at build time, not at page load.
+- [DUST-9.7] Treat disagreement between two readers as a blocking error, not a choice.
+
+## Security considerations
 
 - [critical] Never share a recovery phrase or private key: No DUST-20 application needs your seed phrase or private key. An app can prepare an unsigned transaction without them. Leave immediately if a site asks for either.
 - [critical] Review every output role before signing: Before the wallet prompt appears you should be able to see the receiver, the units and satoshis going to them, your colored change, the ordinary bitcoin funding the fee, and the fee itself. A list of addresses is not a review.
-- [critical] Missing colored change is a stop sign: If you are sending part of an allocation and no colored change output is present, the remainder is not kept — it is burned. This is not a formatting detail. Do not approve it.
+- [critical] Missing colored change is a stop sign: If you are sending part of an allocation and no colored change output is present, the remainder does not stay yours in any predictable way: some whole units land in whatever supported output comes next, and the rest are burned. This is not a formatting detail. Do not approve it.
 - [high] Keep fee funding separate from colored inputs: Fund the miner fee from ordinary bitcoin. If the fee is taken out of colored backing, the colored range shifts and units can be destroyed even though the transaction confirms.
 - [high] Revalidate outputs immediately before building: A selected output may have been spent since the screen loaded. A marketplace listing is discovery data, not proof that an output is still unspent. Re-check at build time, not at page load.
-- [high] Treat source disagreement as a blocking error: If two indexers describe the same output differently, do not pick the friendlier answer. Show the conflict, block the irreversible step, and keep redacted evidence for investigation.
-- [high] Do not downgrade an ambiguous construction to a warning: Unexplained satoshi differences, mixed-ticker selections and unattributable outputs are failures. Silently filling in a field, rounding a satoshi value, or assuming an unspecified payload is canonical converts a caught bug into a burned balance.
+- [high] Treat source disagreement as a blocking error: If two readers describe the same output differently, do not pick the friendlier answer. Show the conflict, block the irreversible step, and keep redacted evidence for investigation.
+- [high] Do not downgrade an ambiguous construction to a warning: Unexplained satoshi differences, mixed-ticker selections and unattributable outputs are failures. Silently filling in a field, rounding a satoshi value, or assuming an unspecified payload is valid converts a caught bug into a burned balance.
+- [high] Never settle value on an untyped ownership answer: A boolean "still available" response proves nothing about amount, owner, schema or freshness. This is the recorded reason DUST-20 marketplace mutations are unavailable in Bitcoin Universe, and the same reasoning applies to any integration you build.
 - [medium] Never blindly retry an uncertain broadcast: Keep the transaction id and known status. Disable repeat submission until someone has inspected the transaction. A duplicate broadcast can spend the same colored inputs a second way.
-- [medium] Remember that confirmed is not permanent: A reorg can remove a confirmation and change which transaction actually spent an output. Track confirmation depth and invalidate derived state when the chain moves under you.
+- [medium] Remember that confirmed is not permanent: A reorganization can remove a confirmation and change which transaction actually spent an output. Track confirmation depth and invalidate derived state when the chain moves under you.
 
 ## Conformance summary
 
 31 executable cases are published at https://bitcoinuniverseio.github.io/dust-20/conformance.json and rendered at https://bitcoinuniverseio.github.io/dust-20/conformance.html.
 
-- deploy-valid: ACCEPT — Valid deploy. Every field is a canonical integer string and max_sats equals supply × unit_sats.
-- deploy-no-limit: ACCEPT — Valid deploy with lim_sats omitted. lim_sats is optional. Omitting it means there is no per-mint cap.
-- deploy-zero-limit: ACCEPT — lim_sats of "0" means no cap. Zero is explicitly "no limit", not a cap of zero satoshis.
-- deploy-arithmetic-mismatch: REJECT (max_sats_mismatch) — Arithmetic mismatch in max_sats. max_sats must equal supply × unit_sats exactly. Being one satoshi low usually means the builder used floating-point arithmetic.
-- deploy-missing-max-sats: REJECT (missing_field) — Deploy missing max_sats. max_sats is required. Earlier documentation reported this as an unreconciled compatibility split; the current implementation rejects the payload rather than deriving the value.
-- deploy-unknown-field: REJECT (unknown_field) — Deploy carrying an unknown field. Operations declare exact key sets. An unknown field is rejected, not ignored, so one payload cannot be read two ways.
-- deploy-leading-zero: REJECT (bad_integer) — Malformed integer with a leading zero. Integers are canonical decimal strings. "0546" is not canonical even though it parses.
-- deploy-float: REJECT (bad_integer) — Fractional unit_sats. Satoshis are indivisible. Decimal points are rejected outright.
-- deploy-zero-supply: REJECT (bad_integer) — Zero supply. supply must be a positive integer. Zero and negative values are rejected.
-- deploy-negative: REJECT (bad_integer) — Negative unit_sats. A minus sign is not part of a canonical DUST-20 integer.
-- deploy-exceeds-money: REJECT (exceeds_money_supply) — Backing exceeds Bitcoin’s monetary supply. max_sats of 10,000,000,000,000,000 exceeds the 2,100,000,000,000,000 satoshis that will ever exist. The arithmetic is self-consistent but unbackable.
-- deploy-limit-above-max: REJECT (lim_sats_above_max) — lim_sats greater than max_sats. A per-mint cap larger than the entire backing is contradictory.
-- deploy-tick-whitespace: REJECT (bad_tick) — Ticker containing whitespace. Tickers exclude whitespace, control characters and the URL delimiters / ? # \ so an identity is always addressable.
-- deploy-duplicate-ticker: REJECT (duplicate_deployment) — Redeploying an existing ticker. Identity is the NFC form folded to lower case, so "DUST" is the same ticker as "dust". The first valid deployment wins.
-- mint-valid: ACCEPT — Valid mint with matching output. sats equals amt × unit_sats, and the observed output value equals sats.
-- mint-case-insensitive-tick: ACCEPT — Mint naming the ticker in a different case. The mint resolves against the folded identity, so casing does not prevent resolution.
-- mint-sats-mismatch: REJECT (mint_sats_mismatch) — Declared sats do not match the deployment ratio. 100 units at 546 satoshis is 54,600, not 54,000.
-- mint-output-mismatch: REJECT (output_value_mismatch) — Output value differs from declared sats by one satoshi. The payload is internally consistent, but the real Bitcoin output holds 54,599 satoshis. The mint is invalid and cannot be repaired after broadcast.
-- mint-limit-violation: REJECT (mint_exceeds_limit) — Mint exceeds lim_sats. 55,146 satoshis exceeds the declared per-mint cap of 54,600.
-- mint-exceeds-supply: REJECT (mint_exceeds_supply) — Mint exceeds remaining supply. 999,950 units are already minted, so only 50 remain. The mint is rejected in full rather than partially filled.
-- mint-no-deployment: REJECT (deployment_missing) — Mint for a ticker that was never deployed. A mint must resolve exactly one accepted deployment. Without it there is no unit size to check against.
-- mint-missing-field: REJECT (missing_field) — Mint missing the sats field. sats is required. It is never inferred from amt, even though the ratio is known.
-- mint-zero-amount: REJECT (bad_integer) — Mint of zero units. amt must be a positive integer.
-- unknown-operation: REJECT (bad_operation) — Unknown operation. Only deploy and mint exist. Any other op is rejected.
-- transfer-inscription: REJECT (bad_operation) — A transfer inscription. No transfer inscription is valid. Movement happens by spending the satoshis that carry the units. Earlier documentation listed a canonical transfer payload as an open question; the current implementation answers it by accepting none.
-- wrong-protocol: REJECT (bad_protocol) — A different protocol identifier. Content whose p is not dust-20 is not a DUST-20 message.
-- non-string-value: REJECT (not_flat_strings) — A numeric JSON value. Every value must be a JSON string. A bare number is rejected because JSON numbers cannot carry large integers exactly.
-- duplicate-key: REJECT (duplicate_key) — A repeated field. A duplicate key is rejected rather than resolved last-wins, because two readers would otherwise disagree about the amount.
-- trailing-content: REJECT (trailing_content) — Trailing content after the object. Content after the closing brace makes the message ambiguous and is rejected.
-- nested-object: REJECT (not_flat_strings) — A nested object. A payload is a flat object of strings. Nesting is rejected.
-- not-json: REJECT (not_object) — Content that is not a JSON object. Inscription content must parse as a single JSON object.
+- deploy-valid: ACCEPT [DUST-5.1] Valid deploy. Every field is a strict decimal integer string and max_sats equals supply × unit_sats.
+- deploy-no-limit: ACCEPT [DUST-5.6] Valid deploy with lim_sats omitted. lim_sats is optional. Omitting it means there is no per-mint cap.
+- deploy-zero-limit: ACCEPT [DUST-3.2] lim_sats of "0" means no cap. Zero is explicitly "no limit", not a cap of zero satoshis.
+- deploy-arithmetic-mismatch: REJECT (max_sats_mismatch) [DUST-5.4] Arithmetic mismatch in max_sats. max_sats must equal supply × unit_sats exactly. Being one satoshi low usually means the builder used floating-point arithmetic.
+- deploy-missing-max-sats: REJECT (missing_field) [DUST-5.1] Deploy missing max_sats. max_sats is required. Earlier documentation reported this as an unreconciled compatibility split; the current implementation rejects the payload rather than deriving the value.
+- deploy-unknown-field: REJECT (unknown_field) [DUST-5.1] Deploy carrying an unknown field. Operations declare exact key sets. An unknown field is rejected, not ignored, so one payload cannot be read two ways.
+- deploy-leading-zero: REJECT (bad_integer) [DUST-3.1] Malformed integer with a leading zero. Integers are strict decimal strings. "0546" is not in strict form even though it parses.
+- deploy-float: REJECT (bad_integer) [DUST-3.1] Fractional unit_sats. Satoshis are indivisible. Decimal points are rejected outright.
+- deploy-zero-supply: REJECT (bad_integer) [DUST-3.1] Zero supply. supply must be a positive integer. Zero and negative values are rejected.
+- deploy-negative: REJECT (bad_integer) [DUST-3.1] Negative unit_sats. A minus sign is not part of a strict DUST-20 integer.
+- deploy-exceeds-money: REJECT (exceeds_money_supply) [DUST-5.5] Backing exceeds Bitcoin’s monetary supply. max_sats of 10,000,000,000,000,000 exceeds the 2,100,000,000,000,000 satoshis that will ever exist. The arithmetic is self-consistent but unbackable.
+- deploy-limit-above-max: REJECT (lim_sats_above_max) [DUST-5.6] lim_sats greater than max_sats. A per-mint cap larger than the entire backing is contradictory.
+- deploy-tick-whitespace: REJECT (bad_tick) [DUST-4.4] Ticker containing whitespace. Tickers exclude whitespace, control characters and the URL delimiters / ? # \ so an identity is always addressable.
+- deploy-duplicate-ticker: REJECT (duplicate_deployment) [DUST-5.7] Redeploying an existing ticker. Identity is the NFC form folded to lower case, so "DUST" is the same ticker as "dust". The first valid deployment wins.
+- mint-valid: ACCEPT [DUST-6.7] Valid mint with matching output. sats equals amt × unit_sats, and the observed output value equals sats.
+- mint-case-insensitive-tick: ACCEPT [DUST-4.5] Mint naming the ticker in a different case. The mint resolves against the folded identity, so casing does not prevent resolution.
+- mint-sats-mismatch: REJECT (mint_sats_mismatch) [DUST-6.4] Declared sats do not match the deployment ratio. 100 units at 546 satoshis is 54,600, not 54,000.
+- mint-output-mismatch: REJECT (output_value_mismatch) [DUST-6.7] Output value differs from declared sats by one satoshi. The payload is internally consistent, but the real Bitcoin output holds 54,599 satoshis. The mint is invalid and cannot be repaired after broadcast.
+- mint-limit-violation: REJECT (mint_exceeds_limit) [DUST-6.5] Mint exceeds lim_sats. 55,146 satoshis exceeds the declared per-mint cap of 54,600.
+- mint-exceeds-supply: REJECT (mint_exceeds_supply) [DUST-6.6] Mint exceeds remaining supply. 999,950 units are already minted, so only 50 remain. The mint is rejected in full rather than partially filled.
+- mint-no-deployment: REJECT (deployment_missing) [DUST-6.2] Mint for a ticker that was never deployed. A mint must resolve exactly one accepted deployment. Without it there is no unit size to check against.
+- mint-missing-field: REJECT (missing_field) [DUST-6.1] Mint missing the sats field. sats is required. It is never inferred from amt, even though the ratio is known.
+- mint-zero-amount: REJECT (bad_integer) [DUST-6.3] Mint of zero units. amt must be a positive integer.
+- unknown-operation: REJECT (bad_operation) [DUST-4.2] Unknown operation. Only deploy and mint exist. Any other op is rejected.
+- transfer-inscription: REJECT (bad_operation) [DUST-7.1] A transfer inscription. No transfer inscription is valid. Movement happens by spending the satoshis that carry the units. Earlier documentation listed an official transfer payload as an open question; the current implementation answers it by accepting none.
+- wrong-protocol: REJECT (bad_protocol) [DUST-4.1] A different protocol identifier. Content whose p is not dust-20 is not a DUST-20 message.
+- non-string-value: REJECT (not_flat_strings) [DUST-2.5] A numeric JSON value. Every value must be a JSON string. A bare number is rejected because JSON numbers cannot carry large integers exactly.
+- duplicate-key: REJECT (duplicate_key) [DUST-2.6] A repeated field. A duplicate key is rejected rather than resolved last-wins, because two readers would otherwise disagree about the amount.
+- trailing-content: REJECT (trailing_content) [DUST-2.4] Trailing content after the object. Content after the closing brace makes the message ambiguous and is rejected.
+- nested-object: REJECT (not_flat_strings) [DUST-2.5] A nested object. A payload is a flat object of strings. Nesting is rejected.
+- not-json: REJECT (not_object) [DUST-2.4] Content that is not a JSON object. Inscription content must parse as a single JSON object.
+
+## Document history
+
+### 1.1.0 (2026-09-01)
+
+Normative renumbering, Universe availability truth, and a static-first rebuild.
+
+- Added a numbered normative specification with stable rule identifiers from DUST-2.1 to DUST-9.8, and linked every conformance vector to the rule it exercises.
+- Published the recorded Bitcoin Universe capability state for DUST-20: marketplace availability read-only, with the exact mutation gate, ownership and settlement statements from the capability registry.
+- Documented that the DUST-20 read path in Universe products is first-party, and why an untyped boolean output check cannot support settlement.
+- Added transaction anatomy tables, state transitions, invalidity conditions keyed to decoder issue codes, fee and size considerations, limitations, and a five-part implementation checklist.
+- Moved every data-driven table to build-time rendering, so the whole site now reads without JavaScript. Scripts remain only for the decoder, the visualizer, search and the theme toggle.
+- Added client-side search over pages, rules, fields, terms and vectors, plus a changelog page and a Universe support page.
+- Rebuilt the presentation as a technical datasheet with a fine grid substrate, hairline rules and monospace numerics.
+
+### 1.0.0 (2026-08-18)
+
+First complete documentation set generated from a single data model.
+
+- Established assets/protocol-data.js and assets/protocol-vectors.js as the source of truth for every table, example and machine-readable artifact.
+- Published the strict reader profile, the field ledger with provenance labels, the formula set and the reconciliation section.
+- Shipped an exact-integer validator, a transaction simulator and a browser conformance laboratory backed by the same vectors the Node test suite asserts.
+- Resolved max_sats to required, resolved the transfer payload question to "none exists", and resolved ticker identity to NFC plus lower-case folding.

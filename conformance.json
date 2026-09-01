@@ -1,7 +1,10 @@
 {
   "generator": "tools/build.mjs from assets/protocol-vectors.js",
   "warning": "Generated file. Edit assets/protocol-vectors.js and run `npm run generate`; changes made here are overwritten.",
-  "updated": "2026-08-18",
+  "specVersion": "1.1.0",
+  "updated": "2026-09-01",
+  "chain": "bitcoin",
+  "network": "mainnet",
   "documentation": "https://bitcoinuniverseio.github.io/dust-20/conformance.html",
   "note": "Each case is executed live in the browser at the URL above and asserted by test/protocol.test.mjs.",
   "referenceDeployment": {
@@ -21,8 +24,9 @@
       "title": "Valid deploy",
       "expect": "accept",
       "code": null,
+      "rule": "DUST-5.1",
       "status": "verified",
-      "reason": "Every field is a canonical integer string and max_sats equals supply × unit_sats.",
+      "reason": "Every field is a strict decimal integer string and max_sats equals supply × unit_sats.",
       "context": null,
       "payload": {
         "p": "dust-20",
@@ -41,6 +45,7 @@
       "title": "Valid deploy with lim_sats omitted",
       "expect": "accept",
       "code": null,
+      "rule": "DUST-5.6",
       "status": "verified",
       "reason": "lim_sats is optional. Omitting it means there is no per-mint cap.",
       "context": null,
@@ -60,6 +65,7 @@
       "title": "lim_sats of \"0\" means no cap",
       "expect": "accept",
       "code": null,
+      "rule": "DUST-3.2",
       "status": "universe",
       "reason": "Zero is explicitly \"no limit\", not a cap of zero satoshis.",
       "context": null,
@@ -80,6 +86,7 @@
       "title": "Arithmetic mismatch in max_sats",
       "expect": "reject",
       "code": "max_sats_mismatch",
+      "rule": "DUST-5.4",
       "status": "verified",
       "reason": "max_sats must equal supply × unit_sats exactly. Being one satoshi low usually means the builder used floating-point arithmetic.",
       "context": null,
@@ -100,6 +107,7 @@
       "title": "Deploy missing max_sats",
       "expect": "reject",
       "code": "missing_field",
+      "rule": "DUST-5.1",
       "status": "universe",
       "reason": "max_sats is required. Earlier documentation reported this as an unreconciled compatibility split; the current implementation rejects the payload rather than deriving the value.",
       "context": null,
@@ -119,6 +127,7 @@
       "title": "Deploy carrying an unknown field",
       "expect": "reject",
       "code": "unknown_field",
+      "rule": "DUST-5.1",
       "status": "universe",
       "reason": "Operations declare exact key sets. An unknown field is rejected, not ignored, so one payload cannot be read two ways.",
       "context": null,
@@ -139,8 +148,9 @@
       "title": "Malformed integer with a leading zero",
       "expect": "reject",
       "code": "bad_integer",
+      "rule": "DUST-3.1",
       "status": "universe",
-      "reason": "Integers are canonical decimal strings. \"0546\" is not canonical even though it parses.",
+      "reason": "Integers are strict decimal strings. \"0546\" is not in strict form even though it parses.",
       "context": null,
       "payload": {
         "p": "dust-20",
@@ -158,6 +168,7 @@
       "title": "Fractional unit_sats",
       "expect": "reject",
       "code": "bad_integer",
+      "rule": "DUST-3.1",
       "status": "verified",
       "reason": "Satoshis are indivisible. Decimal points are rejected outright.",
       "context": null,
@@ -177,6 +188,7 @@
       "title": "Zero supply",
       "expect": "reject",
       "code": "bad_integer",
+      "rule": "DUST-3.1",
       "status": "verified",
       "reason": "supply must be a positive integer. Zero and negative values are rejected.",
       "context": null,
@@ -196,8 +208,9 @@
       "title": "Negative unit_sats",
       "expect": "reject",
       "code": "bad_integer",
+      "rule": "DUST-3.1",
       "status": "verified",
-      "reason": "A minus sign is not part of a canonical DUST-20 integer.",
+      "reason": "A minus sign is not part of a strict DUST-20 integer.",
       "context": null,
       "payload": {
         "p": "dust-20",
@@ -215,6 +228,7 @@
       "title": "Backing exceeds Bitcoin’s monetary supply",
       "expect": "reject",
       "code": "exceeds_money_supply",
+      "rule": "DUST-5.5",
       "status": "universe",
       "reason": "max_sats of 10,000,000,000,000,000 exceeds the 2,100,000,000,000,000 satoshis that will ever exist. The arithmetic is self-consistent but unbackable.",
       "context": null,
@@ -234,6 +248,7 @@
       "title": "lim_sats greater than max_sats",
       "expect": "reject",
       "code": "lim_sats_above_max",
+      "rule": "DUST-5.6",
       "status": "universe",
       "reason": "A per-mint cap larger than the entire backing is contradictory.",
       "context": null,
@@ -254,6 +269,7 @@
       "title": "Ticker containing whitespace",
       "expect": "reject",
       "code": "bad_tick",
+      "rule": "DUST-4.4",
       "status": "universe",
       "reason": "Tickers exclude whitespace, control characters and the URL delimiters / ? # \\ so an identity is always addressable.",
       "context": null,
@@ -273,6 +289,7 @@
       "title": "Redeploying an existing ticker",
       "expect": "reject",
       "code": "duplicate_deployment",
+      "rule": "DUST-5.7",
       "status": "universe",
       "reason": "Identity is the NFC form folded to lower case, so \"DUST\" is the same ticker as \"dust\". The first valid deployment wins.",
       "context": {
@@ -302,6 +319,7 @@
       "title": "Valid mint with matching output",
       "expect": "accept",
       "code": null,
+      "rule": "DUST-6.7",
       "status": "verified",
       "reason": "sats equals amt × unit_sats, and the observed output value equals sats.",
       "context": {
@@ -331,6 +349,7 @@
       "title": "Mint naming the ticker in a different case",
       "expect": "accept",
       "code": null,
+      "rule": "DUST-4.5",
       "status": "universe",
       "reason": "The mint resolves against the folded identity, so casing does not prevent resolution.",
       "context": {
@@ -360,6 +379,7 @@
       "title": "Declared sats do not match the deployment ratio",
       "expect": "reject",
       "code": "mint_sats_mismatch",
+      "rule": "DUST-6.4",
       "status": "verified",
       "reason": "100 units at 546 satoshis is 54,600, not 54,000.",
       "context": {
@@ -389,6 +409,7 @@
       "title": "Output value differs from declared sats by one satoshi",
       "expect": "reject",
       "code": "output_value_mismatch",
+      "rule": "DUST-6.7",
       "status": "verified",
       "reason": "The payload is internally consistent, but the real Bitcoin output holds 54,599 satoshis. The mint is invalid and cannot be repaired after broadcast.",
       "context": {
@@ -418,6 +439,7 @@
       "title": "Mint exceeds lim_sats",
       "expect": "reject",
       "code": "mint_exceeds_limit",
+      "rule": "DUST-6.5",
       "status": "verified",
       "reason": "55,146 satoshis exceeds the declared per-mint cap of 54,600.",
       "context": {
@@ -447,6 +469,7 @@
       "title": "Mint exceeds remaining supply",
       "expect": "reject",
       "code": "mint_exceeds_supply",
+      "rule": "DUST-6.6",
       "status": "verified",
       "reason": "999,950 units are already minted, so only 50 remain. The mint is rejected in full rather than partially filled.",
       "context": {
@@ -476,6 +499,7 @@
       "title": "Mint for a ticker that was never deployed",
       "expect": "reject",
       "code": "deployment_missing",
+      "rule": "DUST-6.2",
       "status": "verified",
       "reason": "A mint must resolve exactly one accepted deployment. Without it there is no unit size to check against.",
       "context": null,
@@ -494,6 +518,7 @@
       "title": "Mint missing the sats field",
       "expect": "reject",
       "code": "missing_field",
+      "rule": "DUST-6.1",
       "status": "verified",
       "reason": "sats is required. It is never inferred from amt, even though the ratio is known.",
       "context": {
@@ -521,6 +546,7 @@
       "title": "Mint of zero units",
       "expect": "reject",
       "code": "bad_integer",
+      "rule": "DUST-6.3",
       "status": "verified",
       "reason": "amt must be a positive integer.",
       "context": {
@@ -549,6 +575,7 @@
       "title": "Unknown operation",
       "expect": "reject",
       "code": "bad_operation",
+      "rule": "DUST-4.2",
       "status": "universe",
       "reason": "Only deploy and mint exist. Any other op is rejected.",
       "context": null,
@@ -566,8 +593,9 @@
       "title": "A transfer inscription",
       "expect": "reject",
       "code": "bad_operation",
+      "rule": "DUST-7.1",
       "status": "universe",
-      "reason": "No transfer inscription is valid. Movement happens by spending the satoshis that carry the units. Earlier documentation listed a canonical transfer payload as an open question; the current implementation answers it by accepting none.",
+      "reason": "No transfer inscription is valid. Movement happens by spending the satoshis that carry the units. Earlier documentation listed an official transfer payload as an open question; the current implementation answers it by accepting none.",
       "context": null,
       "payload": {
         "p": "dust-20",
@@ -583,6 +611,7 @@
       "title": "A different protocol identifier",
       "expect": "reject",
       "code": "bad_protocol",
+      "rule": "DUST-4.1",
       "status": "verified",
       "reason": "Content whose p is not dust-20 is not a DUST-20 message.",
       "context": null,
@@ -601,6 +630,7 @@
       "title": "A numeric JSON value",
       "expect": "reject",
       "code": "not_flat_strings",
+      "rule": "DUST-2.5",
       "status": "universe",
       "reason": "Every value must be a JSON string. A bare number is rejected because JSON numbers cannot carry large integers exactly.",
       "context": null,
@@ -613,6 +643,7 @@
       "title": "A repeated field",
       "expect": "reject",
       "code": "duplicate_key",
+      "rule": "DUST-2.6",
       "status": "universe",
       "reason": "A duplicate key is rejected rather than resolved last-wins, because two readers would otherwise disagree about the amount.",
       "context": null,
@@ -625,6 +656,7 @@
       "title": "Trailing content after the object",
       "expect": "reject",
       "code": "trailing_content",
+      "rule": "DUST-2.4",
       "status": "universe",
       "reason": "Content after the closing brace makes the message ambiguous and is rejected.",
       "context": null,
@@ -637,6 +669,7 @@
       "title": "A nested object",
       "expect": "reject",
       "code": "not_flat_strings",
+      "rule": "DUST-2.5",
       "status": "universe",
       "reason": "A payload is a flat object of strings. Nesting is rejected.",
       "context": null,
@@ -649,6 +682,7 @@
       "title": "Content that is not a JSON object",
       "expect": "reject",
       "code": "not_object",
+      "rule": "DUST-2.4",
       "status": "universe",
       "reason": "Inscription content must parse as a single JSON object.",
       "context": null,
@@ -660,7 +694,7 @@
     {
       "id": "partial-send",
       "title": "Partial send with colored change",
-      "summary": "Send 10 of 91 units and keep the rest. The canonical safe construction.",
+      "summary": "Send 10 of 91 units and keep the rest. The reference safe construction.",
       "unitSats": "546",
       "tick": "dust",
       "inputs": [
@@ -693,7 +727,8 @@
           "label": "Ordinary bitcoin change"
         }
       ],
-      "expect": "safe"
+      "expect": "safe",
+      "rule": "DUST-7.7"
     },
     {
       "id": "full-send",
@@ -726,7 +761,8 @@
           "label": "Ordinary bitcoin change"
         }
       ],
-      "expect": "safe"
+      "expect": "safe",
+      "rule": "DUST-7.4"
     },
     {
       "id": "missing-change",
@@ -759,7 +795,8 @@
           "label": "Ordinary bitcoin change"
         }
       ],
-      "expect": "burn"
+      "expect": "burn",
+      "rule": "DUST-8.3"
     },
     {
       "id": "fee-from-backing",
@@ -787,7 +824,47 @@
           "label": "Your DUST change (short)"
         }
       ],
-      "expect": "burn"
+      "expect": "burn",
+      "rule": "DUST-8.1"
+    },
+    {
+      "id": "unsupported-output",
+      "title": "An output the reader cannot attribute",
+      "summary": "Units landing in an output with no supported address are destroyed.",
+      "unitSats": "546",
+      "tick": "dust",
+      "inputs": [
+        {
+          "kind": "colored",
+          "units": "91",
+          "valueSats": "49686",
+          "label": "Your DUST allocation"
+        },
+        {
+          "kind": "cardinal",
+          "valueSats": "20000",
+          "label": "Ordinary bitcoin for the fee"
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "unsupported",
+          "valueSats": "5460",
+          "label": "Unattributable output"
+        },
+        {
+          "kind": "colored",
+          "units": "81",
+          "label": "Your DUST change"
+        },
+        {
+          "kind": "cardinal",
+          "valueSats": "18000",
+          "label": "Ordinary bitcoin change"
+        }
+      ],
+      "expect": "burn",
+      "rule": "DUST-8.2"
     },
     {
       "id": "merge",
@@ -826,7 +903,8 @@
           "label": "Ordinary bitcoin change"
         }
       ],
-      "expect": "safe"
+      "expect": "safe",
+      "rule": "DUST-7.6"
     }
   ]
 }

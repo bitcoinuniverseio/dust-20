@@ -3,243 +3,292 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>DUST-20 safety | DUST-20</title>
-  <meta name="description" content="What to check before you sign a DUST-20 transaction: keys, output roles, colored change, fee funding, stale UTXOs, indexer disagreement and retries.">
+  <title>DUST-20 security considerations | DUST-20</title>
+  <meta name="description" content="DUST-20 security considerations for holders and builders: key hygiene, output role review, colored change, fee funding, stale outpoints, reader disagreement, untyped ownership answers and reorganizations.">
   <link rel="canonical" href="https://bitcoinuniverseio.github.io/dust-20/safety.html">
-  <meta name="theme-color" content="#3b2d19">
-  <meta name="color-scheme" content="light">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f4f4f1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0c0e11" media="(prefers-color-scheme: dark)">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="DUST-20 documentation">
-  <meta property="og:title" content="DUST-20 safety | DUST-20">
-  <meta property="og:description" content="What to check before you sign a DUST-20 transaction: keys, output roles, colored change, fee funding, stale UTXOs, indexer disagreement and retries.">
+  <meta property="og:title" content="DUST-20 security considerations | DUST-20">
+  <meta property="og:description" content="DUST-20 security considerations for holders and builders: key hygiene, output role review, colored change, fee funding, stale outpoints, reader disagreement, untyped ownership answers and reorganizations.">
   <meta property="og:url" content="https://bitcoinuniverseio.github.io/dust-20/safety.html">
   <meta property="og:image" content="https://bitcoinuniverseio.github.io/dust-20/assets/og.svg">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="DUST-20 safety | DUST-20">
-  <meta name="twitter:description" content="What to check before you sign a DUST-20 transaction: keys, output roles, colored change, fee funding, stale UTXOs, indexer disagreement and retries.">
+  <meta name="twitter:title" content="DUST-20 security considerations | DUST-20">
+  <meta name="twitter:description" content="DUST-20 security considerations for holders and builders: key hygiene, output role review, colored change, fee funding, stale outpoints, reader disagreement, untyped ownership answers and reorganizations.">
   <meta name="twitter:image" content="https://bitcoinuniverseio.github.io/dust-20/assets/og.svg">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/site.css">
-  <script type="module" src="assets/site.js"></script>
-  <script type="module" src="assets/app.js"></script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","name":"DUST-20 safety | DUST-20","headline":"Staying safe with DUST-20","description":"What to check before you sign a DUST-20 transaction: keys, output roles, colored change, fee funding, stale UTXOs, indexer disagreement and retries.","url":"https://bitcoinuniverseio.github.io/dust-20/safety.html","inLanguage":"en","dateModified":"2026-08-18","isPartOf":{"@type":"WebSite","name":"DUST-20 documentation","url":"https://bitcoinuniverseio.github.io/dust-20/"},"publisher":{"@type":"Organization","name":"Bitcoin Universe","url":"https://github.com/bitcoinuniverseio"}}</script>
+  <script>try{var t=localStorage.getItem('dust20-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+  <script type="module" src="assets/site.js" defer></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","name":"DUST-20 security considerations | DUST-20","headline":"Security considerations","description":"DUST-20 security considerations for holders and builders: key hygiene, output role review, colored change, fee funding, stale outpoints, reader disagreement, untyped ownership answers and reorganizations.","url":"https://bitcoinuniverseio.github.io/dust-20/safety.html","inLanguage":"en","version":"1.1.0","dateModified":"2026-09-01","isPartOf":{"@type":"WebSite","name":"DUST-20 documentation","url":"https://bitcoinuniverseio.github.io/dust-20/"},"publisher":{"@type":"Organization","name":"Bitcoin Universe","url":"https://github.com/bitcoinuniverseio"}}</script>
 </head>
-<body data-page="safety">
+<body data-page="safety" data-base="./">
   <a class="skip-link" href="#main">Skip to content</a>
-  <header class="site-header">
-    <div class="header-inner">
-      <a class="brand" href="./"><span class="brand-mark" aria-hidden="true">DUST</span><span>DUST-20</span></a>
-      <nav class="site-nav" data-site-nav aria-label="Primary"><a href="./">Start here</a><a href="how-it-works.html">How it works</a><a href="playground.html">Playground</a><a href="transactions.html">Transactions</a><a href="reference.html">Reference</a><a href="conformance.html">Conformance</a><a href="indexer.html">For builders</a><a href="safety.html" aria-current="page">Safety</a><a href="glossary.html">Glossary</a></nav>
-      <div class="header-tools">
-        <button class="search-trigger" type="button" data-search-trigger aria-label="Search the documentation">
-          <span aria-hidden="true">Search</span><kbd>/</kbd>
+  <header class="masthead">
+    <div class="masthead-inner">
+      <a class="brand" href="./">
+        <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="1.5" y="1.5" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="6" y="6" width="5" height="5" fill="currentColor"/><rect x="13" y="13" width="5" height="5" fill="currentColor"/><path d="M11 8.5h2M8.5 11v2" stroke="currentColor" stroke-width="1.2"/></svg>
+        <span class="brand-text">DUST-20</span>
+        <span class="brand-rev">REV 1.1.0</span>
+      </a>
+      <nav class="masthead-nav" data-nav aria-label="Documentation"><a href="./">Overview</a><a href="specification.html">Specification</a><a href="reference.html">Reference</a><a href="how-it-works.html">Guide</a><a href="transactions.html">Transactions</a><a href="playground.html">Decoder</a><a href="conformance.html">Test vectors</a><a href="indexer.html">Indexing</a><a href="universe.html">Universe support</a><a href="safety.html" aria-current="page">Security</a><a href="glossary.html">Glossary</a><a href="changelog.html">Changelog</a></nav>
+      <div class="masthead-tools">
+        <button class="tool-button" type="button" data-search-open aria-label="Search the documentation">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg>
+          <span class="label">Search</span><kbd>/</kbd>
         </button>
-        <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-navigation">Menu</button>
+        <button class="tool-button" type="button" data-theme-toggle aria-pressed="false" aria-label="Switch between light and dark theme">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M19.4 4.6l-2.1 2.1M6.7 17.3l-2.1 2.1"/></svg>
+          <span class="label">Light</span>
+        </button>
+        <button class="tool-button menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-nav" aria-label="Show the documentation menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          <span class="label">Menu</span>
+        </button>
       </div>
     </div>
   </header>
-  <dialog class="search-dialog" data-search-dialog aria-label="Search the documentation">
-    <form method="dialog" role="search">
-      <input type="search" placeholder="Search pages, fields, rules, terms…" aria-label="Search query" autocomplete="off">
-      <button class="button small secondary" type="button" onclick="this.closest('dialog').close()">Close</button>
+  <dialog class="search" data-search aria-label="Search the documentation">
+    <form class="search-form" method="dialog" role="search">
+      <input type="search" placeholder="Search rules, fields, terms, vectors" aria-label="Search query" autocomplete="off" spellcheck="false">
+      <button class="btn" type="button" data-search-close>Close</button>
     </form>
-    <ul class="search-results" data-search-results></ul>
+    <ul class="search-results"></ul>
   </dialog>
-  <div class="docs-layout">
-    <aside class="docs-sidebar">
-      <nav aria-label="Documentation">
-        <h2>Documentation</h2>
-        <ul class="sidebar-list">
-        <li><a href="./">Start here</a></li>
-        <li><a href="how-it-works.html">How it works</a></li>
-        <li><a href="playground.html">Playground</a></li>
-        <li><a href="transactions.html">Transactions</a></li>
-        <li><a href="reference.html">Reference</a></li>
-        <li><a href="conformance.html">Conformance</a></li>
-        <li><a href="indexer.html">For builders</a></li>
-        <li><a href="safety.html" aria-current="page">Safety</a></li>
-        <li><a href="glossary.html">Glossary</a></li>
-        </ul>
+  <div class="layout">
+    <aside class="sidebar" id="primary-nav">
+      <nav aria-label="Documentation index">
+        <h2>Index</h2>
+<div class="sidebar-group"><span>0 Orientation</span><ul><li><a href="./">Overview</a></li></ul></div><div class="sidebar-group"><span>1 Normative</span><ul><li><a href="specification.html">Specification</a></li><li><a href="reference.html">Reference</a></li></ul></div><div class="sidebar-group"><span>2 Applied</span><ul><li><a href="how-it-works.html">Guide</a></li><li><a href="transactions.html">Transactions</a></li><li><a href="playground.html">Decoder</a></li><li><a href="conformance.html">Test vectors</a></li></ul></div><div class="sidebar-group"><span>3 Operating</span><ul><li><a href="indexer.html">Indexing</a></li><li><a href="universe.html">Universe support</a></li><li><a href="safety.html" aria-current="page">Security</a></li></ul></div><div class="sidebar-group"><span>4 Appendix</span><ul><li><a href="glossary.html">Glossary</a></li><li><a href="changelog.html">Changelog</a></li></ul></div>
       </nav>
+      <div class="sidebar-meta">
+        <div><b>Document</b><span>1.1.0</span></div>
+        <div><b>Revised</b><span>2026-09-01</span></div>
+        <div><b>Chain</b><span>Bitcoin</span></div>
+        <div><b>Network</b><span>mainnet</span></div>
+        <div><b>Lifecycle</b><span>experimental</span></div>
+      </div>
     </aside>
-    <main class="docs-main" id="main">
-      <div class="page-hero">
-        <p class="eyebrow">Safety</p>
-        <h1>Staying safe with DUST-20</h1>
-        <p class="lead">Bitcoin transactions cannot be undone, and DUST-20 adds a failure mode ordinary payments do not have: a transaction can confirm perfectly while destroying your balance. Know what you are approving.</p>
+    <main class="main" id="main">
+      <div class="pagehead">
+        <p class="eyebrow">DUST-20 documentation</p>
+        <h1>Security considerations</h1>
+        <p class="tagline">What destroys a balance, and what stops it.</p>
+        <dl class="dsheet"><div><dt>Protocol</dt><dd>DUST-20<small>Registry id dust20, alias dust-20</small></dd></div><div><dt>Chain</dt><dd>Bitcoin<small>Network: mainnet</small></dd></div><div><dt>Ownership model</dt><dd>UTXO<small>Units are carried by satoshis in unspent outputs</small></dd></div><div><dt>Carrier</dt><dd>Inscription + spend<small>Deploy and mint are inscribed; movement is a spend</small></dd></div><div><dt>Decimals</dt><dd>0<small>Balances are whole units only</small></dd></div><div><dt>Document version</dt><dd>1.1.0<small>Revised 2026-09-01</small></dd></div><div><dt>Lifecycle</dt><dd>Experimental<small>Not a ratified multi-party standard</small></dd></div><div><dt>Owning repository</dt><dd>bitcoinuniverseio/dust-20<small>Documentation source of truth</small></dd></div></dl>
       </div>
+      <section class="section" id="model">
+        <h2><span class="num">S.1</span> Threat model</h2>
+        <p class="lede">DUST-20 has one property that shapes every risk: the token amount is physically present in the transaction as bitcoin. Anything that happens to those satoshis happens to the units, and Bitcoin will confirm it without complaint.</p>
 
-      <div class="prose">
-        <section id="secrets">
-          <h2>Never share secrets</h2>
-          <div class="notice critical">
-            <span class="notice-mark" aria-hidden="true">!</span>
-            <div>
-              <p class="notice-title">No DUST-20 application needs your recovery phrase or private key</p>
-              <p>An app can prepare an unsigned transaction without them; your wallet signs it on your device. If any site asks for a seed phrase or private key, leave immediately. This documentation site never asks for either and never signs anything.</p>
-            </div>
+        <div class="cards">
+          <article class="card">
+            <span class="card-index">01 / SILENT LOSS</span>
+            <h3>Nothing warns you</h3>
+            <p>A transaction that destroys units is a perfectly valid Bitcoin transaction. No node rejects it, no explorer flags it, no fee estimator notices. Only a DUST-20 reader can tell you afterwards.</p>
+          </article>
+          <article class="card">
+            <span class="card-index">02 / NO UNDO</span>
+            <h3>Confirmation is the end of it</h3>
+            <p>There is no correction message, no burn reversal and no admin key. A mint that is one satoshi wrong is invalid forever. Units that fall into a fee belong to a miner.</p>
+          </article>
+          <article class="card">
+            <span class="card-index">03 / INTERPRETATION</span>
+            <h3>Balances are conclusions, not facts</h3>
+            <p>Bitcoin does not know DUST-20 exists. Every balance is one reader's conclusion from applying the rules to the chain, so two readers that differ on a rule will differ on your balance.</p>
+          </article>
+          <article class="card">
+            <span class="card-index">04 / UNTYPED PROOF</span>
+            <h3>Availability is not ownership</h3>
+            <p>A source that answers "still good, yes or no" proves nothing about identity, amount, owner or freshness. This is the recorded reason DUST-20 marketplace mutations are closed in Bitcoin Universe.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="controls">
+        <h2><span class="num">S.2</span> Controls</h2>
+        <p class="lede">Ordered by the cost of getting them wrong. The first three are the ones that lose balances.</p>
+        <div class="scroll"><table class="tbl"><caption>Security controls, ordered by the cost of getting them wrong</caption><thead><tr><th>Severity</th><th>Control</th><th>Detail</th></tr></thead><tbody><tr id="secrets">
+          <td class="mono">CRITICAL</td>
+          <td><b>Never share a recovery phrase or private key</b></td>
+          <td><p>No DUST-20 application needs your seed phrase or private key. An app can prepare an unsigned transaction without them. Leave immediately if a site asks for either.</p></td>
+        </tr><tr id="review">
+          <td class="mono">CRITICAL</td>
+          <td><b>Review every output role before signing</b></td>
+          <td><p>Before the wallet prompt appears you should be able to see the receiver, the units and satoshis going to them, your colored change, the ordinary bitcoin funding the fee, and the fee itself. A list of addresses is not a review.</p></td>
+        </tr><tr id="colored-change">
+          <td class="mono">CRITICAL</td>
+          <td><b>Missing colored change is a stop sign</b></td>
+          <td><p>If you are sending part of an allocation and no colored change output is present, the remainder does not stay yours in any predictable way: some whole units land in whatever supported output comes next, and the rest are burned. This is not a formatting detail. Do not approve it.</p></td>
+        </tr><tr id="fee-inputs">
+          <td class="mono">HIGH</td>
+          <td><b>Keep fee funding separate from colored inputs</b></td>
+          <td><p>Fund the miner fee from ordinary bitcoin. If the fee is taken out of colored backing, the colored range shifts and units can be destroyed even though the transaction confirms.</p></td>
+        </tr><tr id="stale-utxo">
+          <td class="mono">HIGH</td>
+          <td><b>Revalidate outputs immediately before building</b></td>
+          <td><p>A selected output may have been spent since the screen loaded. A marketplace listing is discovery data, not proof that an output is still unspent. Re-check at build time, not at page load.</p></td>
+        </tr><tr id="indexer-disagreement">
+          <td class="mono">HIGH</td>
+          <td><b>Treat source disagreement as a blocking error</b></td>
+          <td><p>If two readers describe the same output differently, do not pick the friendlier answer. Show the conflict, block the irreversible step, and keep redacted evidence for investigation.</p></td>
+        </tr><tr id="ambiguity">
+          <td class="mono">HIGH</td>
+          <td><b>Do not downgrade an ambiguous construction to a warning</b></td>
+          <td><p>Unexplained satoshi differences, mixed-ticker selections and unattributable outputs are failures. Silently filling in a field, rounding a satoshi value, or assuming an unspecified payload is valid converts a caught bug into a burned balance.</p></td>
+        </tr><tr id="untyped-proof">
+          <td class="mono">HIGH</td>
+          <td><b>Never settle value on an untyped ownership answer</b></td>
+          <td><p>A boolean &quot;still available&quot; response proves nothing about amount, owner, schema or freshness. This is the recorded reason DUST-20 marketplace mutations are unavailable in Bitcoin Universe, and the same reasoning applies to any integration you build.</p></td>
+        </tr><tr id="retry">
+          <td class="mono">MEDIUM</td>
+          <td><b>Never blindly retry an uncertain broadcast</b></td>
+          <td><p>Keep the transaction id and known status. Disable repeat submission until someone has inspected the transaction. A duplicate broadcast can spend the same colored inputs a second way.</p></td>
+        </tr><tr id="reorg-awareness">
+          <td class="mono">MEDIUM</td>
+          <td><b>Remember that confirmed is not permanent</b></td>
+          <td><p>A reorganization can remove a confirmation and change which transaction actually spent an output. Track confirmation depth and invalidate derived state when the chain moves under you.</p></td>
+        </tr></tbody></table></div>
+      </section>
+
+      <section class="section" id="before">
+        <h2><span class="num">S.3</span> Before you sign</h2>
+        <p class="lede">A wallet prompt showing a list of addresses is not a review. Before approving a DUST-20 transaction you should be able to see every one of these, and stop if you cannot.</p>
+
+        <div class="scroll">
+          <table class="tbl">
+            <caption>Pre-signature checklist</caption>
+            <thead><tr><th>Check</th><th>What good looks like</th><th>Stop if</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>Ticker and amount</td>
+                <td><p>The ticker identity and the exact whole-unit amount going to the receiver.</p></td>
+                <td><p>The amount is fractional, or the ticker is shown in a different case without being resolved to one identity.</p></td>
+              </tr>
+              <tr>
+                <td>Colored change</td>
+                <td><p>An explicit output for the units you are keeping, sized at least units x unit_sats.</p></td>
+                <td><p>You are sending part of an allocation and no colored change output exists.</p></td>
+              </tr>
+              <tr>
+                <td>Output values</td>
+                <td><p>Every colored output value is an exact multiple of unit_sats and matches the units assigned to it.</p></td>
+                <td><p>Any colored output value changed after the fee was applied.</p></td>
+              </tr>
+              <tr>
+                <td>Fee funding</td>
+                <td><p>At least one cardinal input, and a fee that comes entirely from cardinal value.</p></td>
+                <td><p>The fee is subtracted from a colored output, or there is no cardinal input at all.</p></td>
+              </tr>
+              <tr>
+                <td>Output order</td>
+                <td><p>The order shown is the order that will be broadcast.</p></td>
+                <td><p>Anything between the review and the broadcast may reorder or re-size outputs.</p></td>
+              </tr>
+              <tr>
+                <td>Outpoint freshness</td>
+                <td><p>The selected outputs were revalidated at build time, not at page load.</p></td>
+                <td><p>The screen has been open long enough that an output could have been spent elsewhere.</p></td>
+              </tr>
+              <tr>
+                <td>Source agreement</td>
+                <td><p>One reader, or several readers that agree, with a stated coverage label and observation height.</p></td>
+                <td><p>Two sources describe the same output differently. Do not pick the friendlier answer.</p></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="note note--critical">
+          <span class="note-mark" aria-hidden="true">!</span>
+          <div class="note-body">
+            <p class="note-title">No DUST-20 application needs your seed phrase</p>
+            <p>An application can prepare an unsigned transaction without any secret. If a site asks for a recovery phrase or a private key, leave. No page on this documentation site asks for a key, builds a transaction, or sends anything you type anywhere.</p>
           </div>
+        </div>
+      </section>
 
-          <div class="grid three">
-            <article class="card">
-              <h3>App to wallet</h3>
-              <p>The app should show the receiver, amounts, colored change, network and fee <em>before</em> your wallet appears. The wallet screen is a second check, not the first one.</p>
-            </article>
-            <article class="card">
-              <h3>App to you</h3>
-              <p>You should be able to explain every output before approving. If an output has no explanation, that is the problem, not your understanding.</p>
-            </article>
-            <article class="card">
-              <h3>Balance service</h3>
-              <p>An indexer gives an interpretation of Bitcoin. If it is missing, stale, or disagrees with another source, stop before a risky send.</p>
-            </article>
+      <section class="section" id="report">
+        <h2><span class="num">S.4</span> Reporting a vulnerability</h2>
+        <p class="lede">If you find a flaw in this documentation, in the decoder, or in the DUST-20 rules as published here, report it privately first.</p>
+
+        <dl class="kv">
+          <div>
+            <dt>How to report</dt>
+            <dd><p>Open a private security advisory at <a href="https://github.com/bitcoinuniverseio/dust-20/security/advisories/new">github.com/bitcoinuniverseio/dust-20/security/advisories/new</a>. Do not open a public issue and do not post details publicly before a fix is available.</p></dd>
           </div>
-        </section>
-
-        <section id="review">
-          <h2>Before you approve</h2>
-          <p>A PSBT is simply the unsigned transaction your wallet shows before approval. Compare it against what the app told you.</p>
-
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr><th>Check</th><th>Why it matters</th><th>What a safe app shows</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>Network and address</strong></td>
-                  <td>A valid-looking address can still be wrong for the network you are on.</td>
-                  <td>The network, the receiver address in full, and a hard block on any mismatch.</td>
-                </tr>
-                <tr>
-                  <td><strong>What is being spent</strong></td>
-                  <td>Colored backing and fee money must not be confused.</td>
-                  <td>Each colored input with its ticker, units and satoshis, and the cardinal inputs separately.</td>
-                </tr>
-                <tr>
-                  <td><strong>What the receiver gets</strong></td>
-                  <td>You need to see where the units are going.</td>
-                  <td>Address, satoshis and units for every colored output.</td>
-                </tr>
-                <tr>
-                  <td><strong>Your colored change</strong></td>
-                  <td>Missing change destroys the units you meant to keep.</td>
-                  <td>An explicit colored change output whenever you selected more than you are sending.</td>
-                </tr>
-                <tr>
-                  <td><strong>Fee and fee funding</strong></td>
-                  <td>The miner fee must not consume colored backing.</td>
-                  <td>The fee, which cardinal input pays it, and ordinary change — all listed separately.</td>
-                </tr>
-                <tr>
-                  <td><strong>Freshness</strong></td>
-                  <td>The selected output may have changed since the app loaded.</td>
-                  <td>The balance source and time, re-checked immediately before the unsigned transaction is built.</td>
-                </tr>
-              </tbody>
-            </table>
+          <div>
+            <dt>In scope</dt>
+            <dd><p>A published rule that contradicts the implementation it claims to describe. A decoder result that accepts an invalid payload or rejects a valid one. A test vector with the wrong expected outcome. A worked example whose arithmetic is wrong. Anything on this site that would lead a reader to build a transaction that destroys units.</p></dd>
           </div>
-        </section>
-
-        <section id="checks">
-          <h2>The full checklist</h2>
-          <p>Ordered by how much damage getting it wrong causes.</p>
-          <div data-safety></div>
-          <noscript><p class="noscript-note">The full safety list is also published in <a href="llms.txt">llms.txt</a> and <a href="docs.json">docs.json</a>.</p></noscript>
-        </section>
-
-        <section id="builders">
-          <h2>For builders</h2>
-          <p>Most readers can stop at the checklist above. These are the failure modes an application must actively defend against.</p>
-
-          <div class="grid two">
-            <article class="card">
-              <h3>PSBT substitution</h3>
-              <p>Decode and compare every output role before prompting the wallet. Reject any response that cannot be explained by the review model you showed the user.</p>
-            </article>
-            <article class="card">
-              <h3>Colored fee leak</h3>
-              <p>Assert conservation of colored backing and source fee funding from cardinal UTXOs. Treat an unexplained satoshi difference as a failure, never a rounding artifact.</p>
-            </article>
-            <article class="card">
-              <h3>Stale listing</h3>
-              <p>Revalidate outpoint and listing state immediately before construction. A local marketplace record is not chain truth.</p>
-            </article>
-            <article class="card">
-              <h3>Indexer disagreement</h3>
-              <p>Do not choose the friendlier result. Surface the conflict, block the mutation, and retain redacted evidence for investigation.</p>
-            </article>
-            <article class="card">
-              <h3>Key exposure</h3>
-              <p>Never log or request seed material. If private key material could reach a service or telemetry system, disable the affected flow.</p>
-            </article>
-            <article class="card">
-              <h3>Retry confusion</h3>
-              <p>Retain the transaction id and known status. Disable blind resubmission until a human has inspected the transaction.</p>
-            </article>
+          <div>
+            <dt>Out of scope</dt>
+            <dd><p>Findings about third-party wallets, marketplaces or indexers. Report those to their maintainers. Also out of scope: the fact that DUST-20 permits constructions that burn units, which is documented behaviour rather than a defect.</p></dd>
           </div>
-
-          <h3>If something goes wrong</h3>
-          <ul class="checklist">
-            <li>Pause the narrowest affected mutation — buy, transfer, split, merge — rather than pretending the system is healthy.</li>
-            <li>Capture redacted context: transaction ids, outpoints, route, build version, source timestamps and error classification. Never collect seeds or private keys.</li>
-            <li>Tell users what is paused and what is known, including whether a transaction may still be pending and how to inspect it.</li>
-            <li>Re-enable only with a regression test, a documented root cause and a fixture that reproduces the failure.</li>
-          </ul>
-
-          <div class="notice">
-            <span class="notice-mark" aria-hidden="true">i</span>
-            <div>
-              <p class="notice-title">Documentation does not make a flow safe</p>
-              <p>Test the constructions that destroy units, not only the ones that work. The <a href="transactions.html#cases">failure modes table</a> and <a href="conformance.json">conformance.json</a> are a good starting fixture set.</p>
-            </div>
+          <div>
+            <dt>Please include</dt>
+            <dd><p>The exact payload or transaction shape, what you expected, what happened, and which numbered rule you believe is wrong. A failing case in the format of the <a href="conformance.html">published vectors</a> is the fastest possible report.</p></dd>
           </div>
-        </section>
-      </div>
-    <nav class="page-nav" aria-label="Pagination">
-      <a href="indexer.html"><em>Previous</em><b>For builders</b></a>
+        </dl>
+      </section>
+      <nav class="pagenav" aria-label="Page">
+      <a href="universe.html"><em>Previous</em><b>Universe support</b></a>
       <a href="glossary.html"><em>Next</em><b>Glossary</b></a>
-    </nav>
+      </nav>
     </main>
-    <aside class="docs-toc">
+    <aside class="contents">
       <nav aria-label="On this page">
         <h2>On this page</h2>
-        <ul class="toc-list">
-        <li><a href="#secrets">Never share secrets</a></li>
-        <li><a href="#review">Before you approve</a></li>
-        <li><a href="#checks">The full checklist</a></li>
-        <li><a href="#builders">For builders</a></li>
+        <ul>
+          <li><a href="#model">Threat model</a></li>
+          <li><a href="#controls">Controls</a></li>
+          <li><a href="#before">Before you sign</a></li>
+          <li><a href="#report">Reporting a vulnerability</a></li>
         </ul>
       </nav>
     </aside>
   </div>
-  <footer class="footer">
-    <div class="footer-inner">
-      <div>
-        <span class="footer-brand-mark" aria-hidden="true">DUST</span>
-        <h2>DUST-20</h2>
-        <p>DUST-20 binds every token unit to an exact number of satoshis. Deploy and mint are inscriptions; every later movement is an ordinary Bitcoin spend of the satoshis that carry the units.</p>
+  <footer class="colophon">
+    <div class="colophon-inner">
+      <div class="colophon-grid">
+        <dl>
+          <dt>Owning repository</dt>
+          <dd><a href="https://github.com/bitcoinuniverseio/dust-20">bitcoinuniverseio/dust-20</a></dd>
+          <dt>Source path</dt>
+          <dd>content/safety.html</dd>
+          <dt>Last verified</dt>
+          <dd>2026-09-01</dd>
+        </dl>
+        <dl>
+          <dt>Document version</dt>
+          <dd>1.1.0</dd>
+          <dt>Lifecycle</dt>
+          <dd>experimental</dd>
+          <dt>Chain and network</dt>
+          <dd>Bitcoin mainnet</dd>
+        </dl>
+        <div>
+          <h2>Documentation</h2>
+          <ul>
+            <li><a href="https://github.com/bitcoinuniverseio/dust-20/tree/main/content/safety.html">Edit this page on GitHub</a></li>
+            <li><a href="https://docs.bitcoinuniverse.io">docs.bitcoinuniverse.io</a></li>
+            <li><a href="https://github.com/bitcoinuniverseio/dust-20/security/advisories/new">Report a vulnerability</a></li>
+            <li><a href="https://inscribe.bitcoinuniverse.io">Bitcoin Universe Inscribe</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Machine readable</h2>
+          <ul>
+            <li><a href="llms.txt">llms.txt</a></li>
+            <li><a href="docs.json">docs.json</a></li>
+            <li><a href="conformance.json">conformance.json</a></li>
+            <li><a href="search-index.json">search-index.json</a></li>
+          </ul>
+        </div>
       </div>
-      <div>
-        <h2>Documentation</h2>
-        <ul><li><a href="./">Start here</a></li><li><a href="how-it-works.html">How it works</a></li><li><a href="playground.html">Playground</a></li><li><a href="transactions.html">Transactions</a></li><li><a href="reference.html">Reference</a></li></ul>
-      </div>
-      <div>
-        <h2>More</h2>
-        <ul><li><a href="conformance.html">Conformance</a></li><li><a href="indexer.html">For builders</a></li><li><a href="safety.html">Safety</a></li><li><a href="glossary.html">Glossary</a></li></ul>
-      </div>
-      <div>
-        <h2>Machine readable</h2>
-        <ul>
-          <li><a href="llms.txt">llms.txt</a></li>
-          <li><a href="docs.json">docs.json</a></li>
-          <li><a href="conformance.json">conformance.json</a></li>
-          <li><a href="https://github.com/bitcoinuniverseio/dust-20">Source repository</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      Experimental documentation, last updated 2026-08-18. Review every Bitcoin transaction in your wallet before signing — this site never asks for a key and never signs anything.
+      <p class="colophon-note">Experimental documentation of an experimental protocol. Every statement carries a provenance label, and where the legacy specification and the current implementation disagree, both positions are published rather than silently resolved. No page on this site asks for a key, builds a transaction, or sends anything you type anywhere.</p>
     </div>
   </footer>
 </body>

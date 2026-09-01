@@ -1,133 +1,114 @@
-      <div class="page-hero">
-        <p class="eyebrow">Safety</p>
-        <h1>Staying safe with DUST-20</h1>
-        <p class="lead">Bitcoin transactions cannot be undone, and DUST-20 adds a failure mode ordinary payments do not have: a transaction can confirm perfectly while destroying your balance. Know what you are approving.</p>
-      </div>
+      <section class="section" id="model">
+        <h2><span class="num">S.1</span> Threat model</h2>
+        <p class="lede">DUST-20 has one property that shapes every risk: the token amount is physically present in the transaction as bitcoin. Anything that happens to those satoshis happens to the units, and Bitcoin will confirm it without complaint.</p>
 
-      <div class="prose">
-        <section id="secrets">
-          <h2>Never share secrets</h2>
-          <div class="notice critical">
-            <span class="notice-mark" aria-hidden="true">!</span>
-            <div>
-              <p class="notice-title">No DUST-20 application needs your recovery phrase or private key</p>
-              <p>An app can prepare an unsigned transaction without them; your wallet signs it on your device. If any site asks for a seed phrase or private key, leave immediately. This documentation site never asks for either and never signs anything.</p>
-            </div>
+        <div class="cards">
+          <article class="card">
+            <span class="card-index">01 / SILENT LOSS</span>
+            <h3>Nothing warns you</h3>
+            <p>A transaction that destroys units is a perfectly valid Bitcoin transaction. No node rejects it, no explorer flags it, no fee estimator notices. Only a DUST-20 reader can tell you afterwards.</p>
+          </article>
+          <article class="card">
+            <span class="card-index">02 / NO UNDO</span>
+            <h3>Confirmation is the end of it</h3>
+            <p>There is no correction message, no burn reversal and no admin key. A mint that is one satoshi wrong is invalid forever. Units that fall into a fee belong to a miner.</p>
+          </article>
+          <article class="card">
+            <span class="card-index">03 / INTERPRETATION</span>
+            <h3>Balances are conclusions, not facts</h3>
+            <p>Bitcoin does not know DUST-20 exists. Every balance is one reader's conclusion from applying the rules to the chain, so two readers that differ on a rule will differ on your balance.</p>
+          </article>
+          <article class="card">
+            <span class="card-index">04 / UNTYPED PROOF</span>
+            <h3>Availability is not ownership</h3>
+            <p>A source that answers "still good, yes or no" proves nothing about identity, amount, owner or freshness. This is the recorded reason DUST-20 marketplace mutations are closed in Bitcoin Universe.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="controls">
+        <h2><span class="num">S.2</span> Controls</h2>
+        <p class="lede">Ordered by the cost of getting them wrong. The first three are the ones that lose balances.</p>
+        {{safety}}
+      </section>
+
+      <section class="section" id="before">
+        <h2><span class="num">S.3</span> Before you sign</h2>
+        <p class="lede">A wallet prompt showing a list of addresses is not a review. Before approving a DUST-20 transaction you should be able to see every one of these, and stop if you cannot.</p>
+
+        <div class="scroll">
+          <table class="tbl">
+            <caption>Pre-signature checklist</caption>
+            <thead><tr><th>Check</th><th>What good looks like</th><th>Stop if</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>Ticker and amount</td>
+                <td><p>The ticker identity and the exact whole-unit amount going to the receiver.</p></td>
+                <td><p>The amount is fractional, or the ticker is shown in a different case without being resolved to one identity.</p></td>
+              </tr>
+              <tr>
+                <td>Colored change</td>
+                <td><p>An explicit output for the units you are keeping, sized at least units x unit_sats.</p></td>
+                <td><p>You are sending part of an allocation and no colored change output exists.</p></td>
+              </tr>
+              <tr>
+                <td>Output values</td>
+                <td><p>Every colored output value is an exact multiple of unit_sats and matches the units assigned to it.</p></td>
+                <td><p>Any colored output value changed after the fee was applied.</p></td>
+              </tr>
+              <tr>
+                <td>Fee funding</td>
+                <td><p>At least one cardinal input, and a fee that comes entirely from cardinal value.</p></td>
+                <td><p>The fee is subtracted from a colored output, or there is no cardinal input at all.</p></td>
+              </tr>
+              <tr>
+                <td>Output order</td>
+                <td><p>The order shown is the order that will be broadcast.</p></td>
+                <td><p>Anything between the review and the broadcast may reorder or re-size outputs.</p></td>
+              </tr>
+              <tr>
+                <td>Outpoint freshness</td>
+                <td><p>The selected outputs were revalidated at build time, not at page load.</p></td>
+                <td><p>The screen has been open long enough that an output could have been spent elsewhere.</p></td>
+              </tr>
+              <tr>
+                <td>Source agreement</td>
+                <td><p>One reader, or several readers that agree, with a stated coverage label and observation height.</p></td>
+                <td><p>Two sources describe the same output differently. Do not pick the friendlier answer.</p></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="note note--critical">
+          <span class="note-mark" aria-hidden="true">!</span>
+          <div class="note-body">
+            <p class="note-title">No DUST-20 application needs your seed phrase</p>
+            <p>An application can prepare an unsigned transaction without any secret. If a site asks for a recovery phrase or a private key, leave. No page on this documentation site asks for a key, builds a transaction, or sends anything you type anywhere.</p>
           </div>
+        </div>
+      </section>
 
-          <div class="grid three">
-            <article class="card">
-              <h3>App to wallet</h3>
-              <p>The app should show the receiver, amounts, colored change, network and fee <em>before</em> your wallet appears. The wallet screen is a second check, not the first one.</p>
-            </article>
-            <article class="card">
-              <h3>App to you</h3>
-              <p>You should be able to explain every output before approving. If an output has no explanation, that is the problem, not your understanding.</p>
-            </article>
-            <article class="card">
-              <h3>Balance service</h3>
-              <p>An indexer gives an interpretation of Bitcoin. If it is missing, stale, or disagrees with another source, stop before a risky send.</p>
-            </article>
+      <section class="section" id="report">
+        <h2><span class="num">S.4</span> Reporting a vulnerability</h2>
+        <p class="lede">If you find a flaw in this documentation, in the decoder, or in the DUST-20 rules as published here, report it privately first.</p>
+
+        <dl class="kv">
+          <div>
+            <dt>How to report</dt>
+            <dd><p>Open a private security advisory at <a href="https://github.com/bitcoinuniverseio/dust-20/security/advisories/new">github.com/bitcoinuniverseio/dust-20/security/advisories/new</a>. Do not open a public issue and do not post details publicly before a fix is available.</p></dd>
           </div>
-        </section>
-
-        <section id="review">
-          <h2>Before you approve</h2>
-          <p>A PSBT is simply the unsigned transaction your wallet shows before approval. Compare it against what the app told you.</p>
-
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr><th>Check</th><th>Why it matters</th><th>What a safe app shows</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>Network and address</strong></td>
-                  <td>A valid-looking address can still be wrong for the network you are on.</td>
-                  <td>The network, the receiver address in full, and a hard block on any mismatch.</td>
-                </tr>
-                <tr>
-                  <td><strong>What is being spent</strong></td>
-                  <td>Colored backing and fee money must not be confused.</td>
-                  <td>Each colored input with its ticker, units and satoshis, and the cardinal inputs separately.</td>
-                </tr>
-                <tr>
-                  <td><strong>What the receiver gets</strong></td>
-                  <td>You need to see where the units are going.</td>
-                  <td>Address, satoshis and units for every colored output.</td>
-                </tr>
-                <tr>
-                  <td><strong>Your colored change</strong></td>
-                  <td>Missing change destroys the units you meant to keep.</td>
-                  <td>An explicit colored change output whenever you selected more than you are sending.</td>
-                </tr>
-                <tr>
-                  <td><strong>Fee and fee funding</strong></td>
-                  <td>The miner fee must not consume colored backing.</td>
-                  <td>The fee, which cardinal input pays it, and ordinary change — all listed separately.</td>
-                </tr>
-                <tr>
-                  <td><strong>Freshness</strong></td>
-                  <td>The selected output may have changed since the app loaded.</td>
-                  <td>The balance source and time, re-checked immediately before the unsigned transaction is built.</td>
-                </tr>
-              </tbody>
-            </table>
+          <div>
+            <dt>In scope</dt>
+            <dd><p>A published rule that contradicts the implementation it claims to describe. A decoder result that accepts an invalid payload or rejects a valid one. A test vector with the wrong expected outcome. A worked example whose arithmetic is wrong. Anything on this site that would lead a reader to build a transaction that destroys units.</p></dd>
           </div>
-        </section>
-
-        <section id="checks">
-          <h2>The full checklist</h2>
-          <p>Ordered by how much damage getting it wrong causes.</p>
-          <div data-safety></div>
-          <noscript><p class="noscript-note">The full safety list is also published in <a href="llms.txt">llms.txt</a> and <a href="docs.json">docs.json</a>.</p></noscript>
-        </section>
-
-        <section id="builders">
-          <h2>For builders</h2>
-          <p>Most readers can stop at the checklist above. These are the failure modes an application must actively defend against.</p>
-
-          <div class="grid two">
-            <article class="card">
-              <h3>PSBT substitution</h3>
-              <p>Decode and compare every output role before prompting the wallet. Reject any response that cannot be explained by the review model you showed the user.</p>
-            </article>
-            <article class="card">
-              <h3>Colored fee leak</h3>
-              <p>Assert conservation of colored backing and source fee funding from cardinal UTXOs. Treat an unexplained satoshi difference as a failure, never a rounding artifact.</p>
-            </article>
-            <article class="card">
-              <h3>Stale listing</h3>
-              <p>Revalidate outpoint and listing state immediately before construction. A local marketplace record is not chain truth.</p>
-            </article>
-            <article class="card">
-              <h3>Indexer disagreement</h3>
-              <p>Do not choose the friendlier result. Surface the conflict, block the mutation, and retain redacted evidence for investigation.</p>
-            </article>
-            <article class="card">
-              <h3>Key exposure</h3>
-              <p>Never log or request seed material. If private key material could reach a service or telemetry system, disable the affected flow.</p>
-            </article>
-            <article class="card">
-              <h3>Retry confusion</h3>
-              <p>Retain the transaction id and known status. Disable blind resubmission until a human has inspected the transaction.</p>
-            </article>
+          <div>
+            <dt>Out of scope</dt>
+            <dd><p>Findings about third-party wallets, marketplaces or indexers. Report those to their maintainers. Also out of scope: the fact that DUST-20 permits constructions that burn units, which is documented behaviour rather than a defect.</p></dd>
           </div>
-
-          <h3>If something goes wrong</h3>
-          <ul class="checklist">
-            <li>Pause the narrowest affected mutation — buy, transfer, split, merge — rather than pretending the system is healthy.</li>
-            <li>Capture redacted context: transaction ids, outpoints, route, build version, source timestamps and error classification. Never collect seeds or private keys.</li>
-            <li>Tell users what is paused and what is known, including whether a transaction may still be pending and how to inspect it.</li>
-            <li>Re-enable only with a regression test, a documented root cause and a fixture that reproduces the failure.</li>
-          </ul>
-
-          <div class="notice">
-            <span class="notice-mark" aria-hidden="true">i</span>
-            <div>
-              <p class="notice-title">Documentation does not make a flow safe</p>
-              <p>Test the constructions that destroy units, not only the ones that work. The <a href="transactions.html#cases">failure modes table</a> and <a href="conformance.json">conformance.json</a> are a good starting fixture set.</p>
-            </div>
+          <div>
+            <dt>Please include</dt>
+            <dd><p>The exact payload or transaction shape, what you expected, what happened, and which numbered rule you believe is wrong. A failing case in the format of the <a href="conformance.html">published vectors</a> is the fastest possible report.</p></dd>
           </div>
-        </section>
-      </div>
+        </dl>
+      </section>

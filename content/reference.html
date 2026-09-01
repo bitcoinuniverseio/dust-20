@@ -1,72 +1,57 @@
-      <div class="page-hero">
-        <p class="eyebrow">Reference</p>
-        <h1>Protocol reference</h1>
-        <p class="lead">Every operation, field, formula and rule, each labelled with where it comes from. Where the legacy specification and the current implementation disagree, both positions are stated and the difference is explained rather than hidden.</p>
-      </div>
+      <section class="section" id="operations">
+        <h2><span class="num">R.1</span> Operations</h2>
+        <p class="lede">Four operations exist. Two are written messages carried by inscriptions. Two are outcomes of transaction shape that nobody writes down.</p>
+        {{operations}}
+        {{operation-detail}}
+      </section>
 
-      <div class="prose">
-        <div class="chip-legend" data-status-legend>
-          <div><span class="chip good">VERIFIED</span><p>Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer.</p></div>
+      <section class="section" id="fields">
+        <h2><span class="num">R.2</span> Field ledger</h2>
+        <p class="lede">Every field of every operation. Byte counts are the range of the value literal in UTF-8, excluding the quotes. Each constraint is exactly what the <a href="playground.html">decoder</a> enforces.</p>
+        {{fields}}
+        {{limits}}
+      </section>
+
+      <section class="section" id="formulas">
+        <h2><span class="num">R.3</span> Formulas</h2>
+        <p class="lede">The only arithmetic in DUST-20. All of it must be evaluated with exact integers: a 64-bit float loses precision above 2<sup>53</sup>, which is well inside the satoshi range.</p>
+        {{formulas}}
+      </section>
+
+      <section class="section" id="fees">
+        <h2><span class="num">R.4</span> Fee and size considerations</h2>
+        <p class="lede">Payload bytes are almost never the expensive part of a DUST-20 transaction. Locked backing and output count are.</p>
+        {{fees}}
+
+        <div class="note note--warn">
+          <span class="note-mark" aria-hidden="true">!</span>
+          <div class="note-body">
+            <p class="note-title">Worked cost shape for a safe partial send</p>
+            <p>Sending 10 of 91 units of a ticker deployed at 546 satoshis per unit needs: one colored input (49,686 sats), one cardinal input to fund the fee, a receiver output of 5,460 sats, a colored change output of 44,226 sats, and a cardinal change output. Five entries, not two. Budget for that shape rather than for the smallest transaction that would confirm.</p>
+          </div>
         </div>
+      </section>
 
-        <section id="operations">
-          <h2>Operations</h2>
-          <p>DUST-20 uses inscriptions for exactly two operations. Movement and destruction are consequences of ordinary Bitcoin spends, not messages anyone writes.</p>
-          <div class="grid two" data-operations></div>
-        </section>
+      <section class="section" id="limitations">
+        <h2><span class="num">R.5</span> Limitations</h2>
+        <p class="lede">What DUST-20 cannot do, and what it costs to use. None of these are bugs; they follow from binding units to satoshis.</p>
+        {{limitations}}
+      </section>
 
-        <section id="fields">
-          <h2>Field ledger</h2>
-          <p>Each operation declares an exact key set. A payload carrying an unknown field, or missing a required one, is rejected outright — it does not degrade to a warning.</p>
+      <section class="section" id="checklist">
+        <h2><span class="num">R.6</span> Implementation checklist</h2>
+        <p class="lede">Everything a conforming implementation has to do, grouped by the part of the system that does it. Each line names the rule it satisfies.</p>
+        {{checklist}}
+      </section>
 
-          <div class="filter-bar">
-            <div>
-              <label class="visually-hidden" for="field-search">Search fields</label>
-              <input id="field-search" type="search" data-field-search placeholder="Search fields, constraints and rules…" autocomplete="off">
-            </div>
-            <div class="filter-chips" data-field-status role="group" aria-label="Filter by provenance">
-              <button type="button" data-status-filter="all" aria-pressed="true">All</button>
-              <button type="button" data-status-filter="verified" aria-pressed="false">Verified</button>
-              <button type="button" data-status-filter="universe" aria-pressed="false">Universe</button>
-              <button type="button" data-status-filter="legacy" aria-pressed="false">Legacy</button>
-              <button type="button" data-status-filter="unresolved" aria-pressed="false">Unresolved</button>
-            </div>
-          </div>
-          <p class="filter-status" data-field-count role="status"></p>
-          <noscript><p class="noscript-note">Search and filtering need JavaScript, but the complete field ledger is rendered below. The same data is published in <a href="docs.json">docs.json</a> and <a href="llms.txt">llms.txt</a>.</p></noscript>
+      <section class="section" id="reconciliation">
+        <h2><span class="num">R.7</span> Where sources disagree</h2>
+        <p class="lede">The legacy specification and the current implementation do not agree about everything, and earlier versions of this document left several questions open. Both positions are published here rather than silently resolved.</p>
+        {{reconciliations}}
+      </section>
 
-          <div data-fields></div>
-        </section>
-
-        <section id="formulas">
-          <h2>Formulas</h2>
-          <p>All arithmetic uses exact integers. Satoshi values routinely exceed what a 64-bit float can hold without loss, so an implementation using doubles will silently produce wrong results at scale.</p>
-          <div data-formulas></div>
-        </section>
-
-        <section id="rules">
-          <h2>Rules</h2>
-          <p>Constraints that span more than one field, covering the reader profile, deployment resolution, mint placement, transfer semantics and indexer behaviour.</p>
-          <div data-rules></div>
-        </section>
-
-        <section id="reconciliation">
-          <h2>Where sources disagree</h2>
-          <p>This is the part of the documentation that matters most for anyone implementing DUST-20. Earlier versions of these docs listed several of these as unreconciled compatibility splits. The current production implementation answers most of them — but it answers them as one implementation, not as a ratified standard.</p>
-          <div data-reconciliations></div>
-        </section>
-
-        <section id="open">
-          <h2>Open questions</h2>
-          <p>These have no authoritative answer. They are documented as open rather than filled in with a plausible-sounding rule, because a wrong guess here destroys balances.</p>
-          <div data-open-questions></div>
-
-          <div class="notice">
-            <span class="notice-mark" aria-hidden="true">i</span>
-            <div>
-              <p class="notice-title">Machine-readable versions</p>
-              <p>Everything on this page is generated from one data model and published as <a href="docs.json">docs.json</a>, <a href="llms.txt">llms.txt</a> and <a href="conformance.json">conformance.json</a>. There is no second, contradictory protocol definition anywhere in this repository.</p>
-            </div>
-          </div>
-        </section>
-      </div>
+      <section class="section" id="open">
+        <h2><span class="num">R.8</span> Open questions</h2>
+        <p class="lede">Questions with no authoritative answer. They are listed rather than invented, with the posture that keeps you safe while they stay open.</p>
+        {{open-questions}}
+      </section>
