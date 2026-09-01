@@ -1,161 +1,159 @@
-      <div class="page-hero">
-        <p class="eyebrow">For builders</p>
-        <h1>Indexer and builder guide</h1>
-        <p class="lead">What it takes to reconstruct DUST-20 state correctly: strict parsing, deployment resolution, positional allocation records, and honest handling of the moments when the chain moves under you.</p>
-      </div>
+      <section class="section" id="pipeline">
+        <h2><span class="num">I.1</span> The pipeline</h2>
+        <p class="lede">A DUST-20 reader needs two authoritative inputs and six stages. The inputs are an inscription index, for inscription identity, content and location, and a Bitcoin node, for complete blocks with input values, output values and output addresses. Neither is sufficient alone.</p>
 
-      <div class="prose">
-        <div class="notice info">
-          <span class="notice-mark" aria-hidden="true">i</span>
-          <div>
-            <p class="notice-title">A balance is a service's view, not consensus</p>
-            <p>Bitcoin does not know what DUST-20 is. Every balance is one implementation's interpretation of the chain. That makes provenance — source, coverage, observation height — part of the answer, not metadata to be stripped.</p>
+        <figure class="figure">
+          <div class="figure-body">
+            <svg viewBox="0 0 900 210" role="img" aria-labelledby="pipe-title pipe-desc">
+              <title id="pipe-title">DUST-20 reader pipeline</title>
+              <desc id="pipe-desc">Two authoritative sources, an inscription index and a Bitcoin node, feed six sequential stages: observe, normalize, resolve, materialize, propagate and reconcile. Reconcile feeds back into observe when a reorganization occurs.</desc>
+              <g stroke="var(--dg-line)" stroke-width="1" fill="var(--dg-fill)">
+                <rect x="8" y="16" width="180" height="34"/>
+                <rect x="8" y="58" width="180" height="34"/>
+              </g>
+              <g font-family="ui-monospace,monospace" font-size="11" fill="var(--dg-ink)">
+                <text x="20" y="38">Inscription index</text>
+                <text x="20" y="80">Bitcoin node</text>
+              </g>
+              <g font-family="ui-monospace,monospace" font-size="9" fill="var(--dg-ink-3)">
+                <text x="20" y="108">identity, content,</text>
+                <text x="20" y="120">location, tip</text>
+                <text x="20" y="140">values, addresses,</text>
+                <text x="20" y="152">block continuity</text>
+              </g>
+              <g stroke="var(--dg-accent)" stroke-width="1.2" fill="none">
+                <path d="M188 33h30v42h14M188 75h44"/>
+              </g>
+              <g stroke="var(--dg-line)" stroke-width="1" fill="var(--dg-fill)">
+                <rect x="236" y="56" width="102" height="38"/>
+                <rect x="346" y="56" width="102" height="38"/>
+                <rect x="456" y="56" width="102" height="38"/>
+                <rect x="566" y="56" width="102" height="38"/>
+                <rect x="676" y="56" width="102" height="38"/>
+                <rect x="786" y="56" width="106" height="38"/>
+              </g>
+              <g font-family="ui-monospace,monospace" font-size="10" fill="var(--dg-ink)" text-anchor="middle">
+                <text x="287" y="80">OBSERVE</text>
+                <text x="397" y="80">NORMALIZE</text>
+                <text x="507" y="80">RESOLVE</text>
+                <text x="617" y="80">MATERIALIZE</text>
+                <text x="727" y="80">PROPAGATE</text>
+                <text x="839" y="80">RECONCILE</text>
+              </g>
+              <g stroke="var(--dg-accent)" stroke-width="1.2" fill="none">
+                <path d="M338 75h8M448 75h8M558 75h8M668 75h8M778 75h8"/>
+              </g>
+              <g stroke="var(--dg-fail)" stroke-width="1.2" fill="none" stroke-dasharray="4 3">
+                <path d="M839 94v34H287V94"/>
+                <path d="M282 100l5-6 5 6"/>
+              </g>
+              <text x="470" y="146" font-family="ui-monospace,monospace" font-size="10" fill="var(--dg-fail)" text-anchor="middle">REORGANIZATION: INVALIDATE NEWEST FIRST, REVERSE, RESTORE, REPLAY</text>
+              <g font-family="system-ui,sans-serif" font-size="11" fill="var(--dg-ink-3)">
+                <text x="236" y="180">A reader fails closed on a source gap, a mismatch between the two sources, a malformed response, an unsupported address,</text>
+                <text x="236" y="196">a finalized reorganization, or an unavailable upstream. It does not guess and it does not degrade to a partial answer.</text>
+              </g>
+            </svg>
+          </div>
+          <figcaption><b>Fig I.1</b> The reader pipeline. Reconcile is not a cleanup step; it is the stage that makes every earlier stage reversible.</figcaption>
+        </figure>
+
+        {{indexer-stages}}
+      </section>
+
+      <section class="section" id="allocation">
+        <h2><span class="num">I.2</span> The allocation record</h2>
+        <p class="lede">The single most common implementation mistake is storing an amount per outpoint and nothing else. Without the satoshi offset, the next spend cannot be computed, and the reader silently diverges from every reader that stored it.</p>
+        {{allocation-record}}
+      </section>
+
+      <section class="section" id="confirmation">
+        <h2><span class="num">I.3</span> Confirmation and pending</h2>
+        <p class="lede">DUST-20 defines no finality threshold. What it does define is that confirmed and pending are distinct states which must never be blurred together.</p>
+
+        <dl class="kv">
+          <div><dt>Confirmed</dt><dd><p>Carries block height, block hash, transaction index and event index. All four, or the event is not confirmed. Partial placement is rejected rather than filled in.</p></dd></div>
+          <div><dt>Pending</dt><dd><p>Carries none of those, and a confirmation count of zero. An event that has a height and calls itself pending is a bug in the reader, not an edge case.</p></dd></div>
+          <div><dt>Depth</dt><dd><p>The protocol sets no threshold. Publish your own finality depth, show confirmation counts to users, and never present unconfirmed state as settled.</p></dd></div>
+          <div><dt>Coverage</dt><dd><p>Every answer carries a coverage label of complete, partial or unavailable, plus a checkpoint of network, height, hash, finalized height and observation time. A consumer that ignores coverage cannot tell a quiet ticker from a stalled reader.</p></dd></div>
+        </dl>
+
+        <div class="note note--warn">
+          <span class="note-mark" aria-hidden="true">!</span>
+          <div class="note-body">
+            <p class="note-title">Mempool coverage is partial</p>
+            <p>The Bitcoin Universe production reader declares coverage <code>partial</code> precisely because it has no exhaustive mempool feed with a stable pending lifecycle and disappearance handling. Confirmed history and complete holder snapshots are indexed; unconfirmed movement is not a reliable input to an irreversible decision. This is a published limitation, not a temporary gap.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="reorg">
+        <h2><span class="num">I.4</span> Reorganizations</h2>
+        <p class="lede">A DUST-20 balance is only as final as the depth it was confirmed at. When the chain moves, a reader does not patch its state; it unwinds and replays.</p>
+
+        <ol>
+          <li>Emit invalidations newest first, so a consumer applying them in order never sees an inconsistent intermediate state.</li>
+          <li>Reverse every ledger mutation the orphaned branch made, in the reverse of the order it made them.</li>
+          <li>Restore allocations the orphaned branch had marked spent, at their original outpoint, amount and offset.</li>
+          <li>Remove allocations the orphaned branch created. They never existed on the chain that survived.</li>
+          <li>Replay the replacement branch from the fork point, as if it had always been the chain.</li>
+        </ol>
+
+        <p>Replace-by-fee deserves separate attention. A replacement transaction can have a different output layout, which moves the boundaries in the output range, which changes which whole units survive. A replacement can burn units the original would have preserved. Derive state from the transaction that actually confirmed, never from the one you broadcast, and never rebroadcast blindly.</p>
+
+        {{transitions}}
+      </section>
+
+      <section class="section" id="contract">
+        <h2><span class="num">I.5</span> Event contract</h2>
+        <p class="lede">What a reader publishes, so that a downstream consumer can check the arithmetic instead of trusting it. These constraints are enforced on every accepted batch by the Bitcoin Universe production reader.</p>
+
+        <div class="scroll">
+          <table class="tbl">
+            <caption>Per-operation accounting constraints</caption>
+            <thead><tr><th>Operation</th><th>Wallet deltas</th><th>Supply deltas</th><th>Addresses</th><th>Rule</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="mono">deploy</td>
+                <td><p>None. A deploy has no economic effect.</p></td>
+                <td><p>All zero.</p></td>
+                <td><p>Deployer only. No sender, no receiver.</p></td>
+                <td><a class="tag tag--ref" href="specification.html#DUST-9.5">DUST-9.5</a></td>
+              </tr>
+              <tr>
+                <td class="mono">mint</td>
+                <td><p>Sum to <code>+amt</code>.</p></td>
+                <td><p>total, circulating and minted all <code>+amt</code>. burned zero.</p></td>
+                <td><p>Receiver only. A mint has no sender.</p></td>
+                <td><a class="tag tag--ref" href="specification.html#DUST-9.4">DUST-9.4</a></td>
+              </tr>
+              <tr>
+                <td class="mono">transfer</td>
+                <td><p>Sum to zero.</p></td>
+                <td><p>All zero. Movement creates and destroys nothing.</p></td>
+                <td><p>Sender and receiver both present.</p></td>
+                <td><a class="tag tag--ref" href="specification.html#DUST-9.4">DUST-9.4</a></td>
+              </tr>
+              <tr>
+                <td class="mono">burn</td>
+                <td><p>Sum to <code>-amt</code>.</p></td>
+                <td><p>total and circulating <code>-amt</code>, burned <code>+amt</code>, minted zero.</p></td>
+                <td><p>Sender only. A burn has no receiver.</p></td>
+                <td><a class="tag tag--ref" href="specification.html#DUST-8.4">DUST-8.4</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>Two further constraints apply to every event. Each wallet delta must equal its own received minus sent, so a consumer can verify the arithmetic per address rather than only in aggregate. And an address may appear at most once per event: repeating it would let two rows disagree about the same balance change.</p>
+
+        <div class="note note--info">
+          <span class="note-mark" aria-hidden="true">i</span>
+          <div class="note-body">
+            <p class="note-title">There is no agreed DUST-20 API</p>
+            <p>The production reader exposes its own routes with authentication, stable cursors and explicit coverage labels, but that is one service's contract, not a standard. Validate remote responses against a schema you control, and treat coverage, source identity and observation height as part of every answer rather than as metadata you can drop.</p>
           </div>
         </div>
 
-        <section id="pipeline">
-          <h2>The pipeline</h2>
-          <p>Indexing DUST-20 means indexing state transitions, not page loads. Each stage below has a job it must finish before the next one can be correct.</p>
-          <div class="timeline" data-indexer-stages></div>
-
-          <h3>What you need to read from</h3>
-          <p>Two sources are required, and they must be cross-checked against each other:</p>
-          <ul>
-            <li><strong>Complete blocks</strong> with input values, output values and output addresses. Without input values you cannot build the satoshi range, and without it you cannot compute a single transfer.</li>
-            <li><strong>Authoritative inscription data</strong> for inscription identity, content, genesis output and genesis offset. A mint is only valid if its inscription sits at offset zero of an output holding exactly the declared satoshis.</li>
-          </ul>
-          <p>Verify the network, the genesis hash, block continuity and agreement between the two sources on every poll. Fail closed on a gap, a mismatch, a malformed response or an unavailable upstream. An empty result after a timeout is <em>unavailable</em>, never a verified zero balance.</p>
-        </section>
-
-        <section id="allocation">
-          <h2>The allocation record</h2>
-          <p>A balance is the sum of allocation records. Each record must answer which output, which rule, which source, and what chain state produced its interpretation.</p>
-          <div class="table-wrap" data-allocation-record></div>
-
-          <div class="packet">
-            <div class="packet-header">
-              <span>Illustrative allocation record</span>
-              <button class="copy-button" type="button" data-copy-target="[data-allocation-json]">Copy JSON</button>
-            </div>
-            <pre><code data-allocation-json>{
-  "outpoint": "&lt;txid&gt;:0",
-  "tick": "dust",
-  "amount": "91",
-  "unit_sats": "546",
-  "offset_sats": "0",
-  "output_value_sats": "49686",
-  "origin_inscription_id": "&lt;inscription id&gt;",
-  "owner_address": "&lt;address&gt;",
-  "status": "confirmed",
-  "observed_height": 0,
-  "source": "your-indexer-id"
-}</code></pre>
-            <p>An implementation-facing shape, not a standardized public API. The requirement is traceability: a client must be able to recheck how the amount was derived.</p>
-          </div>
-        </section>
-
-        <section id="propagation">
-          <h2>Propagation algorithm</h2>
-          <p>This is the core of a DUST-20 indexer. Everything else is bookkeeping around it.</p>
-
-          <ol>
-            <li>Skip coinbase transactions.</li>
-            <li>Walk the inputs in order, accumulating a running satoshi total. For each input, look up any allocations on that outpoint. An allocation's span in the combined input range is <code>[running_total + offset, running_total + offset + amount × unit_sats)</code>.</li>
-            <li>If no input carries an allocation, there is nothing to do.</li>
-            <li>Mark every contributing outpoint spent.</li>
-            <li>Walk the outputs in order, accumulating a second running total, to give each output a span <code>[start, start + value)</code>. Resolve each output to an address; an output you cannot attribute is unsupported.</li>
-            <li>For each allocation, intersect its span with each output span. Skip unsupported outputs. Within the intersection, compute the first whole unit boundary at or after the intersection start and the last whole boundary at or before its end. The units between them survive, at a new offset inside that output.</li>
-            <li>Anything not accounted for is burned: <code>burned = amount − surviving</code>.</li>
-            <li>Emit a transfer effect only where the owning address actually changed. Same-owner movement is a split or merge, not a transfer.</li>
-          </ol>
-
-          <div class="formula">
-            <code>first = ⌈(∩start − span_start) / unit_sats⌉   last = ⌊(∩end − span_start) / unit_sats⌋</code>
-            <small>Units surviving in an output = last − first, when positive. Use exact integer division; a float here loses satoshi precision and produces wrong balances.</small>
-          </div>
-
-          <div class="notice critical">
-            <span class="notice-mark" aria-hidden="true">!</span>
-            <div>
-              <p class="notice-title">Conserve, then verify</p>
-              <p>Assert <code>surviving + burned = input_units</code> for every allocation, every time. An unexplained satoshi difference is a defect in your implementation, not a rounding artifact to be tolerated. Treat it as a failure and stop.</p>
-            </div>
-          </div>
-
-          <p>The <a href="transactions.html#visualizer">transaction visualizer</a> runs exactly this algorithm in the browser, and <a href="conformance.json">conformance.json</a> publishes the scenarios you can test against.</p>
-        </section>
-
-        <section id="chain-state">
-          <h2>Chain instability</h2>
-          <p>Reorgs and replacements are product states, not rare edge cases. They must be designed for, because they directly affect what a wallet may safely spend or list.</p>
-
-          <div class="grid two">
-            <article class="card">
-              <h3>Reorganizations</h3>
-              <p>Emit invalidations newest first. Reverse ledger mutations, restore allocations that had been marked spent, remove allocations the orphaned branch created, then replay the replacement branch. Track block association so this is possible at all.</p>
-            </article>
-            <article class="card">
-              <h3>Replacement and double-spend</h3>
-              <p>A replaced transaction can have a different output layout, so it can burn units the original preserved. Mark affected pending allocations invalid or uncertain — never retain the old interpretation as spendable.</p>
-            </article>
-            <article class="card">
-              <h3>Mempool</h3>
-              <p>Coverage of unconfirmed state is partial: there is no exhaustive feed with a stable pending lifecycle and disappearance handling. Label pending state as such and never let it back an irreversible decision.</p>
-            </article>
-            <article class="card">
-              <h3>Finality</h3>
-              <p>The protocol defines no confirmation threshold. Publish your own finality depth, expose confirmation counts, and recompute derived state when the chain moves.</p>
-            </article>
-          </div>
-        </section>
-
-        <section id="api">
-          <h2>API expectations</h2>
-          <p>No canonical DUST-20 indexer API exists. Consumers should treat any remote response as a contract that needs schema validation and an explicit source policy.</p>
-
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr><th>Area</th><th>Expectation</th><th>Failure mode it prevents</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>Reads</strong></td>
-                  <td>Return source identity, coverage level, observation height or time, pagination and a state label alongside the data.</td>
-                  <td>A bare array that cannot say whether it is complete, fresh, or from the source you think.</td>
-                </tr>
-                <tr>
-                  <td><strong>Errors</strong></td>
-                  <td>Differentiate unavailable, malformed, stale, invalid-request, not-found and contradictory-state.</td>
-                  <td>A client interpreting every failure as an empty balance, then letting a user spend against it.</td>
-                </tr>
-                <tr>
-                  <td><strong>Near signing</strong></td>
-                  <td>Revalidate selected outpoints at build time and return the height or timestamp the decision was made at.</td>
-                  <td>Building against an output that was spent while the page was open.</td>
-                </tr>
-                <tr>
-                  <td><strong>Coverage</strong></td>
-                  <td>State plainly whether coverage is complete, partial or unavailable, and for which asset classes.</td>
-                  <td>Silently presenting partial mempool coverage as a full picture.</td>
-                </tr>
-                <tr>
-                  <td><strong>Versioning</strong></td>
-                  <td>Version the response shape, or expose the uncertainty explicitly.</td>
-                  <td>A schema change breaking consumers with no signal that anything changed.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <h3>Before you ship a flow to users</h3>
-          <ul class="checklist">
-            <li>Deploy and mint conformance fixtures cover valid and invalid field combinations, exact arithmetic and real output values.</li>
-            <li>Transaction fixtures assert selected inputs, recipient outputs, colored change, cardinal fee funding and ordinary change — including the constructions that burn units.</li>
-            <li>Conservation is asserted on every allocation transition, and a mismatch fails the build.</li>
-            <li>Reorg, replacement, stale-listing and indexer-outage behaviour is tested, not assumed.</li>
-            <li>Any workflow that could expose private key material is removed or independently security-reviewed.</li>
-            <li>Operators have rehearsed the stop, diagnose, communicate and re-enable sequence with redacted evidence.</li>
-          </ul>
-        </section>
-      </div>
+        <h3>Checklist</h3>
+        <p>The complete implementation checklist, including the reader, identity, allocation, publication and application requirements, is on the <a href="reference.html#checklist">reference page</a>.</p>
+      </section>

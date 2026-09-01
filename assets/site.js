@@ -1,371 +1,215 @@
 /**
- * DUST-20 documentation — site chrome.
+ * DUST-20 documentation shell.
  *
- * Progressive enhancement only: every page is fully readable and navigable
- * with this script disabled. Nothing here fetches anything over the network.
+ * Progressive enhancement only. Every page reads and navigates without this
+ * file; it adds the theme toggle, the mobile navigation and local search.
+ * Nothing here contacts the network except to fetch search-index.json from
+ * this same origin, and nothing is ever sent anywhere.
  */
 
-import { PAGES } from './site-map.js'
-import { FIELDS, RULES, RECONCILIATIONS, OPEN_QUESTIONS, STATUS } from './protocol-data.js'
-import { GLOSSARY, FAQ, VECTORS } from './protocol-vectors.js'
+const $ = (selector, root = document) => root.querySelector(selector)
+const $$ = (selector, root = document) => [...root.querySelectorAll(selector)]
 
-/* ------------------------------------------------------------ Mobile menu */
+/* ---------------------------------------------------------------- theme -- */
 
-function initMenu() {
-  const toggle = document.querySelector('[data-menu-toggle]')
-  const nav = document.querySelector('[data-site-nav]')
+const THEME_KEY = 'dust20-theme'
+
+function readStoredTheme() {
+  try {
+    const value = localStorage.getItem(THEME_KEY)
+    return value === 'light' || value === 'dark' ? value : null
+  } catch {
+    return null
+  }
+}
+
+function applyTheme(theme) {
+  const root = document.documentElement
+  if (theme) root.setAttribute('data-theme', theme)
+  else root.removeAttribute('data-theme')
+
+  const systemDark = matchMedia('(prefers-color-scheme: dark)').matches
+  const effective = theme ?? (systemDark ? 'dark' : 'light')
+  const button = $('[data-theme-toggle]')
+  if (button) {
+    button.setAttribute('aria-pressed', String(effective === 'dark'))
+    const label = $('.label', button)
+    if (label) label.textContent = effective === 'dark' ? 'Dark' : 'Light'
+  }
+}
+
+function initTheme() {
+  applyTheme(readStoredTheme())
+  const button = $('[data-theme-toggle]')
+  if (!button) return
+  button.addEventListener('click', () => {
+    const systemDark = matchMedia('(prefers-color-scheme: dark)').matches
+    const current = readStoredTheme() ?? (systemDark ? 'dark' : 'light')
+    const next = current === 'dark' ? 'light' : 'dark'
+    try {
+      localStorage.setItem(THEME_KEY, next)
+    } catch {
+      /* storage unavailable, the toggle still applies for this page */
+    }
+    applyTheme(next)
+  })
+}
+
+/* ------------------------------------------------------------------ nav -- */
+
+function initNav() {
+  const toggle = $('[data-menu-toggle]')
+  const nav = $('[data-nav]')
   if (!toggle || !nav) return
-
-  const setOpen = (open) => {
-    nav.setAttribute('data-open', String(open))
-    toggle.setAttribute('aria-expanded', String(open))
-    toggle.textContent = open ? 'Close' : 'Menu'
-  }
-
   toggle.addEventListener('click', () => {
-    setOpen(nav.getAttribute('data-open') !== 'true')
-  })
-
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && nav.getAttribute('data-open') === 'true') {
-      setOpen(false)
-      toggle.focus()
-    }
-  })
-
-  // Collapse the drawer when the viewport grows past the mobile breakpoint.
-  const wide = window.matchMedia('(min-width: 1025px)')
-  wide.addEventListener('change', (event) => {
-    if (event.matches) setOpen(false)
+    const open = nav.classList.toggle('is-open')
+    toggle.setAttribute('aria-expanded', String(open))
   })
 }
 
-/* ------------------------------------------------------- Heading anchors */
+/* --------------------------------------------------------------- search -- */
 
-function initAnchors() {
-  const main = document.querySelector('.docs-main, main')
-  if (!main) return
-  for (const heading of main.querySelectorAll('h2[id], h3[id]')) {
-    if (heading.querySelector('.anchor')) continue
-    const link = document.createElement('a')
-    link.className = 'anchor'
-    link.href = `#${heading.id}`
-    link.textContent = '#'
-    link.setAttribute('aria-label', `Link to “${heading.textContent.trim()}”`)
-    heading.append(link)
+let index = null
+let indexState = 'idle'
+
+async function loadIndex(base) {
+  if (index || indexState === 'loading') return index
+  indexState = 'loading'
+  try {
+    const response = await fetch(`${base}search-index.json`, { cache: 'force-cache' })
+    if (!response.ok) throw new Error(String(response.status))
+    const payload = await response.json()
+    index = payload.entries ?? []
+    indexState = 'ready'
+  } catch {
+    indexState = 'error'
   }
+  return index
 }
 
-/* -------------------------------------------------- Copy-to-clipboard */
-
-function initCopy() {
-  for (const button of document.querySelectorAll('[data-copy-target], [data-copy]')) {
-    button.addEventListener('click', async () => {
-      const explicit = button.getAttribute('data-copy')
-      const selector = button.getAttribute('data-copy-target')
-      const source = selector ? document.querySelector(selector) : null
-      const text = explicit ?? (source ? (source.value ?? source.textContent) : '')
-      const original = button.dataset.originalLabel ?? button.textContent
-      button.dataset.originalLabel = original
-      try {
-        await navigator.clipboard.writeText(text)
-        button.textContent = 'Copied'
-        button.dataset.state = 'done'
-      } catch {
-        // Clipboard access can be denied; select the text so the user can copy it.
-        button.textContent = 'Select and copy'
-        if (source && typeof source.select === 'function') source.select()
-        else if (source) selectElement(source)
-      }
-      window.setTimeout(() => {
-        button.textContent = original
-        delete button.dataset.state
-      }, 1800)
-    })
-  }
-}
-
-function selectElement(element) {
-  const range = document.createRange()
-  range.selectNodeContents(element)
-  const selection = window.getSelection()
-  selection.removeAllRanges()
-  selection.addRange(range)
-}
-
-/* --------------------------------------------- Table of contents spy */
-
-function initToc() {
-  const links = [...document.querySelectorAll('.toc-list a[href^="#"]')]
-  if (links.length === 0) return
-
-  const targets = links
-    .map((link) => document.getElementById(decodeURIComponent(link.hash.slice(1))))
-    .filter(Boolean)
-  if (targets.length === 0) return
-
-  const setActive = (id) => {
-    for (const link of links) {
-      const active = decodeURIComponent(link.hash.slice(1)) === id
-      if (active) link.setAttribute('aria-current', 'true')
-      else link.removeAttribute('aria-current')
-    }
-  }
-
-  const visible = new Set()
-  const observer = new IntersectionObserver(
-    (entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) visible.add(entry.target.id)
-        else visible.delete(entry.target.id)
-      }
-      const first = targets.find((target) => visible.has(target.id))
-      if (first) setActive(first.id)
-    },
-    { rootMargin: '-20% 0px -70% 0px', threshold: 0 },
-  )
-  for (const target of targets) observer.observe(target)
-  setActive(targets[0].id)
-}
-
-/* ------------------------------------------------------ Full-site search */
-
-/** Build the search index from the same data the pages are generated from. */
-function buildIndex() {
-  const entries = []
-
-  for (const page of PAGES) {
-    entries.push({
-      title: page.nav,
-      detail: page.description,
-      href: page.path,
-      kind: 'Page',
-      haystack: `${page.nav} ${page.title} ${page.description}`,
-    })
-    for (const section of page.sections) {
-      entries.push({
-        title: section.label,
-        detail: page.nav,
-        href: `${page.path}#${section.id}`,
-        kind: 'Section',
-        haystack: `${section.label} ${page.nav}`,
-      })
-    }
-  }
-
-  for (const field of FIELDS) {
-    entries.push({
-      title: field.name,
-      detail: `${field.ops.join(', ')} — ${field.constraint}`,
-      href: `reference.html#field-${field.name}`,
-      kind: 'Field',
-      haystack: `${field.name} ${field.ops.join(' ')} ${field.constraint} ${field.rule} ${field.notes}`,
-    })
-  }
-
-  for (const rule of RULES) {
-    entries.push({
-      title: rule.title,
-      detail: rule.body,
-      href: `reference.html#rule-${rule.id}`,
-      kind: 'Rule',
-      haystack: `${rule.title} ${rule.body} ${rule.scope}`,
-    })
-  }
-
-  for (const item of RECONCILIATIONS) {
-    entries.push({
-      title: item.title,
-      detail: item.resolution,
-      href: `reference.html#reconcile-${item.id}`,
-      kind: 'Reconciliation',
-      haystack: `${item.title} ${item.legacy} ${item.current} ${item.resolution}`,
-    })
-  }
-
-  for (const item of OPEN_QUESTIONS) {
-    entries.push({
-      title: item.question,
-      detail: item.posture,
-      href: `reference.html#open-${item.id}`,
-      kind: 'Open question',
-      haystack: `${item.question} ${item.why} ${item.posture}`,
-    })
-  }
-
-  for (const term of GLOSSARY) {
-    entries.push({
-      title: term.term,
-      detail: term.definition,
-      href: `glossary.html#term-${slug(term.term)}`,
-      kind: 'Glossary',
-      haystack: `${term.term} ${term.definition}`,
-    })
-  }
-
-  for (const item of FAQ) {
-    entries.push({
-      title: item.q,
-      detail: item.a,
-      href: `glossary.html#faq-${slug(item.q)}`,
-      kind: 'FAQ',
-      haystack: `${item.q} ${item.a}`,
-    })
-  }
-
-  for (const vector of VECTORS) {
-    entries.push({
-      title: vector.title,
-      detail: vector.reason,
-      href: `conformance.html#case-${vector.id}`,
-      kind: 'Test case',
-      haystack: `${vector.title} ${vector.reason} ${vector.code ?? ''} ${vector.group}`,
-    })
-  }
-
-  for (const entry of entries) entry.haystack = entry.haystack.toLowerCase()
-  return entries
-}
-
-export function slug(value) {
-  return String(value)
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-}
-
+/** Score a record against the query terms. Higher is better; 0 excludes. */
 function score(entry, terms) {
   let total = 0
   for (const term of terms) {
-    const index = entry.haystack.indexOf(term)
-    if (index === -1) return -1
-    total += index === 0 ? 12 : 6
-    if (entry.title.toLowerCase().includes(term)) total += 10
+    let best = 0
+    if (entry.h.toLowerCase().includes(term)) best = 12
+    else if ((entry.k ?? '').toLowerCase().includes(term)) best = 9
+    else if (entry.s.toLowerCase().includes(term)) best = 4
+    else if (entry.t.toLowerCase().includes(term)) best = 3
+    if (best === 0) return 0
+    if (entry.h.toLowerCase().startsWith(term)) best += 6
+    total += best
   }
-  return total
+  return total + (entry.w ?? 0)
 }
 
-function initSearch() {
-  const trigger = document.querySelector('[data-search-trigger]')
-  const dialog = document.querySelector('[data-search-dialog]')
-  if (!trigger || !dialog || typeof dialog.showModal !== 'function') return
-
-  const input = dialog.querySelector('input[type="search"]')
-  const results = dialog.querySelector('[data-search-results]')
-  let index = null
-
-  const render = (query) => {
-    const terms = query.toLowerCase().split(/\s+/).filter(Boolean)
-    results.textContent = ''
-
-    if (terms.length === 0) {
-      results.innerHTML =
-        '<li><p class="search-empty">Search pages, fields, rules, glossary terms and test cases.</p></li>'
-      return
-    }
-
-    const matches = index
-      .map((entry) => ({ entry, rank: score(entry, terms) }))
-      .filter((item) => item.rank >= 0)
-      .sort((a, b) => b.rank - a.rank)
-      .slice(0, 25)
-
-    if (matches.length === 0) {
-      results.innerHTML = `<li><p class="search-empty">No matches for “${escapeHtml(query)}”.</p></li>`
-      return
-    }
-
-    for (const { entry } of matches) {
-      const item = document.createElement('li')
-      const link = document.createElement('a')
-      link.href = entry.href
-      link.innerHTML = `<em>${escapeHtml(entry.kind)}</em><b>${escapeHtml(entry.title)}</b><span>${escapeHtml(truncate(entry.detail, 120))}</span>`
-      item.append(link)
-      results.append(item)
-    }
+function renderResults(list, results, query) {
+  list.innerHTML = ''
+  if (!query) {
+    list.innerHTML =
+      '<li class="search-empty">Search rules, fields, terms, vectors and pages. Try <code>lim_sats</code>, <code>burn</code>, <code>DUST-6.7</code> or <code>marketplace</code>.</li>'
+    return
   }
-
-  const open = () => {
-    if (!index) index = buildIndex()
-    dialog.showModal()
-    input.value = ''
-    render('')
-    input.focus()
+  if (indexState === 'error') {
+    list.innerHTML =
+      '<li class="search-empty">The search index could not be loaded. Every page is still linked from the index on the left.</li>'
+    return
   }
-
-  trigger.addEventListener('click', open)
-  input.addEventListener('input', () => render(input.value))
-
-  dialog.addEventListener('click', (event) => {
-    if (event.target === dialog) dialog.close()
-  })
-
-  dialog.querySelector('form').addEventListener('submit', (event) => {
-    event.preventDefault()
-    const first = results.querySelector('a')
-    if (first) first.click()
-  })
-
-  // Arrow-key navigation through results.
-  dialog.addEventListener('keydown', (event) => {
-    if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return
-    const links = [...results.querySelectorAll('a')]
-    if (links.length === 0) return
-    event.preventDefault()
-    const current = links.indexOf(document.activeElement)
-    const next =
-      event.key === 'ArrowDown'
-        ? Math.min(current + 1, links.length - 1)
-        : Math.max(current - 1, -1)
-    if (next < 0) input.focus()
-    else links[next].focus()
-  })
-
-  document.addEventListener('keydown', (event) => {
-    const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName ?? '')
-    if ((event.key === 'k' && (event.metaKey || event.ctrlKey)) || (event.key === '/' && !typing)) {
-      event.preventDefault()
-      if (!dialog.open) open()
-    }
-  })
+  if (results.length === 0) {
+    list.innerHTML = `<li class="search-empty">No match for <b>${escapeHtml(query)}</b>.<ul><li>Rule identifiers look like <code>DUST-6.4</code>.</li><li>Field names use underscores: <code>unit_sats</code>, <code>max_sats</code>, <code>lim_sats</code>.</li><li>Try a plain word such as <code>change</code>, <code>fee</code> or <code>reorg</code>.</li></ul></li>`
+    return
+  }
+  for (const entry of results) {
+    const item = document.createElement('li')
+    item.innerHTML = `<a href="${entry.u}"><span class="sr-where">${escapeHtml(entry.t)}</span><span class="sr-title">${escapeHtml(entry.h)}</span><span class="sr-text">${escapeHtml(entry.s)}</span></a>`
+    list.appendChild(item)
+  }
 }
 
-export function escapeHtml(value) {
+function escapeHtml(value) {
   return String(value).replace(
-    /[&<>"']/g,
-    (character) =>
-      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character],
+    /[&<>"]/g,
+    (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[character],
   )
 }
 
-function truncate(value, limit) {
-  const text = String(value)
-  return text.length <= limit ? text : `${text.slice(0, limit - 1)}…`
+function initSearch() {
+  const dialog = $('[data-search]')
+  if (!dialog || typeof dialog.showModal !== 'function') return
+  const input = $('input[type="search"]', dialog)
+  const list = $('.search-results', dialog)
+  const base = document.body.dataset.base ?? './'
+
+  const run = () => {
+    const query = input.value.trim()
+    const terms = query.toLowerCase().split(/\s+/u).filter(Boolean)
+    if (terms.length === 0 || !index) {
+      renderResults(list, [], query)
+      return
+    }
+    const results = index
+      .map((entry) => ({ entry, value: score(entry, terms) }))
+      .filter((row) => row.value > 0)
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 25)
+      .map((row) => row.entry)
+    renderResults(list, results, query)
+  }
+
+  const open = async () => {
+    if (!dialog.open) dialog.showModal()
+    input.focus()
+    input.select()
+    await loadIndex(base)
+    run()
+  }
+
+  input.addEventListener('input', run)
+  for (const trigger of $$('[data-search-open]')) {
+    trigger.addEventListener('click', (event) => {
+      event.preventDefault()
+      open()
+    })
+  }
+  $('[data-search-close]', dialog)?.addEventListener('click', () => dialog.close())
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== '/' || event.metaKey || event.ctrlKey || event.altKey) return
+    const active = document.activeElement
+    const tag = active?.tagName
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || active?.isContentEditable) return
+    event.preventDefault()
+    open()
+  })
+
+  renderResults(list, [], '')
 }
 
-/* --------------------------------------------- Status chip descriptions */
+/* ------------------------------------------------------------- copyable -- */
 
-function initChipTitles() {
-  for (const chip of document.querySelectorAll('.chip[data-status]')) {
-    const status = STATUS[chip.dataset.status]
-    if (status && !chip.title) chip.title = status.description
+function initCopy() {
+  for (const button of $$('[data-copy]')) {
+    button.addEventListener('click', async () => {
+      const target = document.getElementById(button.dataset.copy)
+      if (!target || !navigator.clipboard) return
+      try {
+        await navigator.clipboard.writeText(target.textContent.trim())
+        const label = $('.label', button) ?? button
+        const original = label.textContent
+        label.textContent = 'Copied'
+        setTimeout(() => {
+          label.textContent = original
+        }, 1400)
+      } catch {
+        /* clipboard blocked; the text is selectable in the page */
+      }
+    })
   }
 }
 
-/* --------------------------------------------------------------- Start */
+/* ----------------------------------------------------------------- boot -- */
 
-function start() {
-  initMenu()
-  initAnchors()
-  initCopy()
-  initToc()
-  initSearch()
-  initChipTitles()
-  document.documentElement.dataset.enhanced = 'true'
-}
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', start)
-} else {
-  start()
-}
+initTheme()
+initNav()
+initSearch()
+initCopy()
