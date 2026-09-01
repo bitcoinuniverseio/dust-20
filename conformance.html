@@ -3,153 +3,808 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>DUST-20 conformance laboratory | DUST-20</title>
-  <meta name="description" content="Valid and invalid DUST-20 examples, each executed live in your browser, showing exactly why it passes or fails. Load any case into the playground.">
+  <title>DUST-20 test vectors | DUST-20</title>
+  <meta name="description" content="The published DUST-20 conformance vectors: valid and invalid payloads, the expected outcome of each, the issue code a reader must emit, and the numbered rule the case exercises.">
   <link rel="canonical" href="https://bitcoinuniverseio.github.io/dust-20/conformance.html">
-  <meta name="theme-color" content="#3b2d19">
-  <meta name="color-scheme" content="light">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f4f4f1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0c0e11" media="(prefers-color-scheme: dark)">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="DUST-20 documentation">
-  <meta property="og:title" content="DUST-20 conformance laboratory | DUST-20">
-  <meta property="og:description" content="Valid and invalid DUST-20 examples, each executed live in your browser, showing exactly why it passes or fails. Load any case into the playground.">
+  <meta property="og:title" content="DUST-20 test vectors | DUST-20">
+  <meta property="og:description" content="The published DUST-20 conformance vectors: valid and invalid payloads, the expected outcome of each, the issue code a reader must emit, and the numbered rule the case exercises.">
   <meta property="og:url" content="https://bitcoinuniverseio.github.io/dust-20/conformance.html">
   <meta property="og:image" content="https://bitcoinuniverseio.github.io/dust-20/assets/og.svg">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="DUST-20 conformance laboratory | DUST-20">
-  <meta name="twitter:description" content="Valid and invalid DUST-20 examples, each executed live in your browser, showing exactly why it passes or fails. Load any case into the playground.">
+  <meta name="twitter:title" content="DUST-20 test vectors | DUST-20">
+  <meta name="twitter:description" content="The published DUST-20 conformance vectors: valid and invalid payloads, the expected outcome of each, the issue code a reader must emit, and the numbered rule the case exercises.">
   <meta name="twitter:image" content="https://bitcoinuniverseio.github.io/dust-20/assets/og.svg">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/site.css">
-  <script type="module" src="assets/site.js"></script>
-  <script type="module" src="assets/app.js"></script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","name":"DUST-20 conformance laboratory | DUST-20","headline":"Conformance laboratory","description":"Valid and invalid DUST-20 examples, each executed live in your browser, showing exactly why it passes or fails. Load any case into the playground.","url":"https://bitcoinuniverseio.github.io/dust-20/conformance.html","inLanguage":"en","dateModified":"2026-08-18","isPartOf":{"@type":"WebSite","name":"DUST-20 documentation","url":"https://bitcoinuniverseio.github.io/dust-20/"},"publisher":{"@type":"Organization","name":"Bitcoin Universe","url":"https://github.com/bitcoinuniverseio"}}</script>
+  <script>try{var t=localStorage.getItem('dust20-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+  <script type="module" src="assets/site.js" defer></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","name":"DUST-20 test vectors | DUST-20","headline":"Test vectors","description":"The published DUST-20 conformance vectors: valid and invalid payloads, the expected outcome of each, the issue code a reader must emit, and the numbered rule the case exercises.","url":"https://bitcoinuniverseio.github.io/dust-20/conformance.html","inLanguage":"en","version":"1.1.0","dateModified":"2026-09-01","isPartOf":{"@type":"WebSite","name":"DUST-20 documentation","url":"https://bitcoinuniverseio.github.io/dust-20/"},"publisher":{"@type":"Organization","name":"Bitcoin Universe","url":"https://github.com/bitcoinuniverseio"}}</script>
 </head>
-<body data-page="conformance">
+<body data-page="conformance" data-base="./">
   <a class="skip-link" href="#main">Skip to content</a>
-  <header class="site-header">
-    <div class="header-inner">
-      <a class="brand" href="./"><span class="brand-mark" aria-hidden="true">DUST</span><span>DUST-20</span></a>
-      <nav class="site-nav" data-site-nav aria-label="Primary"><a href="./">Start here</a><a href="how-it-works.html">How it works</a><a href="playground.html">Playground</a><a href="transactions.html">Transactions</a><a href="reference.html">Reference</a><a href="conformance.html" aria-current="page">Conformance</a><a href="indexer.html">For builders</a><a href="safety.html">Safety</a><a href="glossary.html">Glossary</a></nav>
-      <div class="header-tools">
-        <button class="search-trigger" type="button" data-search-trigger aria-label="Search the documentation">
-          <span aria-hidden="true">Search</span><kbd>/</kbd>
+  <header class="masthead">
+    <div class="masthead-inner">
+      <a class="brand" href="./">
+        <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="1.5" y="1.5" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="6" y="6" width="5" height="5" fill="currentColor"/><rect x="13" y="13" width="5" height="5" fill="currentColor"/><path d="M11 8.5h2M8.5 11v2" stroke="currentColor" stroke-width="1.2"/></svg>
+        <span class="brand-text">DUST-20</span>
+        <span class="brand-rev">REV 1.1.0</span>
+      </a>
+      <nav class="masthead-nav" data-nav aria-label="Documentation"><a href="./">Overview</a><a href="specification.html">Specification</a><a href="reference.html">Reference</a><a href="how-it-works.html">Guide</a><a href="transactions.html">Transactions</a><a href="playground.html">Decoder</a><a href="conformance.html" aria-current="page">Test vectors</a><a href="indexer.html">Indexing</a><a href="universe.html">Universe support</a><a href="safety.html">Security</a><a href="glossary.html">Glossary</a><a href="changelog.html">Changelog</a></nav>
+      <div class="masthead-tools">
+        <button class="tool-button" type="button" data-search-open aria-label="Search the documentation">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg>
+          <span class="label">Search</span><kbd>/</kbd>
         </button>
-        <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-navigation">Menu</button>
+        <button class="tool-button" type="button" data-theme-toggle aria-pressed="false" aria-label="Switch between light and dark theme">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M19.4 4.6l-2.1 2.1M6.7 17.3l-2.1 2.1"/></svg>
+          <span class="label">Light</span>
+        </button>
+        <button class="tool-button menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-nav" aria-label="Show the documentation menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          <span class="label">Menu</span>
+        </button>
       </div>
     </div>
   </header>
-  <dialog class="search-dialog" data-search-dialog aria-label="Search the documentation">
-    <form method="dialog" role="search">
-      <input type="search" placeholder="Search pages, fields, rules, terms…" aria-label="Search query" autocomplete="off">
-      <button class="button small secondary" type="button" onclick="this.closest('dialog').close()">Close</button>
+  <dialog class="search" data-search aria-label="Search the documentation">
+    <form class="search-form" method="dialog" role="search">
+      <input type="search" placeholder="Search rules, fields, terms, vectors" aria-label="Search query" autocomplete="off" spellcheck="false">
+      <button class="btn" type="button" data-search-close>Close</button>
     </form>
-    <ul class="search-results" data-search-results></ul>
+    <ul class="search-results"></ul>
   </dialog>
-  <div class="docs-layout">
-    <aside class="docs-sidebar">
-      <nav aria-label="Documentation">
-        <h2>Documentation</h2>
-        <ul class="sidebar-list">
-        <li><a href="./">Start here</a></li>
-        <li><a href="how-it-works.html">How it works</a></li>
-        <li><a href="playground.html">Playground</a></li>
-        <li><a href="transactions.html">Transactions</a></li>
-        <li><a href="reference.html">Reference</a></li>
-        <li><a href="conformance.html" aria-current="page">Conformance</a></li>
-        <li><a href="indexer.html">For builders</a></li>
-        <li><a href="safety.html">Safety</a></li>
-        <li><a href="glossary.html">Glossary</a></li>
-        </ul>
+  <div class="layout">
+    <aside class="sidebar" id="primary-nav">
+      <nav aria-label="Documentation index">
+        <h2>Index</h2>
+<div class="sidebar-group"><span>0 Orientation</span><ul><li><a href="./">Overview</a></li></ul></div><div class="sidebar-group"><span>1 Normative</span><ul><li><a href="specification.html">Specification</a></li><li><a href="reference.html">Reference</a></li></ul></div><div class="sidebar-group"><span>2 Applied</span><ul><li><a href="how-it-works.html">Guide</a></li><li><a href="transactions.html">Transactions</a></li><li><a href="playground.html">Decoder</a></li><li><a href="conformance.html" aria-current="page">Test vectors</a></li></ul></div><div class="sidebar-group"><span>3 Operating</span><ul><li><a href="indexer.html">Indexing</a></li><li><a href="universe.html">Universe support</a></li><li><a href="safety.html">Security</a></li></ul></div><div class="sidebar-group"><span>4 Appendix</span><ul><li><a href="glossary.html">Glossary</a></li><li><a href="changelog.html">Changelog</a></li></ul></div>
       </nav>
+      <div class="sidebar-meta">
+        <div><b>Document</b><span>1.1.0</span></div>
+        <div><b>Revised</b><span>2026-09-01</span></div>
+        <div><b>Chain</b><span>Bitcoin</span></div>
+        <div><b>Network</b><span>mainnet</span></div>
+        <div><b>Lifecycle</b><span>experimental</span></div>
+      </div>
     </aside>
-    <main class="docs-main" id="main">
-      <div class="page-hero">
-        <p class="eyebrow">Conformance</p>
-        <h1>Conformance laboratory</h1>
-        <p class="lead">Every documented valid and invalid case, executed live in your browser right now by the same validator that powers the playground. If a case ever stopped behaving as documented, this page would say so.</p>
+    <main class="main" id="main">
+      <div class="pagehead">
+        <p class="eyebrow">DUST-20 documentation</p>
+        <h1>Test vectors</h1>
+        <p class="tagline">Valid and invalid cases with expected outcomes and the rule each one exercises.</p>
+        <dl class="dsheet"><div><dt>Protocol</dt><dd>DUST-20<small>Registry id dust20, alias dust-20</small></dd></div><div><dt>Chain</dt><dd>Bitcoin<small>Network: mainnet</small></dd></div><div><dt>Ownership model</dt><dd>UTXO<small>Units are carried by satoshis in unspent outputs</small></dd></div><div><dt>Carrier</dt><dd>Inscription + spend<small>Deploy and mint are inscribed; movement is a spend</small></dd></div><div><dt>Decimals</dt><dd>0<small>Balances are whole units only</small></dd></div><div><dt>Document version</dt><dd>1.1.0<small>Revised 2026-09-01</small></dd></div><div><dt>Lifecycle</dt><dd>Experimental<small>Not a ratified multi-party standard</small></dd></div><div><dt>Owning repository</dt><dd>bitcoinuniverseio/dust-20<small>Documentation source of truth</small></dd></div></dl>
       </div>
+      <section class="section" id="summary">
+        <h2><span class="num">C.1</span> Vector summary</h2>
+        <p class="lede">These vectors are the fixtures the decoder runs, the cases the Node test suite asserts, and the content published at <a href="conformance.json">conformance.json</a>. Each names the exact issue code a conforming reader must produce, so a documentation claim and a running validator cannot drift apart.</p>
+        <dl class="dsheet">
+      <div><dt>Total vectors</dt><dd>31<small>Published at conformance.json</small></dd></div>
+      <div><dt>Expected accept</dt><dd>5<small>Payloads a reader must index</small></dd></div>
+      <div><dt>Expected reject</dt><dd>26<small>Each names the exact issue code</small></dd></div>
+      <div><dt>Groups</dt><dd>Deploy, Mint, Reader<small>Deploy, mint and reader shape</small></dd></div>
+    </dl>
 
-      <div class="prose">
-        <p class="filter-status" data-conformance-status role="status">Running cases…</p>
-        <noscript><p class="noscript-note">These cases are executed in your browser. With JavaScript disabled, every case — its input, expected outcome and reason — is published in <a href="conformance.json">conformance.json</a>.</p></noscript>
-
-        <div class="chip-legend" data-status-legend></div>
-
-        <section id="lab">
-          <h2>Test cases</h2>
-          <p>Expand a case to see its input, the resolved deployment where one applies, the exact validator output, and a button to load it into the playground.</p>
-
-          <div class="filter-bar">
-            <div>
-              <label class="visually-hidden" for="vector-search">Search cases</label>
-              <input id="vector-search" type="search" data-vector-search placeholder="Search cases, reasons and issue codes…" autocomplete="off">
-            </div>
-            <div class="filter-chips" data-vector-filters role="group" aria-label="Filter by expected outcome">
-              <button type="button" data-expect-filter="all" aria-pressed="true">All</button>
-              <button type="button" data-expect-filter="accept" aria-pressed="false">Accepted</button>
-              <button type="button" data-expect-filter="reject" aria-pressed="false">Rejected</button>
-            </div>
+        <div class="note note--info">
+          <span class="note-mark" aria-hidden="true">i</span>
+          <div class="note-body">
+            <p class="note-title">How to use these</p>
+            <p>Feed each input to your reader with the stated context. A vector marked ACCEPT must be indexed. A vector marked REJECT must be refused with that exact issue code, not with a different code and not with a warning. If your reader disagrees with a case, the case names the numbered rule so you can read the paragraph that defines the behaviour. <a href="playground.html#runner">Run them all in your browser</a>.</p>
           </div>
+        </div>
+      </section>
 
-          <div data-conformance></div>
-        </section>
+      <section class="section" id="vectors">
+        <h2><span class="num">C.2</span> The vectors</h2>
+        <h3 id="vectors-deploy">Deploy</h3><div class="panel"><details class="vector" id="deploy-valid">
+              <summary><span class="verdict verdict--pass">ACCEPT</span><span class="vname">Valid deploy</span><span class="vid">deploy-valid</span><a class="tag tag--ref" href="specification.html#DUST-5.1">DUST-5.1</a><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span></summary>
+              <div class="vector-detail">
+                <p>Every field is a strict decimal integer string and max_sats equals supply × unit_sats.</p>
+                <h4>Input</h4>
+                <pre><code>{
+  &quot;p&quot;: &quot;dust-20&quot;,
+  &quot;op&quot;: &quot;deploy&quot;,
+  &quot;tick&quot;: &quot;dust&quot;,
+  &quot;supply&quot;: &quot;1000000&quot;,
+  &quot;unit_sats&quot;: &quot;546&quot;,
+  &quot;max_sats&quot;: &quot;546000000&quot;,
+  &quot;lim_sats&quot;: &quot;54600&quot;
+}</code></pre>
+                
+              </div>
+            </details><details class="vector" id="deploy-no-limit">
+              <summary><span class="verdict verdict--pass">ACCEPT</span><span class="vname">Valid deploy with lim_sats omitted</span><span class="vid">deploy-no-limit</span><a class="tag tag--ref" href="specification.html#DUST-5.6">DUST-5.6</a><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span></summary>
+              <div class="vector-detail">
+                <p>lim_sats is optional. Omitting it means there is no per-mint cap.</p>
+                <h4>Input</h4>
+                <pre><code>{
+  &quot;p&quot;: &quot;dust-20&quot;,
+  &quot;op&quot;: &quot;deploy&quot;,
+  &quot;tick&quot;: &quot;grain&quot;,
+  &quot;supply&quot;: &quot;21000&quot;,
+  &quot;unit_sats&quot;: &quot;1000&quot;,
+  &quot;max_sats&quot;: &quot;21000000&quot;
+}</code></pre>
+                
+              </div>
+            </details><details class="vector" id="deploy-zero-limit">
+              <summary><span class="verdict verdict--pass">ACCEPT</span><span class="vname">lim_sats of &quot;0&quot; means no cap</span><span class="vid">deploy-zero-limit</span><a class="tag tag--ref" href="specification.html#DUST-3.2">DUST-3.2</a><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></summary>
+              <div class="vector-detail">
+                <p>Zero is explicitly &quot;no limit&quot;, not a cap of zero satoshis.</p>
+                <h4>Input</h4>
+                <pre><code>{
+  &quot;p&quot;: &quot;dust-20&quot;,
+  &quot;op&quot;: &quot;deploy&quot;,
+  &quot;tick&quot;: &quot;grain&quot;,
+  &quot;supply&quot;: &quot;21000&quot;,
+  &quot;unit_sats&quot;: &quot;1000&quot;,
+  &quot;max_sats&quot;: &quot;21000000&quot;,
+  &quot;lim_sats&quot;: &quot;0&quot;
+}</code></pre>
+                
+              </div>
+            </details><details class="vector" id="deploy-arithmetic-mismatch">
+              <summary><span class="verdict verdict--fail">REJECT</span> <code>max_sats_mismatch</code><span class="vname">Arithmetic mismatch in max_sats</span><span class="vid">deploy-arithmetic-mismatch</span><a class="tag tag--ref" href="specification.html#DUST-5.4">DUST-5.4</a><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span></summary>
+              <div class="vector-detail">
+                <p>max_sats must equal supply × unit_sats exactly. Being one satoshi low usually means the builder used floating-point arithmetic.</p>
+                <h4>Input</h4>
+                <pre><code>{
+  &quot;p&quot;: &quot;dust-20&quot;,
+  &quot;op&quot;: &quot;deploy&quot;,
+  &quot;tick&quot;: &quot;dust&quot;,
+  &quot;supply&quot;: &quot;1000000&quot;,
+  &quot;unit_sats&quot;: &quot;546&quot;,
+  &quot;max_sats&quot;: &quot;545999999&quot;,
+  &quot;lim_sats&quot;: &quot;54600&quot;
+}</code></pre>
+                
+              </div>
+            </details><details class="vector" id="deploy-missing-max-sats">
+              <summary><span class="verdict verdict--fail">REJECT</span> <code>missing_field</code><span class="vname">Deploy missing max_sats</span><span class="vid">deploy-missing-max-sats</span><a class="tag tag--ref" href="specification.html#DUST-5.1">DUST-5.1</a><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></summary>
+              <div class="vector-detail">
+                <p>max_sats is required. Earlier documentation reported this as an unreconciled compatibility split; the current implementation rejects the payload rather than deriving the value.</p>
+                <h4>Input</h4>
+                <pre><code>{
+  &quot;p&quot;: &quot;dust-20&quot;,
+  &quot;op&quot;: &quot;deploy&quot;,
+  &quot;tick&quot;: &quot;dust&quot;,
+  &quot;supply&quot;: &quot;1000000&quot;,
+  &quot;unit_sats&quot;: &quot;546&quot;,
+  &quot;lim_sats&quot;: &quot;54600&quot;
+}</code></pre>
+                
+              </div>
+            </details><details class="vector" id="deploy-unknown-field">
+              <summary><span class="verdict verdict--fail">REJECT</span> <code>unknown_field</code><span class="vname">Deploy carrying an unknown field</span><span class="vid">deploy-unknown-field</span><a class="tag tag--ref" href="specification.html#DUST-5.1">DUST-5.1</a><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></summary>
+              <div class="vector-detail">
+                <p>Operations declare exact key sets. An unknown field is rejected, not ignored, so one payload cannot be read two ways.</p>
+                <h4>Input</h4>
+                <pre><code>{
+  &quot;p&quot;: &quot;dust-20&quot;,
+  &quot;op&quot;: &quot;deploy&quot;,
+  &quot;tick&quot;: &quot;dust&quot;,
+  &quot;supply&quot;: &quot;1000000&quot;,
+  &quot;unit_sats&quot;: &quot;546&quot;,
+  &quot;max_sats&quot;: &quot;546000000&quot;,
+  &quot;dec&quot;: &quot;0&quot;
+}</code></pre>
+                
+              </div>
+            </details><details class="vector" id="deploy-leading-zero">
+              <summary><span class="verdict verdict--fail">REJECT</span> <code>bad_integer</code><span class="vname">Malformed integer with a leading zero</span><span class="vid">deploy-leading-zero</span><a class="tag tag--ref" href="specification.html#DUST-3.1">DUST-3.1</a><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></summary>
+              <div class="vector-detail">
+                <p>Integers are strict decimal strings. &quot;0546&quot; is not in strict form even though it parses.</p>
+                <h4>Input</h4>
+                <pre><code>{
+  &quot;p&quot;: &quot;dust-20&quot;,
+  &quot;op&quot;: &quot;deploy&quot;,
+  &quot;tick&quot;: &quot;dust&quot;,
+  &quot;supply&quot;: &quot;0546&quot;,
+  &quot;unit_sats&quot;: &quot;546&quot;,
+  &quot;max_sats&quot;: &quot;298116&quot;
+}</code></pre>
+                
+              </div>
+            </details><details class="vector" id="deploy-float">
+              <summary><span class="verdict verdict--fail">REJECT</span> <code>bad_integer</code><span class="vname">Fractional unit_sats</span><span class="vid">deploy-float</span><a class="tag tag--ref" href="specification.html#DUST-3.1">DUST-3.1</a><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span></summary>
+              <div class="vector-detail">
+                <p>Satoshis are indivisible. Decimal points are rejected outright.</p>
+                <h4>Input</h4>
+                <pre><code>{
+  &quot;p&quot;: &quot;dust-20&quot;,
+  &quot;op&quot;: &quot;deploy&quot;,
+  &quot;tick&quot;: &quot;dust&quot;,
+  &quot;supply&quot;: &quot;1000&quot;,
+  &quot;unit_sats&quot;: &quot;546.5&quot;,
+  &quot;max_sats&quot;: &quot;546500&quot;
+}</code></pre>
+                
+              </div>
+            </details><details class="vector" id="deploy-zero-supply">
+              <summary><span class="verdict verdict--fail">REJECT</span> <code>bad_integer</code><span class="vname">Zero supply</span><span class="vid">deploy-zero-supply</span><a class="tag tag--ref" href="specification.html#DUST-3.1">DUST-3.1</a><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span></summary>
+              <div class="vector-detail">
+                <p>supply must be a positive integer. Zero and negative values are rejected.</p>
+                <h4>Input</h4>
+                <pre><code>{
+  &quot;p&quot;: &quot;dust-20&quot;,
+  &quot;op&quot;: &quot;deploy&quot;,
+  &quot;tick&quot;: &quot;dust&quot;,
+  &quot;supply&quot;: &quot;0&quot;,
+  &quot;unit_sats&quot;: &quot;546&quot;,
+  &quot;max_sats&quot;: &quot;0&quot;
+}</code></pre>
+                
+              </div>
+            </details><details class="vector" id="deploy-negative">
+              <summary><span class="verdict verdict--fail">REJECT</span> <code>bad_integer</code><span class="vname">Negative unit_sats</span><span class="vid">deploy-negative</span><a class="tag tag--ref" href="specification.html#DUST-3.1">DUST-3.1</a><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span></summary>
+              <div class="vector-detail">
+                <p>A minus sign is not part of a strict DUST-20 integer.</p>
+                <h4>Input</h4>
+                <pre><code>{
+  &quot;p&quot;: &quot;dust-20&quot;,
+  &quot;op&quot;: &quot;deploy&quot;,
+  &quot;tick&quot;: &quot;dust&quot;,
+  &quot;supply&quot;: &quot;1000&quot;,
+  &quot;unit_sats&quot;: &quot;-546&quot;,
+  &quot;max_sats&quot;: &quot;546000&quot;
+}</code></pre>
+                
+              </div>
+            </details><details class="vector" id="deploy-exceeds-money">
+              <summary><span class="verdict verdict--fail">REJECT</span> <code>exceeds_money_supply</code><span class="vname">Backing exceeds Bitcoin’s monetary supply</span><span class="vid">deploy-exceeds-money</span><a class="tag tag--ref" href="specification.html#DUST-5.5">DUST-5.5</a><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></summary>
+              <div class="vector-detail">
+                <p>max_sats of 10,000,000,000,000,000 exceeds the 2,100,000,000,000,000 satoshis that will ever exist. The arithmetic is self-consistent but unbackable.</p>
+                <h4>Input</h4>
+                <pre><code>{
+  &quot;p&quot;: &quot;dust-20&quot;,
+  &quot;op&quot;: &quot;deploy&quot;,
+  &quot;tick&quot;: &quot;huge&quot;,
+  &quot;supply&quot;: &quot;1000000000&quot;,
+  &quot;unit_sats&quot;: &quot;10000000&quot;,
+  &quot;max_sats&quot;: &quot;10000000000000000&quot;
+}</code></pre>
+                
+              </div>
+            </details><details class="vector" id="deploy-limit-above-max">
+              <summary><span class="verdict verdict--fail">REJECT</span> <code>lim_sats_above_max</code><span class="vname">lim_sats greater than max_sats</span><span class="vid">deploy-limit-above-max</span><a class="tag tag--ref" href="specification.html#DUST-5.6">DUST-5.6</a><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></summary>
+              <div class="vector-detail">
+                <p>A per-mint cap larger than the entire backing is contradictory.</p>
+                <h4>Input</h4>
+                <pre><code>{
+  &quot;p&quot;: &quot;dust-20&quot;,
+  &quot;op&quot;: &quot;deploy&quot;,
+  &quot;tick&quot;: &quot;dust&quot;,
+  &quot;supply&quot;: &quot;1000&quot;,
+  &quot;unit_sats&quot;: &quot;546&quot;,
+  &quot;max_sats&quot;: &quot;546000&quot;,
+  &quot;lim_sats&quot;: &quot;546001&quot;
+}</code></pre>
+                
+              </div>
+            </details><details class="vector" id="deploy-tick-whitespace">
+              <summary><span class="verdict verdict--fail">REJECT</span> <code>bad_tick</code><span class="vname">Ticker containing whitespace</span><span class="vid">deploy-tick-whitespace</span><a class="tag tag--ref" href="specification.html#DUST-4.4">DUST-4.4</a><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></summary>
+              <div class="vector-detail">
+                <p>Tickers exclude whitespace, control characters and the URL delimiters / ? # \ so an identity is always addressable.</p>
+                <h4>Input</h4>
+                <pre><code>{
+  &quot;p&quot;: &quot;dust-20&quot;,
+  &quot;op&quot;: &quot;deploy&quot;,
+  &quot;tick&quot;: &quot;my dust&quot;,
+  &quot;supply&quot;: &quot;1000&quot;,
+  &quot;unit_sats&quot;: &quot;546&quot;,
+  &quot;max_sats&quot;: &quot;546000&quot;
+}</code></pre>
+                
+              </div>
+            </details><details class="vector" id="deploy-duplicate-ticker">
+              <summary><span class="verdict verdict--fail">REJECT</span> <code>duplicate_deployment</code><span class="vname">Redeploying an existing ticker</span><span class="vid">deploy-duplicate-ticker</span><a class="tag tag--ref" href="specification.html#DUST-5.7">DUST-5.7</a><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></summary>
+              <div class="vector-detail">
+                <p>Identity is the NFC form folded to lower case, so &quot;DUST&quot; is the same ticker as &quot;dust&quot;. The first valid deployment wins.</p>
+                <h4>Input</h4>
+                <pre><code>{
+  &quot;p&quot;: &quot;dust-20&quot;,
+  &quot;op&quot;: &quot;deploy&quot;,
+  &quot;tick&quot;: &quot;DUST&quot;,
+  &quot;supply&quot;: &quot;5000&quot;,
+  &quot;unit_sats&quot;: &quot;546&quot;,
+  &quot;max_sats&quot;: &quot;2730000&quot;
+}</code></pre>
+                <h4>Context</h4><pre><code>{
+  &quot;deployment&quot;: {
+    &quot;tick&quot;: &quot;dust&quot;,
+    &quot;display&quot;: &quot;DUST&quot;,
+    &quot;supply&quot;: &quot;1000000&quot;,
+    &quot;unitSats&quot;: &quot;546&quot;,
+    &quot;maxSats&quot;: &quot;546000000&quot;,
+    &quot;limSats&quot;: &quot;54600&quot;,
+    &quot;minted&quot;: &quot;0&quot;
+  }
+}</code></pre>
+              </div>
+            </details></div><h3 id="vectors-mint">Mint</h3><div class="panel"><details class="vector" id="mint-valid">
+              <summary><span class="verdict verdict--pass">ACCEPT</span><span class="vname">Valid mint with matching output</span><span class="vid">mint-valid</span><a class="tag tag--ref" href="specification.html#DUST-6.7">DUST-6.7</a><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span></summary>
+              <div class="vector-detail">
+                <p>sats equals amt × unit_sats, and the observed output value equals sats.</p>
+                <h4>Input</h4>
+                <pre><code>{
+  &quot;p&quot;: &quot;dust-20&quot;,
+  &quot;op&quot;: &quot;mint&quot;,
+  &quot;tick&quot;: &quot;dust&quot;,
+  &quot;amt&quot;: &quot;100&quot;,
+  &quot;sats&quot;: &quot;54600&quot;
+}</code></pre>
+                <h4>Context</h4><pre><code>{
+  &quot;deployment&quot;: {
+    &quot;tick&quot;: &quot;dust&quot;,
+    &quot;display&quot;: &quot;DUST&quot;,
+    &quot;supply&quot;: &quot;1000000&quot;,
+    &quot;unitSats&quot;: &quot;546&quot;,
+    &quot;maxSats&quot;: &quot;546000000&quot;,
+    &quot;limSats&quot;: &quot;54600&quot;,
+    &quot;minted&quot;: &quot;0&quot;
+  },
+  &quot;outputValueSats&quot;: &quot;54600&quot;
+}</code></pre>
+              </div>
+            </details><details class="vector" id="mint-case-insensitive-tick">
+              <summary><span class="verdict verdict--pass">ACCEPT</span><span class="vname">Mint naming the ticker in a different case</span><span class="vid">mint-case-insensitive-tick</span><a class="tag tag--ref" href="specification.html#DUST-4.5">DUST-4.5</a><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></summary>
+              <div class="vector-detail">
+                <p>The mint resolves against the folded identity, so casing does not prevent resolution.</p>
+                <h4>Input</h4>
+                <pre><code>{
+  &quot;p&quot;: &quot;dust-20&quot;,
+  &quot;op&quot;: &quot;mint&quot;,
+  &quot;tick&quot;: &quot;DuSt&quot;,
+  &quot;amt&quot;: &quot;1&quot;,
+  &quot;sats&quot;: &quot;546&quot;
+}</code></pre>
+                <h4>Context</h4><pre><code>{
+  &quot;deployment&quot;: {
+    &quot;tick&quot;: &quot;dust&quot;,
+    &quot;display&quot;: &quot;DUST&quot;,
+    &quot;supply&quot;: &quot;1000000&quot;,
+    &quot;unitSats&quot;: &quot;546&quot;,
+    &quot;maxSats&quot;: &quot;546000000&quot;,
+    &quot;limSats&quot;: &quot;54600&quot;,
+    &quot;minted&quot;: &quot;0&quot;
+  },
+  &quot;outputValueSats&quot;: &quot;546&quot;
+}</code></pre>
+              </div>
+            </details><details class="vector" id="mint-sats-mismatch">
+              <summary><span class="verdict verdict--fail">REJECT</span> <code>mint_sats_mismatch</code><span class="vname">Declared sats do not match the deployment ratio</span><span class="vid">mint-sats-mismatch</span><a class="tag tag--ref" href="specification.html#DUST-6.4">DUST-6.4</a><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span></summary>
+              <div class="vector-detail">
+                <p>100 units at 546 satoshis is 54,600, not 54,000.</p>
+                <h4>Input</h4>
+                <pre><code>{
+  &quot;p&quot;: &quot;dust-20&quot;,
+  &quot;op&quot;: &quot;mint&quot;,
+  &quot;tick&quot;: &quot;dust&quot;,
+  &quot;amt&quot;: &quot;100&quot;,
+  &quot;sats&quot;: &quot;54000&quot;
+}</code></pre>
+                <h4>Context</h4><pre><code>{
+  &quot;deployment&quot;: {
+    &quot;tick&quot;: &quot;dust&quot;,
+    &quot;display&quot;: &quot;DUST&quot;,
+    &quot;supply&quot;: &quot;1000000&quot;,
+    &quot;unitSats&quot;: &quot;546&quot;,
+    &quot;maxSats&quot;: &quot;546000000&quot;,
+    &quot;limSats&quot;: &quot;54600&quot;,
+    &quot;minted&quot;: &quot;0&quot;
+  },
+  &quot;outputValueSats&quot;: &quot;54000&quot;
+}</code></pre>
+              </div>
+            </details><details class="vector" id="mint-output-mismatch">
+              <summary><span class="verdict verdict--fail">REJECT</span> <code>output_value_mismatch</code><span class="vname">Output value differs from declared sats by one satoshi</span><span class="vid">mint-output-mismatch</span><a class="tag tag--ref" href="specification.html#DUST-6.7">DUST-6.7</a><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span></summary>
+              <div class="vector-detail">
+                <p>The payload is internally consistent, but the real Bitcoin output holds 54,599 satoshis. The mint is invalid and cannot be repaired after broadcast.</p>
+                <h4>Input</h4>
+                <pre><code>{
+  &quot;p&quot;: &quot;dust-20&quot;,
+  &quot;op&quot;: &quot;mint&quot;,
+  &quot;tick&quot;: &quot;dust&quot;,
+  &quot;amt&quot;: &quot;100&quot;,
+  &quot;sats&quot;: &quot;54600&quot;
+}</code></pre>
+                <h4>Context</h4><pre><code>{
+  &quot;deployment&quot;: {
+    &quot;tick&quot;: &quot;dust&quot;,
+    &quot;display&quot;: &quot;DUST&quot;,
+    &quot;supply&quot;: &quot;1000000&quot;,
+    &quot;unitSats&quot;: &quot;546&quot;,
+    &quot;maxSats&quot;: &quot;546000000&quot;,
+    &quot;limSats&quot;: &quot;54600&quot;,
+    &quot;minted&quot;: &quot;0&quot;
+  },
+  &quot;outputValueSats&quot;: &quot;54599&quot;
+}</code></pre>
+              </div>
+            </details><details class="vector" id="mint-limit-violation">
+              <summary><span class="verdict verdict--fail">REJECT</span> <code>mint_exceeds_limit</code><span class="vname">Mint exceeds lim_sats</span><span class="vid">mint-limit-violation</span><a class="tag tag--ref" href="specification.html#DUST-6.5">DUST-6.5</a><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span></summary>
+              <div class="vector-detail">
+                <p>55,146 satoshis exceeds the declared per-mint cap of 54,600.</p>
+                <h4>Input</h4>
+                <pre><code>{
+  &quot;p&quot;: &quot;dust-20&quot;,
+  &quot;op&quot;: &quot;mint&quot;,
+  &quot;tick&quot;: &quot;dust&quot;,
+  &quot;amt&quot;: &quot;101&quot;,
+  &quot;sats&quot;: &quot;55146&quot;
+}</code></pre>
+                <h4>Context</h4><pre><code>{
+  &quot;deployment&quot;: {
+    &quot;tick&quot;: &quot;dust&quot;,
+    &quot;display&quot;: &quot;DUST&quot;,
+    &quot;supply&quot;: &quot;1000000&quot;,
+    &quot;unitSats&quot;: &quot;546&quot;,
+    &quot;maxSats&quot;: &quot;546000000&quot;,
+    &quot;limSats&quot;: &quot;54600&quot;,
+    &quot;minted&quot;: &quot;0&quot;
+  },
+  &quot;outputValueSats&quot;: &quot;55146&quot;
+}</code></pre>
+              </div>
+            </details><details class="vector" id="mint-exceeds-supply">
+              <summary><span class="verdict verdict--fail">REJECT</span> <code>mint_exceeds_supply</code><span class="vname">Mint exceeds remaining supply</span><span class="vid">mint-exceeds-supply</span><a class="tag tag--ref" href="specification.html#DUST-6.6">DUST-6.6</a><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span></summary>
+              <div class="vector-detail">
+                <p>999,950 units are already minted, so only 50 remain. The mint is rejected in full rather than partially filled.</p>
+                <h4>Input</h4>
+                <pre><code>{
+  &quot;p&quot;: &quot;dust-20&quot;,
+  &quot;op&quot;: &quot;mint&quot;,
+  &quot;tick&quot;: &quot;dust&quot;,
+  &quot;amt&quot;: &quot;100&quot;,
+  &quot;sats&quot;: &quot;54600&quot;
+}</code></pre>
+                <h4>Context</h4><pre><code>{
+  &quot;deployment&quot;: {
+    &quot;tick&quot;: &quot;dust&quot;,
+    &quot;display&quot;: &quot;DUST&quot;,
+    &quot;supply&quot;: &quot;1000000&quot;,
+    &quot;unitSats&quot;: &quot;546&quot;,
+    &quot;maxSats&quot;: &quot;546000000&quot;,
+    &quot;limSats&quot;: &quot;0&quot;,
+    &quot;minted&quot;: &quot;999950&quot;
+  },
+  &quot;outputValueSats&quot;: &quot;54600&quot;
+}</code></pre>
+              </div>
+            </details><details class="vector" id="mint-no-deployment">
+              <summary><span class="verdict verdict--fail">REJECT</span> <code>deployment_missing</code><span class="vname">Mint for a ticker that was never deployed</span><span class="vid">mint-no-deployment</span><a class="tag tag--ref" href="specification.html#DUST-6.2">DUST-6.2</a><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span></summary>
+              <div class="vector-detail">
+                <p>A mint must resolve exactly one accepted deployment. Without it there is no unit size to check against.</p>
+                <h4>Input</h4>
+                <pre><code>{
+  &quot;p&quot;: &quot;dust-20&quot;,
+  &quot;op&quot;: &quot;mint&quot;,
+  &quot;tick&quot;: &quot;ghost&quot;,
+  &quot;amt&quot;: &quot;10&quot;,
+  &quot;sats&quot;: &quot;5460&quot;
+}</code></pre>
+                
+              </div>
+            </details><details class="vector" id="mint-missing-field">
+              <summary><span class="verdict verdict--fail">REJECT</span> <code>missing_field</code><span class="vname">Mint missing the sats field</span><span class="vid">mint-missing-field</span><a class="tag tag--ref" href="specification.html#DUST-6.1">DUST-6.1</a><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span></summary>
+              <div class="vector-detail">
+                <p>sats is required. It is never inferred from amt, even though the ratio is known.</p>
+                <h4>Input</h4>
+                <pre><code>{
+  &quot;p&quot;: &quot;dust-20&quot;,
+  &quot;op&quot;: &quot;mint&quot;,
+  &quot;tick&quot;: &quot;dust&quot;,
+  &quot;amt&quot;: &quot;100&quot;
+}</code></pre>
+                <h4>Context</h4><pre><code>{
+  &quot;deployment&quot;: {
+    &quot;tick&quot;: &quot;dust&quot;,
+    &quot;display&quot;: &quot;DUST&quot;,
+    &quot;supply&quot;: &quot;1000000&quot;,
+    &quot;unitSats&quot;: &quot;546&quot;,
+    &quot;maxSats&quot;: &quot;546000000&quot;,
+    &quot;limSats&quot;: &quot;54600&quot;,
+    &quot;minted&quot;: &quot;0&quot;
+  }
+}</code></pre>
+              </div>
+            </details><details class="vector" id="mint-zero-amount">
+              <summary><span class="verdict verdict--fail">REJECT</span> <code>bad_integer</code><span class="vname">Mint of zero units</span><span class="vid">mint-zero-amount</span><a class="tag tag--ref" href="specification.html#DUST-6.3">DUST-6.3</a><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span></summary>
+              <div class="vector-detail">
+                <p>amt must be a positive integer.</p>
+                <h4>Input</h4>
+                <pre><code>{
+  &quot;p&quot;: &quot;dust-20&quot;,
+  &quot;op&quot;: &quot;mint&quot;,
+  &quot;tick&quot;: &quot;dust&quot;,
+  &quot;amt&quot;: &quot;0&quot;,
+  &quot;sats&quot;: &quot;0&quot;
+}</code></pre>
+                <h4>Context</h4><pre><code>{
+  &quot;deployment&quot;: {
+    &quot;tick&quot;: &quot;dust&quot;,
+    &quot;display&quot;: &quot;DUST&quot;,
+    &quot;supply&quot;: &quot;1000000&quot;,
+    &quot;unitSats&quot;: &quot;546&quot;,
+    &quot;maxSats&quot;: &quot;546000000&quot;,
+    &quot;limSats&quot;: &quot;54600&quot;,
+    &quot;minted&quot;: &quot;0&quot;
+  }
+}</code></pre>
+              </div>
+            </details></div><h3 id="vectors-reader">Reader</h3><div class="panel"><details class="vector" id="unknown-operation">
+              <summary><span class="verdict verdict--fail">REJECT</span> <code>bad_operation</code><span class="vname">Unknown operation</span><span class="vid">unknown-operation</span><a class="tag tag--ref" href="specification.html#DUST-4.2">DUST-4.2</a><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></summary>
+              <div class="vector-detail">
+                <p>Only deploy and mint exist. Any other op is rejected.</p>
+                <h4>Input</h4>
+                <pre><code>{
+  &quot;p&quot;: &quot;dust-20&quot;,
+  &quot;op&quot;: &quot;update&quot;,
+  &quot;tick&quot;: &quot;dust&quot;,
+  &quot;amt&quot;: &quot;1&quot;
+}</code></pre>
+                
+              </div>
+            </details><details class="vector" id="transfer-inscription">
+              <summary><span class="verdict verdict--fail">REJECT</span> <code>bad_operation</code><span class="vname">A transfer inscription</span><span class="vid">transfer-inscription</span><a class="tag tag--ref" href="specification.html#DUST-7.1">DUST-7.1</a><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></summary>
+              <div class="vector-detail">
+                <p>No transfer inscription is valid. Movement happens by spending the satoshis that carry the units. Earlier documentation listed an official transfer payload as an open question; the current implementation answers it by accepting none.</p>
+                <h4>Input</h4>
+                <pre><code>{
+  &quot;p&quot;: &quot;dust-20&quot;,
+  &quot;op&quot;: &quot;transfer&quot;,
+  &quot;tick&quot;: &quot;dust&quot;,
+  &quot;amt&quot;: &quot;10&quot;
+}</code></pre>
+                
+              </div>
+            </details><details class="vector" id="wrong-protocol">
+              <summary><span class="verdict verdict--fail">REJECT</span> <code>bad_protocol</code><span class="vname">A different protocol identifier</span><span class="vid">wrong-protocol</span><a class="tag tag--ref" href="specification.html#DUST-4.1">DUST-4.1</a><span class="tag tag--verified" title="Documented in the legacy DUST-20 specification and enforced by the Bitcoin Universe production indexer. Both sources agree.">VERIFIED</span></summary>
+              <div class="vector-detail">
+                <p>Content whose p is not dust-20 is not a DUST-20 message.</p>
+                <h4>Input</h4>
+                <pre><code>{
+  &quot;p&quot;: &quot;brc-20&quot;,
+  &quot;op&quot;: &quot;deploy&quot;,
+  &quot;tick&quot;: &quot;dust&quot;,
+  &quot;max&quot;: &quot;1000&quot;,
+  &quot;lim&quot;: &quot;10&quot;
+}</code></pre>
+                
+              </div>
+            </details><details class="vector" id="non-string-value">
+              <summary><span class="verdict verdict--fail">REJECT</span> <code>not_flat_strings</code><span class="vname">A numeric JSON value</span><span class="vid">non-string-value</span><a class="tag tag--ref" href="specification.html#DUST-2.5">DUST-2.5</a><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></summary>
+              <div class="vector-detail">
+                <p>Every value must be a JSON string. A bare number is rejected because JSON numbers cannot carry large integers exactly.</p>
+                <h4>Input</h4>
+                <pre><code>{&quot;p&quot;:&quot;dust-20&quot;,&quot;op&quot;:&quot;mint&quot;,&quot;tick&quot;:&quot;dust&quot;,&quot;amt&quot;:100,&quot;sats&quot;:&quot;54600&quot;}</code></pre>
+                
+              </div>
+            </details><details class="vector" id="duplicate-key">
+              <summary><span class="verdict verdict--fail">REJECT</span> <code>duplicate_key</code><span class="vname">A repeated field</span><span class="vid">duplicate-key</span><a class="tag tag--ref" href="specification.html#DUST-2.6">DUST-2.6</a><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></summary>
+              <div class="vector-detail">
+                <p>A duplicate key is rejected rather than resolved last-wins, because two readers would otherwise disagree about the amount.</p>
+                <h4>Input</h4>
+                <pre><code>{&quot;p&quot;:&quot;dust-20&quot;,&quot;op&quot;:&quot;mint&quot;,&quot;tick&quot;:&quot;dust&quot;,&quot;amt&quot;:&quot;100&quot;,&quot;amt&quot;:&quot;1&quot;,&quot;sats&quot;:&quot;54600&quot;}</code></pre>
+                
+              </div>
+            </details><details class="vector" id="trailing-content">
+              <summary><span class="verdict verdict--fail">REJECT</span> <code>trailing_content</code><span class="vname">Trailing content after the object</span><span class="vid">trailing-content</span><a class="tag tag--ref" href="specification.html#DUST-2.4">DUST-2.4</a><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></summary>
+              <div class="vector-detail">
+                <p>Content after the closing brace makes the message ambiguous and is rejected.</p>
+                <h4>Input</h4>
+                <pre><code>{&quot;p&quot;:&quot;dust-20&quot;,&quot;op&quot;:&quot;mint&quot;,&quot;tick&quot;:&quot;dust&quot;,&quot;amt&quot;:&quot;1&quot;,&quot;sats&quot;:&quot;546&quot;} extra</code></pre>
+                
+              </div>
+            </details><details class="vector" id="nested-object">
+              <summary><span class="verdict verdict--fail">REJECT</span> <code>not_flat_strings</code><span class="vname">A nested object</span><span class="vid">nested-object</span><a class="tag tag--ref" href="specification.html#DUST-2.5">DUST-2.5</a><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></summary>
+              <div class="vector-detail">
+                <p>A payload is a flat object of strings. Nesting is rejected.</p>
+                <h4>Input</h4>
+                <pre><code>{&quot;p&quot;:&quot;dust-20&quot;,&quot;op&quot;:&quot;deploy&quot;,&quot;tick&quot;:&quot;dust&quot;,&quot;meta&quot;:{&quot;x&quot;:&quot;1&quot;}}</code></pre>
+                
+              </div>
+            </details><details class="vector" id="not-json">
+              <summary><span class="verdict verdict--fail">REJECT</span> <code>not_object</code><span class="vname">Content that is not a JSON object</span><span class="vid">not-json</span><a class="tag tag--ref" href="specification.html#DUST-2.4">DUST-2.4</a><span class="tag tag--universe" title="Enforced by the Bitcoin Universe production indexer. The legacy specification does not settle this point, so an independent implementation may differ.">UNIVERSE</span></summary>
+              <div class="vector-detail">
+                <p>Inscription content must parse as a single JSON object.</p>
+                <h4>Input</h4>
+                <pre><code>dust-20 deploy dust 1000</code></pre>
+                
+              </div>
+            </details></div>
+      </section>
 
-        <section id="codes">
-          <h2>Issue codes</h2>
-          <p>Every rejection reports a stable code. These are the codes the fixtures assert against, so a change in behaviour breaks the test suite rather than quietly changing the documentation.</p>
-          <div class="table-wrap" data-issue-codes></div>
+      <section class="section" id="scenarios">
+        <h2><span class="num">C.3</span> Transaction scenarios</h2>
+        <p class="lede">Payload vectors check messages. These check constructions: the same ordinal flow rule applied to whole transactions, with the outcome each one produces.</p>
+        <div class="scroll"><table class="tbl"><caption>Transaction constructions and their outcomes</caption><thead><tr><th>Scenario</th><th>Construction</th><th>Outcome</th><th>Rule</th></tr></thead><tbody><tr>
+          <td><b>Partial send with colored change</b><small>Send 10 of 91 units and keep the rest. The reference safe construction.</small></td>
+          <td class="mono">colored + cardinal<br>&rarr; colored + colored + cardinal</td>
+          <td><span class="verdict verdict--pass">NO LOSS</span></td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-7.7">DUST-7.7</a></td>
+        </tr><tr>
+          <td><b>Send the whole allocation</b><small>Nothing remains, so no colored change output is needed.</small></td>
+          <td class="mono">colored + cardinal<br>&rarr; colored + cardinal</td>
+          <td><span class="verdict verdict--pass">NO LOSS</span></td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-7.4">DUST-7.4</a></td>
+        </tr><tr>
+          <td><b>Missing colored change burns the remainder</b><small>Only the receiver output is colored, so the other 81 units are destroyed.</small></td>
+          <td class="mono">colored + cardinal<br>&rarr; colored + cardinal</td>
+          <td><span class="verdict verdict--fail">BURNS</span></td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-8.3">DUST-8.3</a></td>
+        </tr><tr>
+          <td><b>Paying the fee out of colored backing</b><small>No cardinal input, so the fee eats into the colored range and burns units.</small></td>
+          <td class="mono">colored<br>&rarr; colored + colored</td>
+          <td><span class="verdict verdict--fail">BURNS</span></td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-8.1">DUST-8.1</a></td>
+        </tr><tr>
+          <td><b>An output the reader cannot attribute</b><small>Units landing in an output with no supported address are destroyed.</small></td>
+          <td class="mono">colored + cardinal<br>&rarr; unsupported + colored + cardinal</td>
+          <td><span class="verdict verdict--fail">BURNS</span></td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-8.2">DUST-8.2</a></td>
+        </tr><tr>
+          <td><b>Merging two allocations</b><small>Two colored inputs of the same ticker combine into one output.</small></td>
+          <td class="mono">colored + colored + cardinal<br>&rarr; colored + cardinal</td>
+          <td><span class="verdict verdict--pass">NO LOSS</span></td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-7.6">DUST-7.6</a></td>
+        </tr></tbody></table></div>
+        <p>Each scenario runs in the <a href="transactions.html#simulator">allocation simulator</a>, which reports the exact unit landings and burn totals rather than a summary verdict.</p>
+      </section>
 
-          <div class="notice info">
-            <span class="notice-mark" aria-hidden="true">i</span>
-            <div>
-              <p class="notice-title">These cases are also a test suite</p>
-              <p>The same fixtures run under <code>npm test</code> in the repository. A documentation claim and the running validator therefore cannot drift apart: if a vector says a payload is rejected with a given code, the build fails unless the validator agrees.</p>
-            </div>
-          </div>
-        </section>
-      </div>
-    <nav class="page-nav" aria-label="Pagination">
-      <a href="reference.html"><em>Previous</em><b>Reference</b></a>
-      <a href="indexer.html"><em>Next</em><b>For builders</b></a>
-    </nav>
+      <section class="section" id="codes">
+        <h2><span class="num">C.4</span> Issue codes</h2>
+        <p class="lede">The stable code set a reader emits. Codes are part of the contract: two implementations that reject the same payload should reject it for the same stated reason.</p>
+        <div class="scroll"><table class="tbl"><caption>Issue codes a reader emits, and the rule each one enforces</caption><thead><tr><th>Issue code</th><th>Rule</th><th>Condition</th></tr></thead><tbody><tr>
+          <td class="mono">not_object</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-2.4">DUST-2.4</a></td>
+          <td><p>Content is not a single JSON object.</p></td>
+        </tr><tr>
+          <td class="mono">not_flat_strings</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-2.5">DUST-2.5</a></td>
+          <td><p>A value is not a JSON string, or the object is nested.</p></td>
+        </tr><tr>
+          <td class="mono">duplicate_key</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-2.6">DUST-2.6</a></td>
+          <td><p>A field appears more than once.</p></td>
+        </tr><tr>
+          <td class="mono">trailing_content</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-2.4">DUST-2.4</a></td>
+          <td><p>Content continues after the closing brace.</p></td>
+        </tr><tr>
+          <td class="mono">content_too_large</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-2.3">DUST-2.3</a></td>
+          <td><p>Content exceeds 4096 bytes and is not evaluated.</p></td>
+        </tr><tr>
+          <td class="mono">bad_protocol</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-4.1">DUST-4.1</a></td>
+          <td><p>p is not the literal string dust-20.</p></td>
+        </tr><tr>
+          <td class="mono">bad_operation</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-4.2">DUST-4.2</a></td>
+          <td><p>op is not deploy or mint.</p></td>
+        </tr><tr>
+          <td class="mono">bad_tick</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-4.3">DUST-4.3</a>, <a class="tag tag--ref" href="specification.html#DUST-4.4">DUST-4.4</a></td>
+          <td><p>The ticker is not NFC, is outside 1 to 64 bytes, or contains an excluded character.</p></td>
+        </tr><tr>
+          <td class="mono">missing_field</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-5.1">DUST-5.1</a>, <a class="tag tag--ref" href="specification.html#DUST-6.1">DUST-6.1</a></td>
+          <td><p>A required field of the operation is absent.</p></td>
+        </tr><tr>
+          <td class="mono">unknown_field</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-5.1">DUST-5.1</a>, <a class="tag tag--ref" href="specification.html#DUST-6.1">DUST-6.1</a></td>
+          <td><p>A field outside the operation key set is present.</p></td>
+        </tr><tr>
+          <td class="mono">bad_integer</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-3.1">DUST-3.1</a>, <a class="tag tag--ref" href="specification.html#DUST-3.2">DUST-3.2</a></td>
+          <td><p>A quantity is not a strict decimal string.</p></td>
+        </tr><tr>
+          <td class="mono">exceeds_money_supply</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-3.3">DUST-3.3</a>, <a class="tag tag--ref" href="specification.html#DUST-5.5">DUST-5.5</a></td>
+          <td><p>A satoshi quantity exceeds the total that will ever exist.</p></td>
+        </tr><tr>
+          <td class="mono">max_sats_mismatch</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-5.4">DUST-5.4</a></td>
+          <td><p>max_sats does not equal supply × unit_sats.</p></td>
+        </tr><tr>
+          <td class="mono">lim_sats_above_max</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-5.6">DUST-5.6</a></td>
+          <td><p>lim_sats exceeds max_sats.</p></td>
+        </tr><tr>
+          <td class="mono">duplicate_deployment</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-5.7">DUST-5.7</a></td>
+          <td><p>The ticker identity already has an accepted deployment.</p></td>
+        </tr><tr>
+          <td class="mono">deployment_missing</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-6.2">DUST-6.2</a></td>
+          <td><p>The mint resolves no accepted deployment.</p></td>
+        </tr><tr>
+          <td class="mono">mint_sats_mismatch</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-6.4">DUST-6.4</a></td>
+          <td><p>sats does not equal amt × unit_sats for the resolved deployment.</p></td>
+        </tr><tr>
+          <td class="mono">mint_exceeds_limit</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-6.5">DUST-6.5</a></td>
+          <td><p>sats exceeds the deployment per-mint cap.</p></td>
+        </tr><tr>
+          <td class="mono">mint_exceeds_supply</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-6.6">DUST-6.6</a></td>
+          <td><p>Minted units plus amt would exceed supply.</p></td>
+        </tr><tr>
+          <td class="mono">output_value_mismatch</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-6.7">DUST-6.7</a></td>
+          <td><p>The carrying output value differs from sats.</p></td>
+        </tr><tr>
+          <td class="mono">allocation_overflows_input</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-7.2">DUST-7.2</a></td>
+          <td><p>A claimed allocation does not fit inside the output it is recorded against.</p></td>
+        </tr><tr>
+          <td class="mono">outputs_exceed_inputs</td>
+          <td><a class="tag tag--ref" href="specification.html#DUST-7.3">DUST-7.3</a></td>
+          <td><p>Outputs total more than inputs, so the transaction cannot be built.</p></td>
+        </tr></tbody></table></div>
+      </section>
+      <nav class="pagenav" aria-label="Page">
+      <a href="playground.html"><em>Previous</em><b>Decoder</b></a>
+      <a href="indexer.html"><em>Next</em><b>Indexing</b></a>
+      </nav>
     </main>
-    <aside class="docs-toc">
+    <aside class="contents">
       <nav aria-label="On this page">
         <h2>On this page</h2>
-        <ul class="toc-list">
-        <li><a href="#lab">Test cases</a></li>
-        <li><a href="#codes">Issue codes</a></li>
+        <ul>
+          <li><a href="#summary">Vector summary</a></li>
+          <li><a href="#vectors">The vectors</a></li>
+          <li><a href="#scenarios">Transaction scenarios</a></li>
+          <li><a href="#codes">Issue codes</a></li>
         </ul>
       </nav>
     </aside>
   </div>
-  <footer class="footer">
-    <div class="footer-inner">
-      <div>
-        <span class="footer-brand-mark" aria-hidden="true">DUST</span>
-        <h2>DUST-20</h2>
-        <p>DUST-20 binds every token unit to an exact number of satoshis. Deploy and mint are inscriptions; every later movement is an ordinary Bitcoin spend of the satoshis that carry the units.</p>
+  <footer class="colophon">
+    <div class="colophon-inner">
+      <div class="colophon-grid">
+        <dl>
+          <dt>Owning repository</dt>
+          <dd><a href="https://github.com/bitcoinuniverseio/dust-20">bitcoinuniverseio/dust-20</a></dd>
+          <dt>Source path</dt>
+          <dd>content/conformance.html</dd>
+          <dt>Last verified</dt>
+          <dd>2026-09-01</dd>
+        </dl>
+        <dl>
+          <dt>Document version</dt>
+          <dd>1.1.0</dd>
+          <dt>Lifecycle</dt>
+          <dd>experimental</dd>
+          <dt>Chain and network</dt>
+          <dd>Bitcoin mainnet</dd>
+        </dl>
+        <div>
+          <h2>Documentation</h2>
+          <ul>
+            <li><a href="https://github.com/bitcoinuniverseio/dust-20/tree/main/content/conformance.html">Edit this page on GitHub</a></li>
+            <li><a href="https://docs.bitcoinuniverse.io">docs.bitcoinuniverse.io</a></li>
+            <li><a href="https://github.com/bitcoinuniverseio/dust-20/security/advisories/new">Report a vulnerability</a></li>
+            <li><a href="https://inscribe.bitcoinuniverse.io">Bitcoin Universe Inscribe</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Machine readable</h2>
+          <ul>
+            <li><a href="llms.txt">llms.txt</a></li>
+            <li><a href="docs.json">docs.json</a></li>
+            <li><a href="conformance.json">conformance.json</a></li>
+            <li><a href="search-index.json">search-index.json</a></li>
+          </ul>
+        </div>
       </div>
-      <div>
-        <h2>Documentation</h2>
-        <ul><li><a href="./">Start here</a></li><li><a href="how-it-works.html">How it works</a></li><li><a href="playground.html">Playground</a></li><li><a href="transactions.html">Transactions</a></li><li><a href="reference.html">Reference</a></li></ul>
-      </div>
-      <div>
-        <h2>More</h2>
-        <ul><li><a href="conformance.html">Conformance</a></li><li><a href="indexer.html">For builders</a></li><li><a href="safety.html">Safety</a></li><li><a href="glossary.html">Glossary</a></li></ul>
-      </div>
-      <div>
-        <h2>Machine readable</h2>
-        <ul>
-          <li><a href="llms.txt">llms.txt</a></li>
-          <li><a href="docs.json">docs.json</a></li>
-          <li><a href="conformance.json">conformance.json</a></li>
-          <li><a href="https://github.com/bitcoinuniverseio/dust-20">Source repository</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      Experimental documentation, last updated 2026-08-18. Review every Bitcoin transaction in your wallet before signing — this site never asks for a key and never signs anything.
+      <p class="colophon-note">Experimental documentation of an experimental protocol. Every statement carries a provenance label, and where the legacy specification and the current implementation disagree, both positions are published rather than silently resolved. No page on this site asks for a key, builds a transaction, or sends anything you type anywhere.</p>
     </div>
   </footer>
 </body>

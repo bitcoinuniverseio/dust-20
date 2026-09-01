@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DUST-20 in Bitcoin Universe | DUST-20</title>
+  <meta name="description" content="The recorded Bitcoin Universe capability state for DUST-20: read-only marketplace availability, the exact mutation gate, ownership and settlement statements, the first-party read path, and what would change it.">
+  <link rel="canonical" href="https://bitcoinuniverseio.github.io/dust-20/universe.html">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f4f4f1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0c0e11" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="DUST-20 documentation">
+  <meta property="og:title" content="DUST-20 in Bitcoin Universe | DUST-20">
+  <meta property="og:description" content="The recorded Bitcoin Universe capability state for DUST-20: read-only marketplace availability, the exact mutation gate, ownership and settlement statements, the first-party read path, and what would change it.">
+  <meta property="og:url" content="https://bitcoinuniverseio.github.io/dust-20/universe.html">
+  <meta property="og:image" content="https://bitcoinuniverseio.github.io/dust-20/assets/og.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DUST-20 in Bitcoin Universe | DUST-20">
+  <meta name="twitter:description" content="The recorded Bitcoin Universe capability state for DUST-20: read-only marketplace availability, the exact mutation gate, ownership and settlement statements, the first-party read path, and what would change it.">
+  <meta name="twitter:image" content="https://bitcoinuniverseio.github.io/dust-20/assets/og.svg">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/site.css">
+  <script>try{var t=localStorage.getItem('dust20-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+  <script type="module" src="assets/site.js" defer></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","name":"DUST-20 in Bitcoin Universe | DUST-20","headline":"Bitcoin Universe support","description":"The recorded Bitcoin Universe capability state for DUST-20: read-only marketplace availability, the exact mutation gate, ownership and settlement statements, the first-party read path, and what would change it.","url":"https://bitcoinuniverseio.github.io/dust-20/universe.html","inLanguage":"en","version":"1.1.0","dateModified":"2026-09-01","isPartOf":{"@type":"WebSite","name":"DUST-20 documentation","url":"https://bitcoinuniverseio.github.io/dust-20/"},"publisher":{"@type":"Organization","name":"Bitcoin Universe","url":"https://github.com/bitcoinuniverseio"}}</script>
+</head>
+<body data-page="universe" data-base="./">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="masthead">
+    <div class="masthead-inner">
+      <a class="brand" href="./">
+        <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="1.5" y="1.5" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="6" y="6" width="5" height="5" fill="currentColor"/><rect x="13" y="13" width="5" height="5" fill="currentColor"/><path d="M11 8.5h2M8.5 11v2" stroke="currentColor" stroke-width="1.2"/></svg>
+        <span class="brand-text">DUST-20</span>
+        <span class="brand-rev">REV 1.1.0</span>
+      </a>
+      <nav class="masthead-nav" data-nav aria-label="Documentation"><a href="./">Overview</a><a href="specification.html">Specification</a><a href="reference.html">Reference</a><a href="how-it-works.html">Guide</a><a href="transactions.html">Transactions</a><a href="playground.html">Decoder</a><a href="conformance.html">Test vectors</a><a href="indexer.html">Indexing</a><a href="universe.html" aria-current="page">Universe support</a><a href="safety.html">Security</a><a href="glossary.html">Glossary</a><a href="changelog.html">Changelog</a></nav>
+      <div class="masthead-tools">
+        <button class="tool-button" type="button" data-search-open aria-label="Search the documentation">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg>
+          <span class="label">Search</span><kbd>/</kbd>
+        </button>
+        <button class="tool-button" type="button" data-theme-toggle aria-pressed="false" aria-label="Switch between light and dark theme">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M19.4 4.6l-2.1 2.1M6.7 17.3l-2.1 2.1"/></svg>
+          <span class="label">Light</span>
+        </button>
+        <button class="tool-button menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-nav" aria-label="Show the documentation menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          <span class="label">Menu</span>
+        </button>
+      </div>
+    </div>
+  </header>
+  <dialog class="search" data-search aria-label="Search the documentation">
+    <form class="search-form" method="dialog" role="search">
+      <input type="search" placeholder="Search rules, fields, terms, vectors" aria-label="Search query" autocomplete="off" spellcheck="false">
+      <button class="btn" type="button" data-search-close>Close</button>
+    </form>
+    <ul class="search-results"></ul>
+  </dialog>
+  <div class="layout">
+    <aside class="sidebar" id="primary-nav">
+      <nav aria-label="Documentation index">
+        <h2>Index</h2>
+<div class="sidebar-group"><span>0 Orientation</span><ul><li><a href="./">Overview</a></li></ul></div><div class="sidebar-group"><span>1 Normative</span><ul><li><a href="specification.html">Specification</a></li><li><a href="reference.html">Reference</a></li></ul></div><div class="sidebar-group"><span>2 Applied</span><ul><li><a href="how-it-works.html">Guide</a></li><li><a href="transactions.html">Transactions</a></li><li><a href="playground.html">Decoder</a></li><li><a href="conformance.html">Test vectors</a></li></ul></div><div class="sidebar-group"><span>3 Operating</span><ul><li><a href="indexer.html">Indexing</a></li><li><a href="universe.html" aria-current="page">Universe support</a></li><li><a href="safety.html">Security</a></li></ul></div><div class="sidebar-group"><span>4 Appendix</span><ul><li><a href="glossary.html">Glossary</a></li><li><a href="changelog.html">Changelog</a></li></ul></div>
+      </nav>
+      <div class="sidebar-meta">
+        <div><b>Document</b><span>1.1.0</span></div>
+        <div><b>Revised</b><span>2026-09-01</span></div>
+        <div><b>Chain</b><span>Bitcoin</span></div>
+        <div><b>Network</b><span>mainnet</span></div>
+        <div><b>Lifecycle</b><span>experimental</span></div>
+      </div>
+    </aside>
+    <main class="main" id="main">
+      <div class="pagehead">
+        <p class="eyebrow">DUST-20 documentation</p>
+        <h1>Bitcoin Universe support</h1>
+        <p class="tagline">You can view DUST-20. You cannot trade it. Here is exactly why.</p>
+        <dl class="dsheet"><div><dt>Protocol</dt><dd>DUST-20<small>Registry id dust20, alias dust-20</small></dd></div><div><dt>Chain</dt><dd>Bitcoin<small>Network: mainnet</small></dd></div><div><dt>Ownership model</dt><dd>UTXO<small>Units are carried by satoshis in unspent outputs</small></dd></div><div><dt>Carrier</dt><dd>Inscription + spend<small>Deploy and mint are inscribed; movement is a spend</small></dd></div><div><dt>Decimals</dt><dd>0<small>Balances are whole units only</small></dd></div><div><dt>Document version</dt><dd>1.1.0<small>Revised 2026-09-01</small></dd></div><div><dt>Lifecycle</dt><dd>Experimental<small>Not a ratified multi-party standard</small></dd></div><div><dt>Owning repository</dt><dd>bitcoinuniverseio/dust-20<small>Documentation source of truth</small></dd></div></dl>
+      </div>
+      <section class="section" id="state">
+        <h2><span class="num">U.1</span> Recorded state</h2>
+        <p class="lede">You can view DUST-20 in Bitcoin Universe products. You cannot trade it there. This page publishes the exact recorded reason rather than leaving it implicit, because knowing why a thing is unavailable is more useful than discovering it at the moment you try.</p>
+
+        <div class="note note--critical">
+          <span class="note-mark" aria-hidden="true">!</span>
+          <div class="note-body">
+            <p class="note-title">Marketplace availability: read-only</p>
+            <p>DUST-20 is registered in the Bitcoin Universe capability registry with marketplace availability <code>read-only</code> and mode <code>read-only</code>. Every mutating marketplace action is unavailable. This is a deliberate closed gate, not a missing feature or a temporary outage.</p>
+          </div>
+        </div>
+
+        <dl class="kv">
+      <div><dt>Marketplace availability</dt><dd><b>read-only</b></dd></div>
+      <div><dt>Marketplace mode</dt><dd><b>read-only</b></dd></div>
+      <div><dt>Order book source</dt><dd>Read-only legacy Universe catalog</dd></div>
+      <div><dt>Ownership source of truth</dt><dd>No safe typed mutation resolver is configured</dd></div>
+      <div><dt>Settlement</dt><dd>No supported settlement while ownership is unverifiable</dd></div>
+      <div><dt>Protocol state source</dt><dd>DUST-20 indexer discovery and portfolio data</dd></div>
+      <div><dt>Mutation gate</dt><dd>DUST-20 mutations are unavailable until a typed authoritative ownership resolver replaces the retired address-only legacy flow.</dd></div>
+      <div><dt>Freshness policy</dt><dd>Discovery is non-authoritative for mutations.</dd></div>
+      <div><dt>Confirmation policy</dt><dd>No supported marketplace mutation reaches settlement.</dd></div>
+      <div><dt>Reorganization policy</dt><dd>Read-only catalog data follows its discovery source.</dd></div>
+    </dl>
+
+        <p>Each row above is the recorded value, reproduced word for word. The mutation gate, the ownership statement and the settlement statement are the three that matter: together they say that no configured source can prove who owns a DUST-20 output well enough to move money against it, so nothing that would move money is enabled.</p>
+      </section>
+
+      <section class="section" id="actions">
+        <h2><span class="num">U.2</span> Marketplace actions</h2>
+        <p class="lede">The full action matrix. Three read actions are available. Ten mutating actions are not, all for the same recorded reason.</p>
+        <div class="scroll"><table class="tbl"><caption>Every marketplace action, and whether DUST-20 supports it</caption><thead><tr><th>Action</th><th>Available</th><th>Mode or recorded reason</th></tr></thead><tbody><tr>
+          <td class="mono">view</td>
+          <td><span class="verdict verdict--pass">YES</span></td>
+          <td><code>read-only</code></td>
+        </tr><tr>
+          <td class="mono">view-collection</td>
+          <td><span class="verdict verdict--pass">YES</span></td>
+          <td><code>read-only</code></td>
+        </tr><tr>
+          <td class="mono">view-activity</td>
+          <td><span class="verdict verdict--pass">YES</span></td>
+          <td><code>read-only</code></td>
+        </tr><tr>
+          <td class="mono">list</td>
+          <td><span class="verdict verdict--fail">NO</span></td>
+          <td><small>DUST-20 mutations are unavailable until a typed authoritative ownership resolver replaces the retired address-only legacy flow.</small></td>
+        </tr><tr>
+          <td class="mono">update-listing</td>
+          <td><span class="verdict verdict--fail">NO</span></td>
+          <td><small>DUST-20 mutations are unavailable until a typed authoritative ownership resolver replaces the retired address-only legacy flow.</small></td>
+        </tr><tr>
+          <td class="mono">unlist</td>
+          <td><span class="verdict verdict--fail">NO</span></td>
+          <td><small>DUST-20 mutations are unavailable until a typed authoritative ownership resolver replaces the retired address-only legacy flow.</small></td>
+        </tr><tr>
+          <td class="mono">buy</td>
+          <td><span class="verdict verdict--fail">NO</span></td>
+          <td><small>DUST-20 mutations are unavailable until a typed authoritative ownership resolver replaces the retired address-only legacy flow.</small></td>
+        </tr><tr>
+          <td class="mono">sell</td>
+          <td><span class="verdict verdict--fail">NO</span></td>
+          <td><small>DUST-20 mutations are unavailable until a typed authoritative ownership resolver replaces the retired address-only legacy flow.</small></td>
+        </tr><tr>
+          <td class="mono">make-offer</td>
+          <td><span class="verdict verdict--fail">NO</span></td>
+          <td><small>DUST-20 mutations are unavailable until a typed authoritative ownership resolver replaces the retired address-only legacy flow.</small></td>
+        </tr><tr>
+          <td class="mono">accept-offer</td>
+          <td><span class="verdict verdict--fail">NO</span></td>
+          <td><small>DUST-20 mutations are unavailable until a typed authoritative ownership resolver replaces the retired address-only legacy flow.</small></td>
+        </tr><tr>
+          <td class="mono">cancel-offer</td>
+          <td><span class="verdict verdict--fail">NO</span></td>
+          <td><small>DUST-20 mutations are unavailable until a typed authoritative ownership resolver replaces the retired address-only legacy flow.</small></td>
+        </tr><tr>
+          <td class="mono">settle</td>
+          <td><span class="verdict verdict--fail">NO</span></td>
+          <td><small>DUST-20 mutations are unavailable until a typed authoritative ownership resolver replaces the retired address-only legacy flow.</small></td>
+        </tr><tr>
+          <td class="mono">reconcile</td>
+          <td><span class="verdict verdict--fail">NO</span></td>
+          <td><small>DUST-20 mutations are unavailable until a typed authoritative ownership resolver replaces the retired address-only legacy flow.</small></td>
+        </tr></tbody></table></div>
+
+        <div class="note note--warn">
+          <span class="note-mark" aria-hidden="true">!</span>
+          <div class="note-body">
+            <p class="note-title">What a read-only listing surface actually is</p>
+            <p>The order book source is recorded as a read-only legacy Universe catalog. If you see a DUST-20 listing inside a Bitcoin Universe product, it is catalog data: a record that someone once published an offer. It is not proof that the output is still unspent, not proof of who controls it, and not something the product will let you act on. Freshness policy is recorded as <b>Discovery is non-authoritative for mutations</b>, which is exactly what that means.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="surfaces">
+        <h2><span class="num">U.3</span> Product surfaces</h2>
+        <p class="lede">What each Bitcoin Universe surface does with DUST-20, from the registry entry rather than from intent.</p>
+        <div class="scroll"><table class="tbl"><caption>Bitcoin Universe product surfaces that handle DUST-20</caption><thead><tr><th>Surface</th><th>Actions</th><th>What that means</th></tr></thead><tbody><tr>
+          <td class="mono"><b>Core</b></td>
+          <td class="mono">view discover view-collection view-activity view-transaction</td>
+          <td><p>Discovery and browsing of DUST-20 tokens, collections, activity and transactions.</p></td>
+        </tr><tr>
+          <td class="mono"><b>Wallet</b></td>
+          <td class="mono">view send receive</td>
+          <td><p>Balance display and ordinary Bitcoin send and receive of the outputs that carry units.</p></td>
+        </tr><tr>
+          <td class="mono"><b>Inscribe</b></td>
+          <td class="mono">deploy mint transfer</td>
+          <td><p>Building deploy and mint inscriptions, and the spend that moves an allocation.</p></td>
+        </tr></tbody></table></div>
+
+        <dl class="kv">
+          <div><dt>Chain and network</dt><dd>Bitcoin mainnet.</dd></div>
+          <div><dt>Ownership model</dt><dd>UTXO. Units are carried by satoshis in unspent outputs, so a wallet send of the carrying output is a DUST-20 movement whether or not the wallet knows it.</dd></div>
+          <div><dt>Address roles</dt><dd>Payment and ordinals. A DUST-20 allocation can sit under either role, which is why a wallet must treat colored outputs as distinct from spendable change.</dd></div>
+          <div><dt>Decimals</dt><dd>None. Balances are whole units.</dd></div>
+          <div><dt>Protocol state source</dt><dd>DUST-20 indexer discovery and portfolio data, served by the first-party <code>index-dust20</code> service.</dd></div>
+        </dl>
+
+        <div class="note note--warn">
+          <span class="note-mark" aria-hidden="true">!</span>
+          <div class="note-body">
+            <p class="note-title">A wallet send is not automatically a safe DUST-20 send</p>
+            <p>Wallet support is recorded as view, send and receive: it can display balances and move the outputs. It does not follow that an arbitrary wallet transaction preserves your units. The output layout still decides the outcome, and a wallet that subtracts a fee from the largest output, or omits a colored change output, will destroy units while reporting success. Read the <a href="safety.html">security considerations</a> before sending.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="why">
+        <h2><span class="num">U.4</span> Why it is read-only</h2>
+        <p class="lede">Three things explain the gate: where the data comes from, what the retired path could and could not prove, and what would have to exist before the gate could open.</p>
+        <div class="note note--info">
+          <span class="note-mark" aria-hidden="true">i</span>
+          <div class="note-body"><p class="note-title">The read path is first-party</p><p>Bitcoin Universe engineering rules require that all Bitcoin production blockchain data come from Universe-owned and Universe-operated nodes, APIs, databases and indexers, with no third-party fallback path. DUST-20 discovery and portfolio data is served by the first-party index-dust20 service, which reads a Universe-operated Bitcoin Core node and the shared Universe Ord 0.29 instance.</p></div>
+        </div><div class="note note--info">
+          <span class="note-mark" aria-hidden="true">i</span>
+          <div class="note-body"><p class="note-title">Why a boolean output check is not enough to trade on</p><p>The retired legacy path answered one question: is this listing output still good, true or false. That answer cannot prove the exact amount, the owning address, the schema of the response, the freshness of the observation, or authority to settle. Every one of those is required before a purchase can move someone else’s money, so the route is deliberately non-executable rather than best-effort.</p></div>
+        </div><div class="note note--info">
+          <span class="note-mark" aria-hidden="true">i</span>
+          <div class="note-body"><p class="note-title">What would change this</p><p>A typed authoritative ownership resolver: first-party, returning identity, exact amount, owning address, outpoint, observation height and coverage, bound to a checkpoint. When one is configured, the capability registry entry changes and marketplace mutations can be reconsidered. Until then, treat every DUST-20 listing surface in Universe products as catalog data only.</p></div>
+        </div>
+
+        <h3>The shape of the argument</h3>
+        <div class="scroll">
+          <table class="tbl">
+            <caption>What a settlement decision needs, and what a boolean availability check provides</caption>
+            <thead><tr><th>Required to move money</th><th>Provided by a boolean output check</th></tr></thead>
+            <tbody>
+              <tr><td>The ticker identity of the allocation</td><td><span class="verdict verdict--fail">NO</span></td></tr>
+              <tr><td>The exact unit amount</td><td><span class="verdict verdict--fail">NO</span></td></tr>
+              <tr><td>The owning address</td><td><span class="verdict verdict--fail">NO</span></td></tr>
+              <tr><td>The outpoint and its unspent status at a known height</td><td><span class="verdict verdict--fail">NO</span></td></tr>
+              <tr><td>A typed response schema the caller validated</td><td><span class="verdict verdict--fail">NO</span></td></tr>
+              <tr><td>Observation freshness bound to a checkpoint</td><td><span class="verdict verdict--fail">NO</span></td></tr>
+              <tr><td>Authority to settle</td><td><span class="verdict verdict--fail">NO</span></td></tr>
+              <tr><td>Whether one listing id is currently marked good</td><td><span class="verdict verdict--pass">YES</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>A single boolean answers the last row and nothing above it. Building a purchase on it would mean signing away buyer funds on the strength of a yes that cannot say what was bought, from whom, or when the answer was true. The gate is closed for that reason, and it stays closed until a resolver exists that answers every row.</p>
+
+        <div class="note note--info">
+          <span class="note-mark" aria-hidden="true">i</span>
+          <div class="note-body">
+            <p class="note-title">This is also the general lesson</p>
+            <p>If you are integrating DUST-20 anywhere, the same test applies to whatever source you plan to trust. Ask what it proves, not what it returns. A source that cannot state identity, amount, owner, outpoint, height and coverage is a discovery source, and discovery sources are for showing people things, not for settling value. That distinction is the one recorded in <a href="specification.html#DUST-9.7">DUST-9.7</a>.</p>
+          </div>
+        </div>
+
+        <h3>What would change this</h3>
+        <p>A typed authoritative ownership resolver, first-party, returning identity, exact amount, owning address, outpoint, observation height and coverage label, bound to a stable checkpoint. When one is configured, the capability registry entry changes and marketplace mutations can be reconsidered against it. Until then, treat every DUST-20 listing surface in Bitcoin Universe products as catalog data only. This is tracked as an <a href="reference.html#typed-ownership">open question</a> on the reference page rather than as a roadmap promise.</p>
+      </section>
+      <nav class="pagenav" aria-label="Page">
+      <a href="indexer.html"><em>Previous</em><b>Indexing</b></a>
+      <a href="safety.html"><em>Next</em><b>Security</b></a>
+      </nav>
+    </main>
+    <aside class="contents">
+      <nav aria-label="On this page">
+        <h2>On this page</h2>
+        <ul>
+          <li><a href="#state">Recorded state</a></li>
+          <li><a href="#actions">Marketplace actions</a></li>
+          <li><a href="#surfaces">Product surfaces</a></li>
+          <li><a href="#why">Why it is read-only</a></li>
+        </ul>
+      </nav>
+    </aside>
+  </div>
+  <footer class="colophon">
+    <div class="colophon-inner">
+      <div class="colophon-grid">
+        <dl>
+          <dt>Owning repository</dt>
+          <dd><a href="https://github.com/bitcoinuniverseio/dust-20">bitcoinuniverseio/dust-20</a></dd>
+          <dt>Source path</dt>
+          <dd>content/universe.html</dd>
+          <dt>Last verified</dt>
+          <dd>2026-09-01</dd>
+        </dl>
+        <dl>
+          <dt>Document version</dt>
+          <dd>1.1.0</dd>
+          <dt>Lifecycle</dt>
+          <dd>experimental</dd>
+          <dt>Chain and network</dt>
+          <dd>Bitcoin mainnet</dd>
+        </dl>
+        <div>
+          <h2>Documentation</h2>
+          <ul>
+            <li><a href="https://github.com/bitcoinuniverseio/dust-20/tree/main/content/universe.html">Edit this page on GitHub</a></li>
+            <li><a href="https://docs.bitcoinuniverse.io">docs.bitcoinuniverse.io</a></li>
+            <li><a href="https://github.com/bitcoinuniverseio/dust-20/security/advisories/new">Report a vulnerability</a></li>
+            <li><a href="https://inscribe.bitcoinuniverse.io">Bitcoin Universe Inscribe</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Machine readable</h2>
+          <ul>
+            <li><a href="llms.txt">llms.txt</a></li>
+            <li><a href="docs.json">docs.json</a></li>
+            <li><a href="conformance.json">conformance.json</a></li>
+            <li><a href="search-index.json">search-index.json</a></li>
+          </ul>
+        </div>
+      </div>
+      <p class="colophon-note">Experimental documentation of an experimental protocol. Every statement carries a provenance label, and where the legacy specification and the current implementation disagree, both positions are published rather than silently resolved. No page on this site asks for a key, builds a transaction, or sends anything you type anywhere.</p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -3,275 +3,265 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>DUST-20 playground | DUST-20</title>
-  <meta name="description" content="Build and validate DUST-20 deploy and mint payloads in your browser with exact integer arithmetic. No wallet, no keys, no signing.">
+  <title>DUST-20 decoder and conformance runner | DUST-20</title>
+  <meta name="description" content="Decode a DUST-20 payload field by field, validate it against the numbered specification rules with exact integer arithmetic, and run the published test vectors. Runs entirely in your browser.">
   <link rel="canonical" href="https://bitcoinuniverseio.github.io/dust-20/playground.html">
-  <meta name="theme-color" content="#3b2d19">
-  <meta name="color-scheme" content="light">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f4f4f1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0c0e11" media="(prefers-color-scheme: dark)">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="DUST-20 documentation">
-  <meta property="og:title" content="DUST-20 playground | DUST-20">
-  <meta property="og:description" content="Build and validate DUST-20 deploy and mint payloads in your browser with exact integer arithmetic. No wallet, no keys, no signing.">
+  <meta property="og:title" content="DUST-20 decoder and conformance runner | DUST-20">
+  <meta property="og:description" content="Decode a DUST-20 payload field by field, validate it against the numbered specification rules with exact integer arithmetic, and run the published test vectors. Runs entirely in your browser.">
   <meta property="og:url" content="https://bitcoinuniverseio.github.io/dust-20/playground.html">
   <meta property="og:image" content="https://bitcoinuniverseio.github.io/dust-20/assets/og.svg">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="DUST-20 playground | DUST-20">
-  <meta name="twitter:description" content="Build and validate DUST-20 deploy and mint payloads in your browser with exact integer arithmetic. No wallet, no keys, no signing.">
+  <meta name="twitter:title" content="DUST-20 decoder and conformance runner | DUST-20">
+  <meta name="twitter:description" content="Decode a DUST-20 payload field by field, validate it against the numbered specification rules with exact integer arithmetic, and run the published test vectors. Runs entirely in your browser.">
   <meta name="twitter:image" content="https://bitcoinuniverseio.github.io/dust-20/assets/og.svg">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/site.css">
-  <script type="module" src="assets/site.js"></script>
-  <script type="module" src="assets/app.js"></script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","name":"DUST-20 playground | DUST-20","headline":"Protocol playground","description":"Build and validate DUST-20 deploy and mint payloads in your browser with exact integer arithmetic. No wallet, no keys, no signing.","url":"https://bitcoinuniverseio.github.io/dust-20/playground.html","inLanguage":"en","dateModified":"2026-08-18","isPartOf":{"@type":"WebSite","name":"DUST-20 documentation","url":"https://bitcoinuniverseio.github.io/dust-20/"},"publisher":{"@type":"Organization","name":"Bitcoin Universe","url":"https://github.com/bitcoinuniverseio"}}</script>
+  <script>try{var t=localStorage.getItem('dust20-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+  <script type="module" src="assets/site.js" defer></script>
+  <script type="module" src="assets/tool.js" defer></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","name":"DUST-20 decoder and conformance runner | DUST-20","headline":"Decoder and conformance runner","description":"Decode a DUST-20 payload field by field, validate it against the numbered specification rules with exact integer arithmetic, and run the published test vectors. Runs entirely in your browser.","url":"https://bitcoinuniverseio.github.io/dust-20/playground.html","inLanguage":"en","version":"1.1.0","dateModified":"2026-09-01","isPartOf":{"@type":"WebSite","name":"DUST-20 documentation","url":"https://bitcoinuniverseio.github.io/dust-20/"},"publisher":{"@type":"Organization","name":"Bitcoin Universe","url":"https://github.com/bitcoinuniverseio"}}</script>
 </head>
-<body data-page="playground">
+<body data-page="playground" data-base="./">
   <a class="skip-link" href="#main">Skip to content</a>
-  <header class="site-header">
-    <div class="header-inner">
-      <a class="brand" href="./"><span class="brand-mark" aria-hidden="true">DUST</span><span>DUST-20</span></a>
-      <nav class="site-nav" data-site-nav aria-label="Primary"><a href="./">Start here</a><a href="how-it-works.html">How it works</a><a href="playground.html" aria-current="page">Playground</a><a href="transactions.html">Transactions</a><a href="reference.html">Reference</a><a href="conformance.html">Conformance</a><a href="indexer.html">For builders</a><a href="safety.html">Safety</a><a href="glossary.html">Glossary</a></nav>
-      <div class="header-tools">
-        <button class="search-trigger" type="button" data-search-trigger aria-label="Search the documentation">
-          <span aria-hidden="true">Search</span><kbd>/</kbd>
+  <header class="masthead">
+    <div class="masthead-inner">
+      <a class="brand" href="./">
+        <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="1.5" y="1.5" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="6" y="6" width="5" height="5" fill="currentColor"/><rect x="13" y="13" width="5" height="5" fill="currentColor"/><path d="M11 8.5h2M8.5 11v2" stroke="currentColor" stroke-width="1.2"/></svg>
+        <span class="brand-text">DUST-20</span>
+        <span class="brand-rev">REV 1.1.0</span>
+      </a>
+      <nav class="masthead-nav" data-nav aria-label="Documentation"><a href="./">Overview</a><a href="specification.html">Specification</a><a href="reference.html">Reference</a><a href="how-it-works.html">Guide</a><a href="transactions.html">Transactions</a><a href="playground.html" aria-current="page">Decoder</a><a href="conformance.html">Test vectors</a><a href="indexer.html">Indexing</a><a href="universe.html">Universe support</a><a href="safety.html">Security</a><a href="glossary.html">Glossary</a><a href="changelog.html">Changelog</a></nav>
+      <div class="masthead-tools">
+        <button class="tool-button" type="button" data-search-open aria-label="Search the documentation">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg>
+          <span class="label">Search</span><kbd>/</kbd>
         </button>
-        <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-navigation">Menu</button>
+        <button class="tool-button" type="button" data-theme-toggle aria-pressed="false" aria-label="Switch between light and dark theme">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M19.4 4.6l-2.1 2.1M6.7 17.3l-2.1 2.1"/></svg>
+          <span class="label">Light</span>
+        </button>
+        <button class="tool-button menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-nav" aria-label="Show the documentation menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          <span class="label">Menu</span>
+        </button>
       </div>
     </div>
   </header>
-  <dialog class="search-dialog" data-search-dialog aria-label="Search the documentation">
-    <form method="dialog" role="search">
-      <input type="search" placeholder="Search pages, fields, rules, terms…" aria-label="Search query" autocomplete="off">
-      <button class="button small secondary" type="button" onclick="this.closest('dialog').close()">Close</button>
+  <dialog class="search" data-search aria-label="Search the documentation">
+    <form class="search-form" method="dialog" role="search">
+      <input type="search" placeholder="Search rules, fields, terms, vectors" aria-label="Search query" autocomplete="off" spellcheck="false">
+      <button class="btn" type="button" data-search-close>Close</button>
     </form>
-    <ul class="search-results" data-search-results></ul>
+    <ul class="search-results"></ul>
   </dialog>
-  <div class="docs-layout">
-    <aside class="docs-sidebar">
-      <nav aria-label="Documentation">
-        <h2>Documentation</h2>
-        <ul class="sidebar-list">
-        <li><a href="./">Start here</a></li>
-        <li><a href="how-it-works.html">How it works</a></li>
-        <li><a href="playground.html" aria-current="page">Playground</a></li>
-        <li><a href="transactions.html">Transactions</a></li>
-        <li><a href="reference.html">Reference</a></li>
-        <li><a href="conformance.html">Conformance</a></li>
-        <li><a href="indexer.html">For builders</a></li>
-        <li><a href="safety.html">Safety</a></li>
-        <li><a href="glossary.html">Glossary</a></li>
-        </ul>
+  <div class="layout">
+    <aside class="sidebar" id="primary-nav">
+      <nav aria-label="Documentation index">
+        <h2>Index</h2>
+<div class="sidebar-group"><span>0 Orientation</span><ul><li><a href="./">Overview</a></li></ul></div><div class="sidebar-group"><span>1 Normative</span><ul><li><a href="specification.html">Specification</a></li><li><a href="reference.html">Reference</a></li></ul></div><div class="sidebar-group"><span>2 Applied</span><ul><li><a href="how-it-works.html">Guide</a></li><li><a href="transactions.html">Transactions</a></li><li><a href="playground.html" aria-current="page">Decoder</a></li><li><a href="conformance.html">Test vectors</a></li></ul></div><div class="sidebar-group"><span>3 Operating</span><ul><li><a href="indexer.html">Indexing</a></li><li><a href="universe.html">Universe support</a></li><li><a href="safety.html">Security</a></li></ul></div><div class="sidebar-group"><span>4 Appendix</span><ul><li><a href="glossary.html">Glossary</a></li><li><a href="changelog.html">Changelog</a></li></ul></div>
       </nav>
-    </aside>
-    <main class="docs-main" id="main">
-      <div class="page-hero">
-        <p class="eyebrow">Playground</p>
-        <h1>Protocol playground</h1>
-        <p class="lead">Build DUST-20 payloads and watch them validate as you type. Everything runs in your browser with exact integer arithmetic — there is no wallet, no private key, no signing and no network request.</p>
+      <div class="sidebar-meta">
+        <div><b>Document</b><span>1.1.0</span></div>
+        <div><b>Revised</b><span>2026-09-01</span></div>
+        <div><b>Chain</b><span>Bitcoin</span></div>
+        <div><b>Network</b><span>mainnet</span></div>
+        <div><b>Lifecycle</b><span>experimental</span></div>
       </div>
+    </aside>
+    <main class="main" id="main">
+      <div class="pagehead">
+        <p class="eyebrow">DUST-20 documentation</p>
+        <h1>Decoder and conformance runner</h1>
+        <p class="tagline">Paste a payload. Every rule is checked in your browser.</p>
+        <dl class="dsheet"><div><dt>Protocol</dt><dd>DUST-20<small>Registry id dust20, alias dust-20</small></dd></div><div><dt>Chain</dt><dd>Bitcoin<small>Network: mainnet</small></dd></div><div><dt>Ownership model</dt><dd>UTXO<small>Units are carried by satoshis in unspent outputs</small></dd></div><div><dt>Carrier</dt><dd>Inscription + spend<small>Deploy and mint are inscribed; movement is a spend</small></dd></div><div><dt>Decimals</dt><dd>0<small>Balances are whole units only</small></dd></div><div><dt>Document version</dt><dd>1.1.0<small>Revised 2026-09-01</small></dd></div><div><dt>Lifecycle</dt><dd>Experimental<small>Not a ratified multi-party standard</small></dd></div><div><dt>Owning repository</dt><dd>bitcoinuniverseio/dust-20<small>Documentation source of truth</small></dd></div></dl>
+      </div>
+      <section class="section" id="decoder">
+        <h2><span class="num">D.1</span> Payload decoder</h2>
+        <p class="lede">Paste DUST-20 inscription content. The decoder shows the byte map of the payload, checks every field against the numbered rules with exact integer arithmetic, and explains any rejection in terms of the rule that caused it.</p>
 
-      <div class="prose">
-        <div class="notice good">
-          <span class="notice-mark" aria-hidden="true">✓</span>
-          <div>
-            <p class="notice-title">Nothing here can spend anything</p>
-            <p>These builders produce JSON payloads and arithmetic. They never ask for a key, never construct a transaction and never talk to a server. Your inputs stay in this page — the only thing that leaves is the shareable link you choose to copy.</p>
+        <div class="note note--info">
+          <span class="note-mark" aria-hidden="true">i</span>
+          <div class="note-body">
+            <p class="note-title">Nothing you paste leaves this page</p>
+            <p>This tool is a static ES module running in your browser. It makes no network request except to fetch <code>conformance.json</code> from this same origin when you press Run. There is no logging, no analytics, no storage of what you type, and no key handling of any kind. Reading the source is the fastest way to confirm that: <a href="assets/tool.js">assets/tool.js</a> and <a href="assets/protocol.js">assets/protocol.js</a>.</p>
           </div>
         </div>
-        <noscript><p class="noscript-note">The playground needs JavaScript. Without it, the <a href="reference.html">protocol reference</a> documents every rule and <a href="conformance.json">conformance.json</a> lists every worked example.</p></noscript>
 
-        <section id="deploy">
-          <h2>Deploy builder</h2>
-          <p>A deploy fixes a ticker's supply and its satoshi backing rule permanently. <code>max_sats</code> is derived here so you can see the arithmetic, but it is a required field — a deploy that omits it is rejected rather than having it inferred.</p>
-
-          <div class="lab">
-            <div class="lab-header">
-              <div>
-                <p class="lab-title">Build a deploy</p>
-                <p>Change any value and the derived numbers, warnings and payload update immediately.</p>
-              </div>
-              <div class="lab-actions">
-                <button class="button small secondary" type="button" data-deploy-example>Load example</button>
-                <button class="button small secondary" type="button" data-deploy-reset>Reset</button>
-                <button class="button small secondary" type="button" data-share-state>Copy shareable link</button>
-              </div>
-            </div>
-            <div class="lab-body">
-              <form class="field-grid" data-deploy-form onsubmit="return false">
-                <div class="field">
-                  <label for="deploy-tick">Ticker <code>tick</code></label>
-                  <input id="deploy-tick" name="tick" type="text" autocomplete="off" spellcheck="false" value="dust">
-                  <span class="hint">1–64 UTF-8 bytes. Identity is the lower-cased NFC form, so DUST and dust are the same ticker.</span>
-                </div>
-                <div class="field">
-                  <label for="deploy-supply">Maximum supply <code>supply</code></label>
-                  <input id="deploy-supply" name="supply" type="text" inputmode="numeric" autocomplete="off" value="1000000">
-                  <span class="hint">Whole units that may ever exist. Canonical integer string — no leading zeros or decimal point.</span>
-                </div>
-                <div class="field">
-                  <label for="deploy-unit-sats">Satoshis per unit <code>unit_sats</code></label>
-                  <input id="deploy-unit-sats" name="unit_sats" type="text" inputmode="numeric" autocomplete="off" value="546">
-                  <span class="hint">Fixed forever at deploy time. 546 is a common example because it matches Bitcoin's usual dust threshold — it is not a default.</span>
-                </div>
-                <div class="field">
-                  <label for="deploy-lim-sats">Per-mint cap <code>lim_sats</code> <span class="chip muted">Optional</span></label>
-                  <input id="deploy-lim-sats" name="lim_sats" type="text" inputmode="numeric" autocomplete="off" value="54600">
-                  <span class="hint">Maximum satoshis one mint may claim. Leave blank or set 0 for no limit.</span>
-                </div>
-              </form>
-              <div class="result-stack" data-deploy-output aria-live="polite"></div>
+        <noscript>
+          <div class="note note--warn">
+            <span class="note-mark" aria-hidden="true">!</span>
+            <div class="note-body">
+              <p class="note-title">The decoder needs JavaScript</p>
+              <p>Everything it enforces is published without JavaScript: the <a href="specification.html">numbered rules</a>, the <a href="reference.html#fields">field ledger</a>, the <a href="specification.html#invalidity">invalidity conditions</a> and the <a href="conformance.html">test vectors</a> with their expected outcomes.</p>
             </div>
           </div>
+        </noscript>
 
-          <div class="packet">
-            <div class="packet-header">
-              <span>Generated deploy payload</span>
-              <button class="copy-button" type="button" data-copy-target="[data-deploy-json]">Copy JSON</button>
-            </div>
-            <pre><code data-deploy-json>{}</code></pre>
-            <p>This is what would be inscribed. Field order follows the canonical operation shape; every value is a string.</p>
+        <div class="panel" data-decoder>
+          <div class="panel-head">
+            <h3>Input</h3>
+            <span class="tag tag--universe">Bitcoin mainnet</span>
           </div>
-        </section>
-
-        <section id="mint">
-          <h2>Mint builder</h2>
-          <p>A mint resolves an accepted deployment and creates units. Three numbers must agree: the deployment's unit size, the <code>sats</code> in the payload, and the real value of the Bitcoin output carrying the inscription.</p>
-
-          <div class="lab">
-            <div class="lab-header">
-              <div>
-                <p class="lab-title">Build a mint</p>
-                <p data-mint-deployment>Loading the deployment…</p>
-              </div>
-              <div class="lab-actions">
-                <button class="button small secondary" type="button" data-mint-example>Load example</button>
-              </div>
-            </div>
-            <div class="lab-body">
-              <form class="field-grid" data-mint-form onsubmit="return false">
-                <div class="field">
-                  <label for="mint-amt">Units to mint <code>amt</code></label>
-                  <input id="mint-amt" name="amt" type="text" inputmode="numeric" autocomplete="off" value="100">
-                  <span class="hint">Whole units. <code>sats</code> is derived as amt × unit_sats and shown below.</span>
-                </div>
-                <div class="field">
-                  <label for="mint-match">
-                    <input id="mint-match" type="checkbox" checked style="width:auto">
-                    Output value matches the payload
-                  </label>
-                  <span class="hint">A correct builder always makes these equal. Untick it to model a real mismatch and see how it is caught.</span>
-                </div>
-                <div class="field">
-                  <label for="mint-output">Observed output value (sats)</label>
-                  <input id="mint-output" name="output" type="text" inputmode="numeric" autocomplete="off" value="54600">
-                  <span class="hint">The satoshis actually held by the output carrying the inscription. The inscription must also sit at offset 0 of that output.</span>
-                </div>
-              </form>
-              <div class="result-stack" data-mint-output-report aria-live="polite"></div>
-            </div>
-          </div>
-
-          <div class="packet">
-            <div class="packet-header">
-              <span>Generated mint payload</span>
-              <button class="copy-button" type="button" data-copy-target="[data-mint-json]">Copy JSON</button>
-            </div>
-            <pre><code data-mint-json>{}</code></pre>
-            <p>A mint carries exactly five fields. There are no optional fields — adding one invalidates the payload.</p>
-          </div>
-        </section>
-
-        <section id="inspector">
-          <h2>Payload inspector</h2>
-          <p>Paste any DUST-20 content to parse it locally against the strict reader profile. Malformed data is reported, never silently corrected: no missing field is filled in, no value is rounded, and no unknown field is quietly ignored.</p>
-
-          <div class="lab">
-            <div class="lab-header">
-              <div>
-                <p class="lab-title">Inspect a payload</p>
-                <p>Reports the operation, every field, the derived arithmetic, and each reason it would be rejected.</p>
-              </div>
-              <div class="lab-actions">
-                <button class="button small secondary" type="button" data-inspector-load="deploy-basic">Deploy example</button>
-                <button class="button small secondary" type="button" data-inspector-load="mint-basic">Mint example</button>
-                <button class="button small secondary" type="button" data-inspector-clear>Clear</button>
-              </div>
-            </div>
-            <div class="lab-body">
-              <form class="field-grid" onsubmit="return false">
-                <div class="field">
-                  <label for="inspector-input">Inscription content</label>
-                  <textarea id="inspector-input" data-inspector-input spellcheck="false" autocomplete="off" aria-describedby="inspector-help"></textarea>
-                  <span class="hint" id="inspector-help">Must be a single flat JSON object whose values are all strings. Nesting, numbers, duplicate keys and trailing content are all rejected.</span>
-                </div>
-                <div class="field">
-                  <label for="inspector-resolve">
-                    <input id="inspector-resolve" type="checkbox" checked style="width:auto">
-                    Resolve against the current deployment
-                  </label>
-                  <span class="hint">Needed to check a mint. Without a resolved deployment there is no unit size to validate against.</span>
-                </div>
-                <div class="field">
-                  <label for="inspector-output-value">Observed output value (sats) <span class="chip muted">Optional</span></label>
-                  <input id="inspector-output-value" type="text" inputmode="numeric" autocomplete="off" placeholder="leave blank to skip the output check">
-                  <span class="hint">Supply the real output value to check a mint's declared backing against Bitcoin.</span>
-                </div>
-              </form>
-              <div class="result-stack" data-inspector-output aria-live="polite"></div>
-            </div>
-          </div>
-
-          <div class="notice">
-            <span class="notice-mark" aria-hidden="true">i</span>
+          <div class="panel-body">
             <div>
-              <p class="notice-title">Want to test the edge cases?</p>
-              <p>The <a href="conformance.html">conformance laboratory</a> holds every documented valid and invalid case, each executed live, and each loadable straight into this inspector.</p>
+              <label for="payload">Inscription content</label>
+              <textarea id="payload" spellcheck="false" autocomplete="off">{"p":"dust-20","op":"deploy","tick":"dust","supply":"1000000","unit_sats":"546","max_sats":"546000000","lim_sats":"54600"}</textarea>
+              <span class="hint">UTF-8, at most 4096 bytes, a single flat JSON object whose values are all strings.</span>
+            </div>
+
+            <div class="btn-row" style="margin-top:.7rem">
+              <button class="btn" type="button" data-sample='{"p":"dust-20","op":"deploy","tick":"dust","supply":"1000000","unit_sats":"546","max_sats":"546000000","lim_sats":"54600"}'>Valid deploy</button>
+              <button class="btn" type="button" data-sample='{"p":"dust-20","op":"mint","tick":"dust","amt":"100","sats":"54600"}'>Valid mint</button>
+              <button class="btn" type="button" data-sample='{"p":"dust-20","op":"deploy","tick":"dust","supply":"1000000","unit_sats":"546","max_sats":"545999999"}'>Arithmetic mismatch</button>
+              <button class="btn" type="button" data-sample='{"p":"dust-20","op":"transfer","tick":"dust","amt":"10"}'>Transfer inscription</button>
+              <button class="btn" type="button" data-sample='{"p":"dust-20","op":"mint","tick":"dust","amt":100,"sats":"54600"}'>Numeric value</button>
+              <button class="btn" type="button" data-sample='{"p":"dust-20","op":"deploy","tick":"dust","supply":"0546","unit_sats":"546","max_sats":"298116"}'>Leading zero</button>
+            </div>
+
+            <h4>Resolution context</h4>
+            <p><small>A mint cannot be checked without the deployment it resolves against, and a mint output value cannot be checked without the real output. Supply them here to exercise rules DUST-6.2, DUST-6.5, DUST-6.6 and DUST-6.7.</small></p>
+            <div class="field-row">
+              <div>
+                <label for="ctx-tick">Deployed ticker</label>
+                <input type="text" id="ctx-tick" data-ctx-tick value="dust" spellcheck="false">
+              </div>
+              <div>
+                <label for="ctx-unit">Deployment unit_sats</label>
+                <input type="text" id="ctx-unit" data-ctx-unit value="546" inputmode="numeric">
+              </div>
+              <div>
+                <label for="ctx-supply">Deployment supply</label>
+                <input type="text" id="ctx-supply" data-ctx-supply value="1000000" inputmode="numeric">
+              </div>
+              <div>
+                <label for="ctx-lim">Deployment lim_sats</label>
+                <input type="text" id="ctx-lim" data-ctx-lim value="54600" inputmode="numeric">
+              </div>
+              <div>
+                <label for="ctx-minted">Units already minted</label>
+                <input type="text" id="ctx-minted" data-ctx-minted value="0" inputmode="numeric">
+              </div>
+              <div>
+                <label for="ctx-output">Carrying output value, sats</label>
+                <input type="text" id="ctx-output" data-ctx-output value="" inputmode="numeric" placeholder="leave empty to skip DUST-6.7">
+              </div>
             </div>
           </div>
-        </section>
-      </div>
-    <nav class="page-nav" aria-label="Pagination">
-      <a href="how-it-works.html"><em>Previous</em><b>How it works</b></a>
-      <a href="transactions.html"><em>Next</em><b>Transactions</b></a>
-    </nav>
+        </div>
+
+        <div class="panel" data-decoder-output></div>
+      </section>
+
+      <section class="section" id="builder">
+        <h2><span class="num">D.2</span> Deploy and mint builders</h2>
+        <p class="lede">Derive the arithmetic fields rather than typing them. The builders compute <code>max_sats</code> and <code>sats</code> with exact integers, which is the whole point: a builder that uses floating point produces a payload that looks right and is rejected.</p>
+
+        <div class="panel" data-build-deploy>
+          <div class="panel-head"><h3>Deploy builder</h3><span data-build-verdict class="verdict verdict--idle">IDLE</span></div>
+          <div class="panel-body">
+            <div class="field-row">
+              <div><label for="d-tick">tick</label><input type="text" id="d-tick" name="tick" value="dust" spellcheck="false"></div>
+              <div><label for="d-supply">supply</label><input type="text" id="d-supply" name="supply" value="1000000" inputmode="numeric"></div>
+              <div><label for="d-unit">unit_sats</label><input type="text" id="d-unit" name="unit_sats" value="546" inputmode="numeric"></div>
+              <div><label for="d-lim">lim_sats, optional</label><input type="text" id="d-lim" name="lim_sats" value="54600" inputmode="numeric"></div>
+            </div>
+            <pre id="deploy-json"><code data-build-output></code></pre>
+            <p><small data-build-note></small></p>
+          </div>
+        </div>
+
+        <div class="panel" data-build-mint>
+          <div class="panel-head"><h3>Mint builder</h3><span data-build-verdict class="verdict verdict--idle">IDLE</span></div>
+          <div class="panel-body">
+            <div class="field-row">
+              <div><label for="m-tick">tick</label><input type="text" id="m-tick" name="tick" value="dust" spellcheck="false"></div>
+              <div><label for="m-amt">amt</label><input type="text" id="m-amt" name="amt" value="100" inputmode="numeric"></div>
+              <div><label for="m-unit">deployment unit_sats</label><input type="text" id="m-unit" name="unit_sats" value="546" inputmode="numeric"></div>
+              <div><label for="m-supply">deployment supply</label><input type="text" id="m-supply" name="supply" value="1000000" inputmode="numeric"></div>
+            </div>
+            <pre id="mint-json"><code data-build-output></code></pre>
+            <p><small data-build-note></small></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="runner">
+        <h2><span class="num">D.3</span> Conformance runner</h2>
+        <p class="lede">Run every published test vector against the decoder in this browser. A vector passes when the observed outcome and issue code match the published expectation exactly. The same vectors are asserted by the Node test suite in <code>test/protocol.test.mjs</code>.</p>
+
+        <div class="panel" data-runner>
+          <div class="panel-head">
+            <h3>Runner</h3>
+            <button class="btn btn--primary" type="button" data-runner-run>Run all vectors</button>
+          </div>
+          <div class="panel-body">
+            <p data-runner-summary>Loads <a href="conformance.json">conformance.json</a> from this origin and executes each case with <a href="assets/protocol.js">assets/protocol.js</a>. No result is transmitted anywhere.</p>
+            <div data-runner-body></div>
+          </div>
+        </div>
+
+        <p>The full vector list, with the input, the expected outcome, the issue code and the numbered rule each case exercises, is published as static HTML on the <a href="conformance.html">test vectors</a> page and as JSON at <a href="conformance.json">conformance.json</a>.</p>
+      </section>
+      <nav class="pagenav" aria-label="Page">
+      <a href="transactions.html"><em>Previous</em><b>Transactions</b></a>
+      <a href="conformance.html"><em>Next</em><b>Test vectors</b></a>
+      </nav>
     </main>
-    <aside class="docs-toc">
+    <aside class="contents">
       <nav aria-label="On this page">
         <h2>On this page</h2>
-        <ul class="toc-list">
-        <li><a href="#deploy">Deploy builder</a></li>
-        <li><a href="#mint">Mint builder</a></li>
-        <li><a href="#inspector">Payload inspector</a></li>
+        <ul>
+          <li><a href="#decoder">Payload decoder</a></li>
+          <li><a href="#builder">Deploy and mint builders</a></li>
+          <li><a href="#runner">Conformance runner</a></li>
         </ul>
       </nav>
     </aside>
   </div>
-  <footer class="footer">
-    <div class="footer-inner">
-      <div>
-        <span class="footer-brand-mark" aria-hidden="true">DUST</span>
-        <h2>DUST-20</h2>
-        <p>DUST-20 binds every token unit to an exact number of satoshis. Deploy and mint are inscriptions; every later movement is an ordinary Bitcoin spend of the satoshis that carry the units.</p>
+  <footer class="colophon">
+    <div class="colophon-inner">
+      <div class="colophon-grid">
+        <dl>
+          <dt>Owning repository</dt>
+          <dd><a href="https://github.com/bitcoinuniverseio/dust-20">bitcoinuniverseio/dust-20</a></dd>
+          <dt>Source path</dt>
+          <dd>content/playground.html</dd>
+          <dt>Last verified</dt>
+          <dd>2026-09-01</dd>
+        </dl>
+        <dl>
+          <dt>Document version</dt>
+          <dd>1.1.0</dd>
+          <dt>Lifecycle</dt>
+          <dd>experimental</dd>
+          <dt>Chain and network</dt>
+          <dd>Bitcoin mainnet</dd>
+        </dl>
+        <div>
+          <h2>Documentation</h2>
+          <ul>
+            <li><a href="https://github.com/bitcoinuniverseio/dust-20/tree/main/content/playground.html">Edit this page on GitHub</a></li>
+            <li><a href="https://docs.bitcoinuniverse.io">docs.bitcoinuniverse.io</a></li>
+            <li><a href="https://github.com/bitcoinuniverseio/dust-20/security/advisories/new">Report a vulnerability</a></li>
+            <li><a href="https://inscribe.bitcoinuniverse.io">Bitcoin Universe Inscribe</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Machine readable</h2>
+          <ul>
+            <li><a href="llms.txt">llms.txt</a></li>
+            <li><a href="docs.json">docs.json</a></li>
+            <li><a href="conformance.json">conformance.json</a></li>
+            <li><a href="search-index.json">search-index.json</a></li>
+          </ul>
+        </div>
       </div>
-      <div>
-        <h2>Documentation</h2>
-        <ul><li><a href="./">Start here</a></li><li><a href="how-it-works.html">How it works</a></li><li><a href="playground.html">Playground</a></li><li><a href="transactions.html">Transactions</a></li><li><a href="reference.html">Reference</a></li></ul>
-      </div>
-      <div>
-        <h2>More</h2>
-        <ul><li><a href="conformance.html">Conformance</a></li><li><a href="indexer.html">For builders</a></li><li><a href="safety.html">Safety</a></li><li><a href="glossary.html">Glossary</a></li></ul>
-      </div>
-      <div>
-        <h2>Machine readable</h2>
-        <ul>
-          <li><a href="llms.txt">llms.txt</a></li>
-          <li><a href="docs.json">docs.json</a></li>
-          <li><a href="conformance.json">conformance.json</a></li>
-          <li><a href="https://github.com/bitcoinuniverseio/dust-20">Source repository</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      Experimental documentation, last updated 2026-08-18. Review every Bitcoin transaction in your wallet before signing — this site never asks for a key and never signs anything.
+      <p class="colophon-note">Experimental documentation of an experimental protocol. Every statement carries a provenance label, and where the legacy specification and the current implementation disagree, both positions are published rather than silently resolved. No page on this site asks for a key, builds a transaction, or sends anything you type anywhere.</p>
     </div>
   </footer>
 </body>

@@ -1,9 +1,9 @@
 {
   "name": "dust-20",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
-  "description": "DUST-20 interactive documentation and protocol laboratory.",
+  "description": "DUST-20 protocol documentation, normative specification, decoder and conformance vectors.",
   "homepage": "https://bitcoinuniverseio.github.io/dust-20/",
   "repository": {
     "type": "git",
@@ -17,5 +17,8 @@
     "test:docs": "node tools/check-docs.mjs",
     "test": "npm run check:generated && npm run test:protocol && npm run test:docs",
     "serve": "node tools/serve.mjs"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

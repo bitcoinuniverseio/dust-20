@@ -1,33 +1,19 @@
-      <div class="page-hero">
-        <p class="eyebrow">Glossary</p>
-        <h1>Glossary and FAQ</h1>
-        <p class="lead">Plain definitions for every term this documentation uses, and direct answers to the questions people ask most often.</p>
-      </div>
+      <section class="section" id="glossary">
+        <h2><span class="num">A.1</span> Glossary</h2>
+        <p class="lede">Plain definitions of every term this documentation uses in a specific way. Where a term has a numbered rule behind it, the rule is the authority and this entry is the explanation.</p>
+        {{glossary}}
+      </section>
 
-      <div class="prose">
-        <section id="glossary">
-          <h2>Glossary</h2>
-          <div class="filter-bar">
-            <div>
-              <label class="visually-hidden" for="glossary-search">Search terms</label>
-              <input id="glossary-search" type="search" data-glossary-search placeholder="Search terms and definitions…" autocomplete="off">
-            </div>
+      <section class="section" id="faq">
+        <h2><span class="num">A.2</span> Frequently asked questions</h2>
+        <p class="lede">The questions people actually ask, answered from the rules rather than from intuition.</p>
+        {{faq}}
+
+        <div class="note note--info">
+          <span class="note-mark" aria-hidden="true">i</span>
+          <div class="note-body">
+            <p class="note-title">Can I trade DUST-20 in Bitcoin Universe?</p>
+            <p>No. Marketplace availability is read-only: viewing, collections and activity are supported, and listing, buying, selling, offers and settlement are not. The recorded reason is that DUST-20 mutations are unavailable until a typed authoritative ownership resolver replaces the retired address-only legacy flow. The <a href="universe.html">Universe support page</a> publishes the full recorded state.</p>
           </div>
-          <p class="filter-status" data-glossary-count role="status"></p>
-          <noscript><p class="noscript-note">Search needs JavaScript, but every term is rendered below and published in <a href="docs.json">docs.json</a>.</p></noscript>
-          <dl class="glossary-list" data-glossary></dl>
-        </section>
-
-        <section id="faq">
-          <h2>Frequently asked questions</h2>
-          <div data-faq></div>
-
-          <div class="notice info">
-            <span class="notice-mark" aria-hidden="true">i</span>
-            <div>
-              <p class="notice-title">Still have a question?</p>
-              <p>The <a href="reference.html">protocol reference</a> documents every field and rule with its provenance, and the <a href="reference.html#open">open questions</a> section lists what genuinely has no authoritative answer yet. Issues and corrections are welcome on the <a href="https://github.com/bitcoinuniverseio/dust-20">documentation repository</a>.</p>
-            </div>
-          </div>
-        </section>
-      </div>
+        </div>
+      </section>
