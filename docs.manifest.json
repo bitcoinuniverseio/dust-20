@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "dust-20",
+  "name": "DUST-20",
+  "classification": "protocol",
+  "repository": "bitcoinuniverseio/dust-20",
+  "documentationUrl": "https://docs.bitcoinuniverse.io/protocols/dust-20/",
+  "docsRoot": ".",
+  "sourceRef": "main",
+  "lifecycle": "experimental",
+  "chains": [
+    {
+      "chain": "bitcoin",
+      "networks": ["mainnet"]
+    }
+  ],
+  "protocols": ["dust-20"],
+  "audiences": ["protocol-implementer", "app-developer"],
+  "owners": ["bitcoinuniverseio"],
+  "securityClassification": "public",
+  "lastVerified": {
+    "commit": "e55d824a3cdf7526f4c65c3f0ec2bbf7bd431764",
+    "timestamp": "2026-09-01T01:19:53Z"
+  }
+}
