@@ -1,5 +1,3 @@
-# Opened autonomously by KING: this repository declared
-# dependencies but had no update automation, so security patches were manual.
 version: 2
 updates:
   - package-ecosystem: "npm"
